@@ -44,3 +44,9 @@ TADbound_lincRNA <- overlap_RNA[!duplicated(overlap_RNA$gene),]
 # This means: Out of the 2510 original transcripts, 1420 have at least 25% of their sequence overlapping the TAD boundaries.
 write.table(TADbound_lincRNA,file = "TADbound-lincRNA.bed",sep="\t",quote = F,col.names = F,row.names = F)
 # Those are the TADbound-lincRNAs
+
+par(mfrow=c(1,3))
+hist(log(TADbound_lincRNA$end - TADbound_lincRNA$start))
+hist(log(RNA_ori$end - RNA_ori$start))
+hist(log(TAD_boundaries$end - TAD_boundaries$start))
+
