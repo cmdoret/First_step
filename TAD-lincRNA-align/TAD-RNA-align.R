@@ -40,5 +40,7 @@ length(overlap_RNA$gene)
 
 #Almost half of the transcript overlap more than 1 TAD boundary. Is this possible ?
 #Anyway, removing duplicates
-overlap_RNA_unique <- overlap_RNA[!duplicated(overlap_RNA$gene),]
+TADbound_lincRNA <- overlap_RNA[!duplicated(overlap_RNA$gene),]
 # This means: Out of the 2510 original transcripts, 1420 have at least 25% of their sequence overlapping the TAD boundaries.
+write.table(TADbound_lincRNA,file = "TADbound-lincRNA.bed",sep="\t",quote = F,col.names = F,row.names = F)
+# Those are the TADbound-lincRNAs
