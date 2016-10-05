@@ -1,6 +1,7 @@
 # This script intends to find lincRNAs and protein coding genes with at least 25% of their sequences overlapping the TAD boundaries.
 # TAD boundaries are considered to be the regions at the border of TADs, large of 20% the TAD length.
 
+# Cyril Matthey-Doret, 04.10.2016
 
 #=====================================================
 

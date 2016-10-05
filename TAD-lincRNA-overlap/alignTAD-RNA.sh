@@ -2,6 +2,7 @@
 
 #This script intends to align lincRNA and protein coding genes with TAD boundaries. It outputs RNAs which have at least
 #25% of their sequence overlapping a TAD boundary.
+# Cyril Matthey-Doret, 04.10.2016
 
 bsub -q priority 'bedtools intersect -a ../data/LCL.expressed.lincRNA.bed -b ../data/GM12878_TAD_boundaries.bed -f 0.25 -wa > lincRNA_25overlap_TADb.bed';
 
