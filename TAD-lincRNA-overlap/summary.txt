@@ -1,0 +1,4 @@
+I have generated the bed file with TAD boundaries (20% regions at the borders of TADs) using an R script and found the TADbound-lincRNAs(at least 25% of their sequence overlapping a TAD boundary) which I stored in a new .bed file, using the intersect program with the -f parameter set to 0.25.
+
+I found 1420 individual tadbound-lincRNAs out of the 2510 lincRNAs I originally had. Many of those (1134) seem to overlap more than 1 TAD boundaries.
+
