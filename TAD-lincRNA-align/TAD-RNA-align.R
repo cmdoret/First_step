@@ -48,6 +48,11 @@ TADbound_lincRNA <- overlap_RNA[!duplicated(overlap_RNA$gene),]
 write.table(TADbound_lincRNA,file = "TADbound-lincRNA.bed",sep="\t",quote = F,col.names = F,row.names = F)
 # Those are the TADbound-lincRNAs
 
+#Identifying nonTADbound-lincRNAs
+nonTADbound_lincRNA <- RNA_ori[!(RNA_ori$gene %in% TADbound_lincRNA$gene),]
+write.table(nonTADbound_lincRNA,file = "nonTADbound-lincRNA.bed",sep="\t",quote = F,col.names = F,row.names = F)
+#Those are the nonTADbound-lincRNAs
+
 #===================================================
 # Visualizing length of RNAs and TAD boundaries.
 par(mfrow=c(1,3))
