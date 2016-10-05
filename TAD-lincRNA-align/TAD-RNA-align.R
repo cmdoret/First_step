@@ -15,7 +15,9 @@ colnames(RNA_ori) <- c("chr", "start", "end", "gene", "strand")
 
 # creating new dataframes with TAD boundaries
 TAD_len <- TAD_ori$end - TAD_ori$start # Computes the length of all RNAs
+#TADboundaries at the start of every TAD
 TAD_boundaries_start <- data.frame(TAD_ori$chr, start= (TAD_ori$start - TAD_len*0.2), end= (TAD_ori$start + TAD_len*0.2), TAD_ori$gene,TAD_ori$ID)
+#Same at the end
 TAD_boundaries_end <- data.frame(TAD_ori$chr, start= (TAD_ori$end - TAD_len*0.2), end= (TAD_ori$end + TAD_len*0.2), TAD_ori$gene, TAD_ori$ID)
 # merging dataframes together
 TAD_boundaries <- rbind(TAD_boundaries_start,TAD_boundaries_end)
@@ -35,9 +37,10 @@ len_RNA <- cbind(RNA_ori,length=RNA_ori[,3]-RNA_ori[,2])
 #Alignment performed, contains duplicates: Some (many) transcripts seem to overlap more than 1 TAD boundary.
 overlap_RNA <- read.table("lincRNA_25overlap_TADb.bed")
 colnames(overlap_RNA) <- c("chr", "start", "end", "gene", "strand")
-length(overlap_RNA$gene[duplicated(overlap_RNA$gene)])
 length(overlap_RNA$gene)
-
+# 2554 overlap events were found by the intersect program with -f 0.25
+length(overlap_RNA$gene[duplicated(overlap_RNA$gene)])
+# 1134 are duplicates
 #Almost half of the transcript overlap more than 1 TAD boundary. Is this possible ?
 #Anyway, removing duplicates
 TADbound_lincRNA <- overlap_RNA[!duplicated(overlap_RNA$gene),]
@@ -45,8 +48,14 @@ TADbound_lincRNA <- overlap_RNA[!duplicated(overlap_RNA$gene),]
 write.table(TADbound_lincRNA,file = "TADbound-lincRNA.bed",sep="\t",quote = F,col.names = F,row.names = F)
 # Those are the TADbound-lincRNAs
 
+#===================================================
+# Visualizing length of RNAs and TAD boundaries.
 par(mfrow=c(1,3))
-hist(log(TADbound_lincRNA$end - TADbound_lincRNA$start))
-hist(log(RNA_ori$end - RNA_ori$start))
-hist(log(TAD_boundaries$end - TAD_boundaries$start))
+hist(log10(TADbound_lincRNA$end - TADbound_lincRNA$start))
+hist(log10(RNA_ori$end - RNA_ori$start))
+hist(log10(TAD_boundaries$end - TAD_boundaries$start))
+#Summary statistics
+summary(TADbound_lincRNA$end - TADbound_lincRNA$start)
+summary(RNA_ori$end - RNA_ori$start)
+summary(TAD_boundaries$end - TAD_boundaries$start)
 
