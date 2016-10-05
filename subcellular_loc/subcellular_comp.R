@@ -25,7 +25,10 @@ loc_nTb_lincRNA <-loc_lincRNA[loc_lincRNA$gene %in% nTb_lincRNA$gene,]
 loc_Tb_pc <-loc_pcgene[loc_pcgene$gene %in% Tb_pc$gene,]
 loc_nTb_pc <-loc_pcgene[loc_pcgene$gene %in% nTb_pc$gene,]
 
+#============================================================
+
 #Comparing overall mean ratio between Tb and nTb:
+
 #lincRNAs:
 hist_linc <-ggplot()+
   geom_histogram(data=loc_Tb_lincRNA, aes(x=ratio, y=..density..), fill="#0000dd", alpha=0.5, bins = 300)+
@@ -41,3 +44,27 @@ hist_pc<-ggplot()+
 summary(loc_Tb_lincRNA$ratio);summary(loc_nTb_lincRNA$ratio)
 
 grid.arrange(hist_linc, hist_pc)
+#It doesn't seem TADbound lincRNAs/proteins are more localized in the nucleus/cytoplasm than non-TADbound ones.
+
+#==========================================================
+
+#Comparing strength of expression in nucleus and cytoplasm separately between TADb and non-TADb:
+nuc_linc <-ggplot()+
+  geom_histogram(data=loc_Tb_lincRNA, aes(x=log10(nuclear), y=..density..), fill="#0000dd", alpha=0.5, bins=40)+
+  geom_histogram(data=loc_nTb_lincRNA, aes(x=log10(nuclear), y=..density..), fill="#bb0000", alpha=0.5, bins=40)+
+  ggtitle("lincRNAs")
+nuc_pc<-ggplot()+
+  geom_histogram(data=loc_Tb_pc, aes(x=log10(nuclear), y=..density..), fill="#0000dd", alpha=0.4, bins = 40)+
+  geom_histogram(data=loc_nTb_pc, aes(x=log10(nuclear), y=..density..), fill="#bb0000", alpha=0.4, bins = 40)+
+  ggtitle("Protein-coding genes")
+cyt_linc <-ggplot()+
+  geom_histogram(data=loc_Tb_lincRNA, aes(x=log10(cytoplasm), y=..density..), fill="#0000dd", alpha=0.5, bins=40)+
+  geom_histogram(data=loc_nTb_lincRNA, aes(x=log10(cytoplasm), y=..density..), fill="#bb0000", alpha=0.5, bins=40)+
+  ggtitle("lincRNAs")
+cyt_pc<-ggplot()+
+  geom_histogram(data=loc_Tb_pc, aes(x=log10(cytoplasm), y=..density..), fill="#0000dd", alpha=0.4, bins = 40)+
+  geom_histogram(data=loc_nTb_pc, aes(x=log10(cytoplasm), y=..density..), fill="#bb0000", alpha=0.4, bins = 40)+
+  ggtitle("Protein-coding genes")
+
+grid.arrange(nuc_linc, cyt_linc, nuc_pc, cyt_pc, nrow=2)
+#Looks like TADbound protein coding genes are more expressed both in nucleus and cytoplasm.
