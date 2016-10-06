@@ -12,9 +12,8 @@ library(gridExtra)
 setwd("/home/cyril/Documents/First_step/data/")
 #setwd("/home/cyril/Documents/Master/sem_1/First step/data/")
 bedcol <- c("chr", "start", "end", "gene", "strand")
-
-exp_lincRNA <- read.table("LCL.lincRNA.expression.txt", header = F)
-exp_pcgene <- read.table("LCL.pcgene.expression.txt", header = F)
+exp_lincRNA <- read.table("expression/LCL.lincRNA.expression.txt", header = F)
+exp_pcgene <- read.table("expression/LCL.pcgene.expression.txt", header = F)
 #loading TAD-bound lincRNAs sets
 Tb_lincRNA5 <- read.table("linc_RNA/TADbound-lincRNA5.bed")
 Tb_lincRNA10 <- read.table("linc_RNA/TADbound-lincRNA10.bed")
@@ -32,29 +31,33 @@ nTb_pc5 <- read.table("pc_genes/nonTADbound-pcgene5.bed")
 nTb_pc10 <- read.table("pc_genes/nonTADbound-pcgene10.bed")
 nTb_pc20 <- read.table("pc_genes/nonTADbound-pcgene20.bed")
 
-ChangeNames <- function(x) {
-  names(x) <- c("chr", "start", "end", "gene", "strand")
-  return(x)
-}
-dfs<-list(Tb_lincRNA5, Tb_lincRNA10, Tb_lincRNA20, nTb_lincRNA5, nTb_lincRNA10, nTb_lincRNA20, Tb_pc5, Tb_pc10, Tb_pc20, nTb_pc5, nTb_pc10, nTb_pc20)
-dfs <- lapply(dfs, ChangeNames)
-
-for(i in 1:length(x)){
-  colnames(x[i])
-}
-colnames(nTb_pc)=colnames(nTb_lincRNA)=colnames(Tb_lincRNA)=colnames(Tb_pc)<-bedcol #putting informative colnames to bed files
+#adding colnames
+colnames(Tb_lincRNA5)= colnames(Tb_lincRNA10)=colnames(Tb_lincRNA20)=colnames(nTb_lincRNA5)=colnames(nTb_lincRNA10)=
+  colnames(nTb_lincRNA20)=colnames(Tb_pc5)=colnames(Tb_pc10)=colnames(Tb_pc20)=colnames(nTb_pc5)=colnames(nTb_pc10)=
+  colnames(nTb_pc20) <-c("chr", "start", "end", "gene", "strand")
 colnames(exp_pcgene)=colnames(exp_lincRNA) <- c("gene", "expression")
 
 #Splitting expression levels data into TADbound (Tb) and non-TADbound (nTb)
-exp_Tb_lincRNA <-exp_lincRNA[exp_lincRNA$gene %in% Tb_lincRNA$gene,]
-exp_nTb_lincRNA <-exp_lincRNA[exp_lincRNA$gene %in% nTb_lincRNA$gene,]
-exp_Tb_pc <-exp_pcgene[exp_pcgene$gene %in% Tb_pc$gene,]
-exp_nTb_pc <-exp_pcgene[exp_pcgene$gene %in% nTb_pc$gene,]
+exp_Tb_lincRNA5 <-exp_lincRNA[exp_lincRNA$gene %in% Tb_lincRNA5$gene,]
+exp_Tb_lincRNA10 <-exp_lincRNA[exp_lincRNA$gene %in% Tb_lincRNA10$gene,]
+exp_Tb_lincRNA20 <-exp_lincRNA[exp_lincRNA$gene %in% Tb_lincRNA20$gene,]
+
+exp_nTb_lincRNA5 <-exp_lincRNA[exp_lincRNA$gene %in% nTb_lincRNA5$gene,]
+exp_nTb_lincRNA10 <-exp_lincRNA[exp_lincRNA$gene %in% nTb_lincRNA10$gene,]
+exp_nTb_lincRNA20 <-exp_lincRNA[exp_lincRNA$gene %in% nTb_lincRNA20$gene,]
+
+exp_Tb_pc5 <-exp_pcgene[exp_pcgene$gene %in% Tb_pc5$gene,]
+exp_Tb_pc10 <-exp_pcgene[exp_pcgene$gene %in% Tb_pc10$gene,]
+exp_Tb_pc20 <-exp_pcgene[exp_pcgene$gene %in% Tb_pc20$gene,]
+
+exp_nTb_pc5 <-exp_pcgene[exp_pcgene$gene %in% nTb_pc5$gene,]
+exp_nTb_pc10 <-exp_pcgene[exp_pcgene$gene %in% nTb_pc10$gene,]
+exp_nTb_pc20 <-exp_pcgene[exp_pcgene$gene %in% nTb_pc20$gene,]
 
 #Writing into bed files for further use.
 write.table(exp_Tb_lincRNA5,file = "exp_Tb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
 write.table(exp_Tb_lincRNA10,file = "exp_Tb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
-vwrite.table(exp_Tb_lincRNA20,file = "exp_Tb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_Tb_lincRNA20,file = "exp_Tb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
 write.table(exp_nTb_lincRNA5,file = "exp_nTb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
 write.table(exp_nTb_lincRNA10,file = "exp_nTb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
@@ -68,22 +71,63 @@ write.table(exp_nTb_pc5,file = "exp_nTb_pc5.txt",sep="\t",quote = F,col.names = 
 write.table(exp_nTb_pc10,file = "exp_nTb_pc10.txt",sep="\t",quote = F,col.names = F,row.names = F)
 write.table(exp_nTb_pc20,file = "exp_nTb_pc20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
+CData <-function(df){
+  return(cbind(df,fact=rep(deparse(substitute(df)),length(df[,1]))))
+}
+
+whole_exp <- rbind(CData(exp_Tb_pc5), CData(exp_Tb_pc10), CData(exp_Tb_pc20), CData(exp_nTb_pc5), CData(exp_nTb_pc10), CData(exp_nTb_pc20),
+                   CData(exp_Tb_lincRNA5), CData(exp_Tb_lincRNA10), CData(exp_Tb_lincRNA20), CData(exp_nTb_lincRNA5), CData(exp_nTb_lincRNA10), CData(exp_nTb_lincRNA20))
 #====================================================
 
 #Visualizing data:
 
-hist_linc <-ggplot()+
-geom_histogram(data=exp_Tb_lincRNA, aes(x=log10(expression), y=..density..), fill="#0000dd", alpha=0.5, bins = 60)+
-  geom_histogram(data=exp_nTb_lincRNA, aes(x=log10(expression), y=..density..), fill="#bb0000", alpha=0.5, bins = 60)+
-  ggtitle("lincRNAs")
-hist_pc <-ggplot()+
-  geom_histogram(data=exp_Tb_pc, aes(x=log10(expression), y=..density..), fill="#0000dd", alpha=0.5, bins = 60)+
-  geom_histogram(data=exp_nTb_pc, aes(x=log10(expression), y=..density..), fill="#bb0000", alpha=0.5, bins = 60)+
-  ggtitle("lincRNAs")
-grid.arrange(hist_linc, hist_pc)
-#boxplots
-boxplot(log10(exp_nTb_lincRNA$expression), log10(exp_Tb_pc$expression),notch = T)
-wilcox.test(exp_Tb_lincRNA$expression, exp_nTb_lincRNA$expression  )
+short_med<-function(x){return(round(median(log10(x)),3))}
+short_wilcox <- function(x,y){return(round(wilcox.test(x, y)$p.value,5))}
+
+l5 <-ggplot(data=whole_exp[whole_exp$fact %in% c("exp_Tb_lincRNA5","exp_nTb_lincRNA5"),])+
+  geom_boxplot(aes(fact, log10(expression)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("lincRNA, 5%")+
+  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_exp$expression[whole_exp$fact=="exp_Tb_lincRNA5"]), 
+                                                       short_med(whole_exp$expression[whole_exp$fact=="exp_nTb_lincRNA5"])))+
+  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_exp$expression[whole_exp$fact=="exp_Tb_lincRNA5"],
+                                                         whole_exp$expression[whole_exp$fact=="exp_nTb_lincRNA5"]), sep=" "),
+                   labels=c("TADb", "non-TADb"))
+l10 <-ggplot(data=whole_exp[whole_exp$fact %in% c("exp_Tb_lincRNA10","exp_nTb_lincRNA10"),])+
+  geom_boxplot(aes(fact, log10(expression)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("lincRNA, 10%")+
+  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_exp$expression[whole_exp$fact=="exp_Tb_lincRNA10"]), 
+                                                       short_med(whole_exp$expression[whole_exp$fact=="exp_nTb_lincRNA10"])))+
+  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_exp$expression[whole_exp$fact=="exp_Tb_lincRNA10"],
+                                                         whole_exp$expression[whole_exp$fact=="exp_nTb_lincRNA10"]), sep=" "),
+                   labels=c("TADb", "non-TADb"))
+l20 <-ggplot(data=whole_exp[whole_exp$fact %in% c("exp_Tb_lincRNA20","exp_nTb_lincRNA20"),])+
+  geom_boxplot(aes(fact, log10(expression)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("lincRNA, 20%")+
+  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_exp$expression[whole_exp$fact=="exp_Tb_lincRNA20"]), 
+                                                       short_med(whole_exp$expression[whole_exp$fact=="exp_nTb_lincRNA20"])))+
+  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_exp$expression[whole_exp$fact=="exp_Tb_lincRNA20"],
+                                                         whole_exp$expression[whole_exp$fact=="exp_nTb_lincRNA20"]), sep=" "),
+                   labels=c("TADb", "non-TADb"))
+p5 <-ggplot(data=whole_exp[whole_exp$fact %in% c("exp_Tb_pc5","exp_nTb_pc5"),])+
+  geom_boxplot(aes(fact, log10(expression)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("protein-coding, 5%")+
+  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_exp$expression[whole_exp$fact=="exp_Tb_pc5"]), 
+                                                       short_med(whole_exp$expression[whole_exp$fact=="exp_nTb_pc5"])))+
+  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_exp$expression[whole_exp$fact=="exp_Tb_pc5"],
+                                                         whole_exp$expression[whole_exp$fact=="exp_nTb_pc5"]), sep=" "),
+                   labels=c("TADb", "non-TADb"))
+p10 <-ggplot(data=whole_exp[whole_exp$fact %in% c("exp_Tb_pc10","exp_nTb_pc10"),])+
+  geom_boxplot(aes(fact, log10(expression)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("protein-coding, 10%")+
+  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_exp$expression[whole_exp$fact=="exp_Tb_pc10"]), 
+                                                       short_med(whole_exp$expression[whole_exp$fact=="exp_nTb_pc10"])))+
+  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_exp$expression[whole_exp$fact=="exp_Tb_pc10"],
+                                                         whole_exp$expression[whole_exp$fact=="exp_nTb_pc10"]), sep=" "),
+                   labels=c("TADb", "non-TADb"))
+p20 <-ggplot(data=whole_exp[whole_exp$fact %in% c("exp_Tb_pc20","exp_nTb_pc20"),])+
+  geom_boxplot(aes(fact, log10(expression)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("protein-coding, 20%")+
+  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_exp$expression[whole_exp$fact=="exp_Tb_pc20"]), 
+                                                       short_med(whole_exp$expression[whole_exp$fact=="exp_nTb_pc20"])))+
+  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_exp$expression[whole_exp$fact=="exp_Tb_pc20"],
+                                                         whole_exp$expression[whole_exp$fact=="exp_nTb_pc20"]), sep=" "),
+                   labels=c("TADb", "non-TADb"))
+grid.arrange(nrow=2, l5, l10, l20, p5, p10, p20)
+
 #====================================================
 
 #Summary statistics:
