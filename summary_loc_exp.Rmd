@@ -92,7 +92,13 @@ Original set|Threshold|Overlaps|TAD-bound genes
 
 #Results
 
+All p-values displayed on plots were obtained by performing Mann-Whitney tests.
+
 ##Expression levels
+
+It seems the threshold used to define TAD-boundariesdoes not have much influence on the results.
+The TAD-bound lincRNAs have similar expression levels to the non-TAD-bound lincRNAs, regardless of which threshold was used, whereas the TAD-bound protein-coding genes where always more expressed than the rest.
+
 
 ```{r exp_lincRNA, echo=FALSE,fig.height=8,fig.width=6}
 short_med<-function(x){return(round(median(log10(x)),3))}
@@ -145,7 +151,11 @@ grid.arrange(nrow=2, l5, l10, l20, p5, p10, p20)
 
 ##Subcellular localization
 
+The ratios depicted below represent the abundance of RNA in the cytoplasm relative to the nucleus. Again, regardless of the threshold used to define TAD-boundaries, There is no significant difference between the localization of TAD-bound and non-TAD-bound lincRNAs, while the TAD-bound protein-coding genes are always more abundant in the cytoplasm than in the nucleus.
+
+
 ```{r loc_lincRNA, echo=FALSE,fig.height=8,fig.width=6}
+setwd("/home/cyril/Documents/First_step/data/")
 loc_lincRNA <- read.table("subcell_loc/all.lincRNA.GM12878.subcellular.ratio.txt", header = T)
 loc_pcgene <- read.table("subcell_loc/all.pcgene.GM12878.subcellular.ratio.txt", header = T)
 #loading TAD-bound lincRNAs sets
