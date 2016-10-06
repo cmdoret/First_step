@@ -1,0 +1,65 @@
+First-step project: Characterization of TAD-bound lincRNAs
+
+Aim: 
+Identify and characterize lincRNAs at TAD boundaries and analyze whether they have a role in the regulation of gene expression within TADs and the maintenance of chromatin organization.
+
+
+
+Method:
+- find lincRNAs that overlap to TAD boundaries (20% at border of TAD)
+	- at least 25% of lincRNA loci need to over TAD boundary
+	- denote as TADbound-lincRNAs
+	
+
+	
+Further characterization:
+1. compare expression levels of TADbound-lincRNAs and nonTADbound-lincRNAs
+2. subcellular localization
+3. tissue specificity
+
+4. enrichment in chromatin marks (H3K4me1/me3, CTCF, cohesion) - (GAT enrichment test)
+	- cohesion unit consists of 4 subunits (SMC1, SMC3, Rad21[Scc1], STAG[SCC3])
+	- ChIPseq data available for SMC3 and RAD21 in GM12878
+
+
+5. co-expression with shared eQTL pcgenes within and outside of the same TAD
+	- find lincRNAs that share common SNP eQTLs with nearby pcgenes
+	- for these lincRNA:pcgene pairs, are they enriched in the same TADs? (GAT enrichment test)
+	- are pairs within the same TADs more co-expressed with each other than pairs not within the same TADs
+	
+	- are lincRNAs within these pairs enriched in TADbound-lincRNAs? (GAT enrichment test)
+	- identify pairs with the lincRNA as a TADbound-lincRNA
+	- are TADbound-lincRNA:pcgene pairs more co-expressed than nonTADbound-lincRNA:pcgene pairs?
+
+
+
+#############################
+
+
+Data (hg19):
+- all LCL expressed lincRNAs (bed, gtf)
+- all LCL expressed pcgenes (bed, gtf)
+- TAD coordinates
+- median expression levels of LCL genes (lincRNAs+pcgenes)
+- tissue specificity Tau scores
+- ChiPseq data (GM12878)
+- LCL expression matrix (Geuvadis samples)
+- common SNP eQTLs
+
+# Gene annotations:
+- Geuvadis v19 annotations
+- de novo set of lincRNAs in LCLs (GM12878)
+
+## TAD domains for GM12878 (Rao et al 2014 Cell)
+## downloaded from http://aidenlab.org/data.html
+#domains: https://hicfiles.s3.amazonaws.com/hiseq/gm12878/in-situ/combined_blocks.txt
+# total 9273 TAD domains
+
+## Geuvadis data
+## samples from 373 individuals of European descent
+## RNAseq + genotyping data
+
+
+/data/ul/dp/marques/First_Step_TAD/
+
+

@@ -7,6 +7,8 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+setwd("/home/cyril/Documents/First_step/data/")
+library(ggplot2)
 ```
 #TAD boundaries definition
 When defining TAD boundaries as the areas 20% before and after TAD borders, those boundaries seemed to overlap with those of the neighbouring domains. To solve this issue, the TAD boundaries have been set to 3 different, arbitrary threshold: 5%, 10% and 20% of the TAD length.
@@ -14,15 +16,47 @@ When defining TAD boundaries as the areas 20% before and after TAD borders, thos
 #Overlapping genes with TAD boundaries
 Both lincRNAs and protein coding genes have been overlapped with TAD boundaries, using the intersect program with -f 0.25 (genes must have at least 25% of their sequence overlapping a boundary to be considered). The set of overlaps was then cleaned by removing duplicates.
 
+#Data
+
+##lincRNA
+
+Original set|Threshold|Overlaps|TAD-bound genes
+------------|---------|--------|-----
+2510|5%|865|609
+||10%|1481|960
+||20%|2554|1420
+
+#Protein-coding genes
+
+Original set|Threshold|Overlaps|TAD-bound genes
+------------|---------|--------|-----
+14846|5%|6576|4607
+||10%|12017|7495
+||20%|21544|11337
+
 #Results
 
-```{r cars}
-summary(cars)
+##Expression levels
+
+###lincRNA
+
+```{r exp_lincRNA, echo=FALSE}
+exp_Tb_lincRNA <- read.table("data/expression/")
+boxplot(log10(exp_nTb_lincRNA$expression), log10(exp_Tb_pc$expression),notch = T)
+ggplot()+
+  geom_boxplot()
 ```
 
+###Protein-coding genes
+
+##Subcellular localization
+
+...
+
+##Tissue specificity
+
+...
 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+
 

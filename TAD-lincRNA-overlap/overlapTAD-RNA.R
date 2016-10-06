@@ -62,13 +62,9 @@ TAD_boundaries20 <- rbind(TAD_boundaries_start,TAD_boundaries_end)
 
 #overlaps performed, contains duplicates: Some (many) transcripts seem to overlap more than 1 TAD boundary.
 overlap_RNA5 <- read.table("lincRNA_5overlap_TADb.bed")
-colnames(overlap_RNA) <- c("chr", "start", "end", "gene", "strand")
-
 overlap_RNA10 <- read.table("lincRNA_10overlap_TADb.bed")
-colnames(overlap_RNA) <- c("chr", "start", "end", "gene", "strand")
-
 overlap_RNA20 <- read.table("lincRNA_20overlap_TADb.bed")
-colnames(overlap_RNA) <- c("chr", "start", "end", "gene", "strand")
+colnames(overlap_RNA5)=colnames(overlap_RNA10)=colnames(overlap_RNA20) <- c("chr", "start", "end", "gene", "strand")
 
 #Number of overlaps: 
 length(overlap_RNA5$gene);length(overlap_RNA10$gene);length(overlap_RNA20$gene)
@@ -94,7 +90,7 @@ nonTADbound_lincRNA5 <- RNA_ori[!(RNA_ori$gene %in% TADbound_lincRNA5$gene),]
 write.table(nonTADbound_lincRNA5,file = "nonTADbound-lincRNA5.bed",sep="\t",quote = F,col.names = F,row.names = F)
 nonTADbound_lincRNA10 <- RNA_ori[!(RNA_ori$gene %in% TADbound_lincRNA10$gene),]
 write.table(nonTADbound_lincRNA10,file = "nonTADbound-lincRNA10.bed",sep="\t",quote = F,col.names = F,row.names = F)
-nonTADbound_lincRNA5 <- RNA_ori[!(RNA_ori$gene %in% TADbound_lincRNA5$gene),]
+nonTADbound_lincRNA20 <- RNA_ori[!(RNA_ori$gene %in% TADbound_lincRNA20$gene),]
 write.table(nonTADbound_lincRNA20,file = "nonTADbound-lincRNA20.bed",sep="\t",quote = F,col.names = F,row.names = F)
 
 
@@ -102,13 +98,9 @@ write.table(nonTADbound_lincRNA20,file = "nonTADbound-lincRNA20.bed",sep="\t",qu
 #Protein coding genes:
 
 overlap_pc5 <- read.table("pcgene_5overlap_TADb.bed")
-colnames(overlap_pc) <- c("chr", "start", "end", "gene", "strand")
-
 overlap_pc10 <- read.table("pcgene_10overlap_TADb.bed")
-colnames(overlap_pc) <- c("chr", "start", "end", "gene", "strand")
-
 overlap_pc20 <- read.table("pcgene_20overlap_TADb.bed")
-colnames(overlap_pc) <- c("chr", "start", "end", "gene", "strand")
+colnames(overlap_pc5)=colnames(overlap_pc10)=colnames(overlap_pc20) <- c("chr", "start", "end", "gene", "strand")
 
 #number of overlaps found:
 length(overlap_pc5$gene); length(overlap_pc10$gene); length(overlap_pc20$gene)
