@@ -55,22 +55,23 @@ exp_nTb_pc10 <-exp_pcgene[exp_pcgene$gene %in% nTb_pc10$gene,]
 exp_nTb_pc20 <-exp_pcgene[exp_pcgene$gene %in% nTb_pc20$gene,]
 
 #Writing into bed files for further use.
-write.table(exp_Tb_lincRNA5,file = "exp_Tb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_Tb_lincRNA10,file = "exp_Tb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_Tb_lincRNA20,file = "exp_Tb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_Tb_lincRNA5,file = "expression/exp_Tb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_Tb_lincRNA10,file = "expression/exp_Tb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_Tb_lincRNA20,file = "expression/exp_Tb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
-write.table(exp_nTb_lincRNA5,file = "exp_nTb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_nTb_lincRNA10,file = "exp_nTb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_nTb_lincRNA20,file = "exp_nTb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_nTb_lincRNA5,file = "expression/exp_nTb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_nTb_lincRNA10,file = "expression/exp_nTb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_nTb_lincRNA20,file = "expression/exp_nTb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
-write.table(exp_Tb_pc5,file = "exp_Tb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_Tb_pc10,file = "exp_Tb_pc10.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_Tb_pc20,file = "exp_Tb_pc20.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_Tb_pc5,file = "expression/exp_Tb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_Tb_pc10,file = "expression/exp_Tb_pc10.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_Tb_pc20,file = "expression/exp_Tb_pc20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
-write.table(exp_nTb_pc5,file = "exp_nTb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_nTb_pc10,file = "exp_nTb_pc10.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_nTb_pc20,file = "exp_nTb_pc20.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_nTb_pc5,file = "expression/exp_nTb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_nTb_pc10,file = "expression/exp_nTb_pc10.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_nTb_pc20,file = "expression/exp_nTb_pc20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
+#building large, single dataframe to make data more convenient.
 CData <-function(df){
   return(cbind(df,fact=rep(deparse(substitute(df)),length(df[,1]))))
 }
@@ -82,7 +83,7 @@ whole_exp <- rbind(CData(exp_Tb_pc5), CData(exp_Tb_pc10), CData(exp_Tb_pc20), CD
 #Visualizing data:
 
 short_med<-function(x){return(round(median(log10(x)),3))}
-short_wilcox <- function(x,y){return(round(wilcox.test(x, y)$p.value,5))}
+short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
 
 l5 <-ggplot(data=whole_exp[whole_exp$fact %in% c("exp_Tb_lincRNA5","exp_nTb_lincRNA5"),])+
   geom_boxplot(aes(fact, log10(expression)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("lincRNA, 5%")+
