@@ -1,0 +1,28 @@
+---
+title: "Report: Expression level and subcellular localization of TADbound and non-TADbound lincRNAs."
+author: "Cyril Matthey-Doret"
+date: "October 6, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#TAD boundaries definition
+When defining TAD boundaries as the areas 20% before and after TAD borders, those boundaries seemed to overlap with those of the neighbouring domains. To solve this issue, the TAD boundaries have been set to 3 different, arbitrary threshold: 5%, 10% and 20% of the TAD length.
+
+#Overlapping genes with TAD boundaries
+Both lincRNAs and protein coding genes have been overlapped with TAD boundaries, using the intersect program with -f 0.25 (genes must have at least 25% of their sequence overlapping a boundary to be considered). The set of overlaps was then cleaned by removing duplicates.
+
+#Results
+
+```{r cars}
+summary(cars)
+```
+
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+

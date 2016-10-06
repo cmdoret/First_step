@@ -3,9 +3,11 @@
 
 # Cyril Matthey-Doret, 05.10.2016
 
-######################################################
 library(ggplot2)
 library(gridExtra)
+
+######################################################
+
 #Loading data:
 #setwd("/home/cyril/Documents/First_step/data/")
 setwd("/home/cyril/Documents/Master/sem_1/First step/data/")
@@ -45,10 +47,12 @@ summary(loc_Tb_lincRNA$ratio);summary(loc_nTb_lincRNA$ratio)
 
 grid.arrange(hist_linc, hist_pc)
 #It doesn't seem TADbound lincRNAs/proteins are more localized in the nucleus/cytoplasm than non-TADbound ones.
-
+boxplot(notch=T, log10(loc_Tb_lincRNA$ratio), log10(loc_nTb_lincRNA$ratio))
+wilcox.test(loc_Tb_lincRNA$ratio, loc_nTb_lincRNA$ratio)
 #==========================================================
 
 #Comparing strength of expression in nucleus and cytoplasm separately between TADb and non-TADb:
+
 nuc_linc <-ggplot()+
   geom_histogram(data=loc_Tb_lincRNA, aes(x=log10(nuclear), y=..density..), fill="#0000dd", alpha=0.5, bins=40)+
   geom_histogram(data=loc_nTb_lincRNA, aes(x=log10(nuclear), y=..density..), fill="#bb0000", alpha=0.5, bins=40)+
