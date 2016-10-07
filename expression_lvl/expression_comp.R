@@ -76,8 +76,20 @@ CData <-function(df){
   return(cbind(df,fact=rep(deparse(substitute(df)),length(df[,1]))))
 }
 
-whole_exp <- rbind(CData(exp_Tb_pc5), CData(exp_Tb_pc10), CData(exp_Tb_pc20), CData(exp_nTb_pc5), CData(exp_nTb_pc10), CData(exp_nTb_pc20),
-                   CData(exp_Tb_lincRNA5), CData(exp_Tb_lincRNA10), CData(exp_Tb_lincRNA20), CData(exp_nTb_lincRNA5), CData(exp_nTb_lincRNA10), CData(exp_nTb_lincRNA20))
+
+whole_exp <- rbind(cbind(exp_Tb_pc5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep("pc")), 
+                   cbind(exp_Tb_pc10,threshold=rep("10"),TAD=rep("Tb"),gentype=rep("pc")), 
+                   cbind(exp_Tb_pc20,threshold=rep("20"),TAD=rep("Tb"),gentype=rep("pc")), 
+                   cbind(exp_nTb_pc5,threshold=rep("5"),TAD=rep("nTb"),gentype=rep("pc")), 
+                   cbind(exp_nTb_pc10,threshold=rep("10"),TAD=rep("nTb"),gentype=rep("pc")), 
+                   cbind(exp_nTb_pc20,threshold=rep("20"),TAD=rep("nTb"),gentype=rep("pc")),
+                   cbind(exp_Tb_lincRNA5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep("lincRNA")), 
+                   cbind(exp_Tb_lincRNA10,threshold=rep("10"),TAD=rep("Tb"),gentype=rep("lincRNA")), 
+                   cbind(exp_Tb_lincRNA20,threshold=rep("20"),TAD=rep("Tb"),gentype=rep("lincRNA")), 
+                   cbind(exp_nTb_lincRNA5,threshold=rep("5"),TAD=rep("nTb"),gentype=rep("lincRNA")), 
+                   cbind(exp_nTb_lincRNA10,threshold=rep("10"),TAD=rep("nTb"),gentype=rep("lincRNA")), 
+                   cbind(exp_nTb_lincRNA20,threshold=rep("20"),TAD=rep("nTb"),gentype=rep("lincRNA")))
+write.table(x = whole_exp,file = "expression/whole_exp.txt",quote = F,sep = "\t",row.names = F,col.names = T)
 #====================================================
 
 #Visualizing data:

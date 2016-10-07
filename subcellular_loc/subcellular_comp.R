@@ -104,8 +104,48 @@ CData <-function(df){
 whole_loc <- rbind(CData(loc_Tb_pc5), CData(loc_Tb_pc10), CData(loc_Tb_pc20), CData(loc_nTb_pc5), CData(loc_nTb_pc10), CData(loc_nTb_pc20),
                    CData(loc_Tb_lincRNA5), CData(loc_Tb_lincRNA10), CData(loc_Tb_lincRNA20), CData(loc_nTb_lincRNA5), CData(loc_nTb_lincRNA10), CData(loc_nTb_lincRNA20))
 
+whole_loc <- rbind(cbind(loc_Tb_pc5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep("pc")), 
+                   cbind(loc_Tb_pc10,threshold=rep("10"),TAD=rep("Tb"),gentype=rep("pc")), 
+                   cbind(loc_Tb_pc20,threshold=rep("20"),TAD=rep("Tb"),gentype=rep("pc")), 
+                   cbind(loc_nTb_pc5,threshold=rep("5"),TAD=rep("nTb"),gentype=rep("pc")), 
+                   cbind(loc_nTb_pc10,threshold=rep("10"),TAD=rep("nTb"),gentype=rep("pc")), 
+                   cbind(loc_nTb_pc20,threshold=rep("20"),TAD=rep("nTb"),gentype=rep("pc")),
+                   cbind(loc_Tb_lincRNA5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep("lincRNA")), 
+                   cbind(loc_Tb_lincRNA10,threshold=rep("10"),TAD=rep("Tb"),gentype=rep("lincRNA")), 
+                   cbind(loc_Tb_lincRNA20,threshold=rep("20"),TAD=rep("Tb"),gentype=rep("lincRNA")), 
+                   cbind(loc_nTb_lincRNA5,threshold=rep("5"),TAD=rep("nTb"),gentype=rep("lincRNA")), 
+                   cbind(loc_nTb_lincRNA10,threshold=rep("10"),TAD=rep("nTb"),gentype=rep("lincRNA")), 
+                   cbind(loc_nTb_lincRNA20,threshold=rep("20"),TAD=rep("nTb"),gentype=rep("lincRNA")))
+write.table(x = whole_loc,file = "subcell_loc/whole_loc.txt",quote = F,sep = "\t",row.names = F,col.names = T)
+
 short_med<-function(x){return(round(median(log10(x)),3))}
 short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
+
+med.fac = ddply(whole_loc, .(gentype, threshold,TAD), function(.d)
+  data.frame(x=round(median(log10(.d$ratio)),3)))
+#data frame for annotation of p-value
+pl<-c()
+gl<-c()
+tl<-c()
+for(t in levels(whole_loc$threshold)){
+  for(g in levels(whole_loc$gentype)){
+    p <- short_wilcox(whole_loc[whole_loc$threshold==t & whole_loc$gentype==g &  whole_loc$TAD=="Tb","ratio"],
+                      whole_loc[whole_loc$threshold==t &  whole_loc$gentype==g & whole_loc$TAD=="nTb","ratio"])
+    pl<-append(pl,p)
+    tl<-append(tl,t)
+    gl<-append(gl,g)
+  }
+}
+wilcox_p <- data.frame(pval=pl,threshold=tl,gentype=gl)
+library(ggplot2)
+ggplot(data=whole_loc)+
+  facet_grid(gentype~threshold)+
+  geom_boxplot(aes(x=TAD, y=ratio,fill=TAD),notch=T)+
+  geom_text(data=med.fac, aes(x=TAD, y=0, label=x), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  geom_text(data=wilcox_p, aes(x=1.5, y=0.25, label=paste0("p-value=",pval)), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  theme_bw()
 
 
 l5 <-ggplot(data=whole_loc[whole_loc$fact %in% c("loc_Tb_lincRNA5","loc_nTb_lincRNA5"),])+

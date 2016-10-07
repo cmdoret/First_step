@@ -1,5 +1,5 @@
 ---
-title: "Report: Expression level and subcellular localization of TADbound and non-TADbound lincRNAs."
+title: "Report: Expression level,subcellular localization and tissue-specificity of TADbound and non-TADbound lincRNAs."
 author: "Cyril Matthey-Doret"
 date: "October 6, 2016"
 output: pdf_document
@@ -7,64 +7,15 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-setwd("/home/cyril/Documents/First_step/data/")
+
 #Loading data:
 setwd("/home/cyril/Documents/First_step/data/")
-#setwd("/home/cyril/Documents/Master/sem_1/First step/data/")
-bedcol <- c("chr", "start", "end", "gene", "strand")
-exp_lincRNA <- read.table("expression/LCL.lincRNA.expression.txt", header = F)
-exp_pcgene <- read.table("expression/LCL.pcgene.expression.txt", header = F)
-#loading TAD-bound lincRNAs sets
-Tb_lincRNA5 <- read.table("linc_RNA/TADbound-lincRNA5.bed")
-Tb_lincRNA10 <- read.table("linc_RNA/TADbound-lincRNA10.bed")
-Tb_lincRNA20 <- read.table("linc_RNA/TADbound-lincRNA20.bed")
-#loading TAD-bound pcgenes sets
-Tb_pc5 <- read.table("pc_genes/TADbound-pcgene5.bed")
-Tb_pc10 <- read.table("pc_genes/TADbound-pcgene10.bed")
-Tb_pc20 <- read.table("pc_genes/TADbound-pcgene20.bed")
-#loading non-TAD-bound lincRNAs sets
-nTb_lincRNA5 <- read.table("linc_RNA/nonTADbound-lincRNA5.bed")
-nTb_lincRNA10 <- read.table("linc_RNA/nonTADbound-lincRNA10.bed")
-nTb_lincRNA20 <- read.table("linc_RNA/nonTADbound-lincRNA20.bed")
-#loading non-TAD-bound pcgenes sets
-nTb_pc5 <- read.table("pc_genes/nonTADbound-pcgene5.bed")
-nTb_pc10 <- read.table("pc_genes/nonTADbound-pcgene10.bed")
-nTb_pc20 <- read.table("pc_genes/nonTADbound-pcgene20.bed")
-
-#adding colnames
-colnames(Tb_lincRNA5)= colnames(Tb_lincRNA10)=colnames(Tb_lincRNA20)=colnames(nTb_lincRNA5)=colnames(nTb_lincRNA10)=
-  colnames(nTb_lincRNA20)=colnames(Tb_pc5)=colnames(Tb_pc10)=colnames(Tb_pc20)=colnames(nTb_pc5)=colnames(nTb_pc10)=
-  colnames(nTb_pc20) <-c("chr", "start", "end", "gene", "strand")
-colnames(exp_pcgene)=colnames(exp_lincRNA) <- c("gene", "expression")
-
-#Splitting expression levels data into TADbound (Tb) and non-TADbound (nTb)
-exp_Tb_lincRNA5 <-exp_lincRNA[exp_lincRNA$gene %in% Tb_lincRNA5$gene,]
-exp_Tb_lincRNA10 <-exp_lincRNA[exp_lincRNA$gene %in% Tb_lincRNA10$gene,]
-exp_Tb_lincRNA20 <-exp_lincRNA[exp_lincRNA$gene %in% Tb_lincRNA20$gene,]
-
-exp_nTb_lincRNA5 <-exp_lincRNA[exp_lincRNA$gene %in% nTb_lincRNA5$gene,]
-exp_nTb_lincRNA10 <-exp_lincRNA[exp_lincRNA$gene %in% nTb_lincRNA10$gene,]
-exp_nTb_lincRNA20 <-exp_lincRNA[exp_lincRNA$gene %in% nTb_lincRNA20$gene,]
-
-exp_Tb_pc5 <-exp_pcgene[exp_pcgene$gene %in% Tb_pc5$gene,]
-exp_Tb_pc10 <-exp_pcgene[exp_pcgene$gene %in% Tb_pc10$gene,]
-exp_Tb_pc20 <-exp_pcgene[exp_pcgene$gene %in% Tb_pc20$gene,]
-
-exp_nTb_pc5 <-exp_pcgene[exp_pcgene$gene %in% nTb_pc5$gene,]
-exp_nTb_pc10 <-exp_pcgene[exp_pcgene$gene %in% nTb_pc10$gene,]
-exp_nTb_pc20 <-exp_pcgene[exp_pcgene$gene %in% nTb_pc20$gene,]
-
-
-
-CData <-function(df){
-  return(cbind(df,fact=rep(deparse(substitute(df)),length(df[,1]))))
-}
-
-whole_exp <- rbind(CData(exp_Tb_pc5), CData(exp_Tb_pc10), CData(exp_Tb_pc20), CData(exp_nTb_pc5), CData(exp_nTb_pc10), CData(exp_nTb_pc20),
-                   CData(exp_Tb_lincRNA5), CData(exp_Tb_lincRNA10), CData(exp_Tb_lincRNA20), CData(exp_nTb_lincRNA5), CData(exp_nTb_lincRNA10), CData(exp_nTb_lincRNA20))
-
+whole_loc <- read.table("subcell_loc/whole_loc.txt", header=T)
+whole_exp <- read.table("expression/whole_exp.txt", header=T)
+whole_tau <- read.table("tissue_specificity/whole_tau.txt", header=T)
 library(ggplot2)
 library(gridExtra)
+library(plyr)
 ```
 #TAD boundaries definition
 When defining TAD boundaries as the areas 20% before and after TAD borders, those boundaries seemed to overlap with those of the neighbouring domains. To solve this issue, the TAD boundaries have been set to 3 different, arbitrary threshold: 5%, 10% and 20% of the TAD length.
@@ -100,53 +51,34 @@ It seems the threshold used to define TAD-boundariesdoes not have much influence
 The TAD-bound lincRNAs have similar expression levels to the non-TAD-bound lincRNAs, regardless of which threshold was used, whereas the TAD-bound protein-coding genes where always more expressed than the rest.
 
 
-```{r exp_lincRNA, echo=FALSE,fig.height=8,fig.width=6}
+```{r exp_lvl, echo=FALSE,fig.height=8,fig.width=6}
 short_med<-function(x){return(round(median(log10(x)),3))}
 short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
+whole_exp$threshold <- as.factor(whole_exp$threshold)
+med.fac = ddply(whole_exp, .(gentype, threshold,TAD), function(.d)
+  data.frame(x=median(round(log10(.d$expression),3))))
+pl<-c()
+gl<-c()
+tl<-c()
+for(t in levels(as.factor(whole_exp$threshold))){
+  for(g in levels(whole_exp$gentype)){
+    p <- short_wilcox(whole_exp[whole_exp$threshold==t & whole_exp$gentype==g &  whole_exp$TAD=="Tb","expression"],
+                      whole_exp[whole_exp$threshold==t &  whole_exp$gentype==g & whole_exp$TAD=="nTb","expression"])
+    pl<-append(pl,p)
+    tl<-append(tl,t)
+    gl<-append(gl,g)
+  }
+}
+wilcox_p <- data.frame(pval=pl,threshold=tl,gentype=gl)
 
-l5 <-ggplot(data=whole_exp[whole_exp$fact %in% c("exp_Tb_lincRNA5","exp_nTb_lincRNA5"),])+
-  geom_boxplot(aes(fact, log10(expression)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("lincRNA, 5%")+
-  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_exp$expression[whole_exp$fact=="exp_Tb_lincRNA5"]), 
-                                                       short_med(whole_exp$expression[whole_exp$fact=="exp_nTb_lincRNA5"])))+
-  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_exp$expression[whole_exp$fact=="exp_Tb_lincRNA5"],
-                                                         whole_exp$expression[whole_exp$fact=="exp_nTb_lincRNA5"]), sep=" "),
-                   labels=c("TADb", "non-TADb"))
-l10 <-ggplot(data=whole_exp[whole_exp$fact %in% c("exp_Tb_lincRNA10","exp_nTb_lincRNA10"),])+
-  geom_boxplot(aes(fact, log10(expression)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("lincRNA, 10%")+
-  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_exp$expression[whole_exp$fact=="exp_Tb_lincRNA10"]), 
-                                                       short_med(whole_exp$expression[whole_exp$fact=="exp_nTb_lincRNA10"])))+
-  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_exp$expression[whole_exp$fact=="exp_Tb_lincRNA10"],
-                                                         whole_exp$expression[whole_exp$fact=="exp_nTb_lincRNA10"]), sep=" "),
-                   labels=c("TADb", "non-TADb"))
-l20 <-ggplot(data=whole_exp[whole_exp$fact %in% c("exp_Tb_lincRNA20","exp_nTb_lincRNA20"),])+
-  geom_boxplot(aes(fact, log10(expression)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("lincRNA, 20%")+
-  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_exp$expression[whole_exp$fact=="exp_Tb_lincRNA20"]), 
-                                                       short_med(whole_exp$expression[whole_exp$fact=="exp_nTb_lincRNA20"])))+
-  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_exp$expression[whole_exp$fact=="exp_Tb_lincRNA20"],
-                                                         whole_exp$expression[whole_exp$fact=="exp_nTb_lincRNA20"]), sep=" "),
-                   labels=c("TADb", "non-TADb"))
-p5 <-ggplot(data=whole_exp[whole_exp$fact %in% c("exp_Tb_pc5","exp_nTb_pc5"),])+
-  geom_boxplot(aes(fact, log10(expression)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("protein-coding, 5%")+
-  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_exp$expression[whole_exp$fact=="exp_Tb_pc5"]), 
-                                                       short_med(whole_exp$expression[whole_exp$fact=="exp_nTb_pc5"])))+
-  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_exp$expression[whole_exp$fact=="exp_Tb_pc5"],
-                                                         whole_exp$expression[whole_exp$fact=="exp_nTb_pc5"]), sep=" "),
-                   labels=c("TADb", "non-TADb"))
-p10 <-ggplot(data=whole_exp[whole_exp$fact %in% c("exp_Tb_pc10","exp_nTb_pc10"),])+
-  geom_boxplot(aes(fact, log10(expression)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("protein-coding, 10%")+
-  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_exp$expression[whole_exp$fact=="exp_Tb_pc10"]), 
-                                                       short_med(whole_exp$expression[whole_exp$fact=="exp_nTb_pc10"])))+
-  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_exp$expression[whole_exp$fact=="exp_Tb_pc10"],
-                                                         whole_exp$expression[whole_exp$fact=="exp_nTb_pc10"]), sep=" "),
-                   labels=c("TADb", "non-TADb"))
-p20 <-ggplot(data=whole_exp[whole_exp$fact %in% c("exp_Tb_pc20","exp_nTb_pc20"),])+
-  geom_boxplot(aes(fact, log10(expression)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("protein-coding, 20%")+
-  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_exp$expression[whole_exp$fact=="exp_Tb_pc20"]), 
-                                                       short_med(whole_exp$expression[whole_exp$fact=="exp_nTb_pc20"])))+
-  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_exp$expression[whole_exp$fact=="exp_Tb_pc20"],
-                                                         whole_exp$expression[whole_exp$fact=="exp_nTb_pc20"]), sep=" "),
-                   labels=c("TADb", "non-TADb"))
-grid.arrange(nrow=2, l5, l10, l20, p5, p10, p20)
+ggplot(data=whole_exp)+
+  facet_grid(gentype~threshold)+
+  geom_boxplot(aes(x=TAD, y=log10(expression),fill=TAD),notch=T)+
+  geom_text(data=med.fac, aes(x=TAD, y=-1, label=x), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  geom_text(data=wilcox_p, aes(x=1.5, y=1, label=paste0("p-value=",pval)), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  theme_bw()
 ```
 
 ##Subcellular localization
@@ -154,110 +86,76 @@ grid.arrange(nrow=2, l5, l10, l20, p5, p10, p20)
 The ratios depicted below represent the abundance of RNA in the cytoplasm relative to the nucleus. Again, regardless of the threshold used to define TAD-boundaries, There is no significant difference between the localization of TAD-bound and non-TAD-bound lincRNAs, while the TAD-bound protein-coding genes are always more abundant in the cytoplasm than in the nucleus.
 
 
-```{r loc_lincRNA, echo=FALSE,fig.height=8,fig.width=6}
-setwd("/home/cyril/Documents/First_step/data/")
-loc_lincRNA <- read.table("subcell_loc/all.lincRNA.GM12878.subcellular.ratio.txt", header = T)
-loc_pcgene <- read.table("subcell_loc/all.pcgene.GM12878.subcellular.ratio.txt", header = T)
-#loading TAD-bound lincRNAs sets
-Tb_lincRNA5 <- read.table("linc_RNA/TADbound-lincRNA5.bed")
-Tb_lincRNA10 <- read.table("linc_RNA/TADbound-lincRNA10.bed")
-Tb_lincRNA20 <- read.table("linc_RNA/TADbound-lincRNA20.bed")
-#loading TAD-bound pcgenes sets
-Tb_pc5 <- read.table("pc_genes/TADbound-pcgene5.bed")
-Tb_pc10 <- read.table("pc_genes/TADbound-pcgene10.bed")
-Tb_pc20 <- read.table("pc_genes/TADbound-pcgene20.bed")
-#loading non-TAD-bound lincRNAs sets
-nTb_lincRNA5 <- read.table("linc_RNA/nonTADbound-lincRNA5.bed")
-nTb_lincRNA10 <- read.table("linc_RNA/nonTADbound-lincRNA10.bed")
-nTb_lincRNA20 <- read.table("linc_RNA/nonTADbound-lincRNA20.bed")
-#loading non-TAD-bound pcgenes sets
-nTb_pc5 <- read.table("pc_genes/nonTADbound-pcgene5.bed")
-nTb_pc10 <- read.table("pc_genes/nonTADbound-pcgene10.bed")
-nTb_pc20 <- read.table("pc_genes/nonTADbound-pcgene20.bed")
-
-colnames(Tb_lincRNA5)= colnames(Tb_lincRNA10)=colnames(Tb_lincRNA20)=colnames(nTb_lincRNA5)=colnames(nTb_lincRNA10)=
-  colnames(nTb_lincRNA20)=colnames(Tb_pc5)=colnames(Tb_pc10)=colnames(Tb_pc20)=colnames(nTb_pc5)=colnames(nTb_pc10)=
-  colnames(nTb_pc20) <-c("chr", "start", "end", "gene", "strand")
-
-
-#Splitting localisation data into TADbound (Tb) and non-TADbound (nTb)
-
-loc_Tb_lincRNA5 <-loc_lincRNA[loc_lincRNA$gene %in% Tb_lincRNA5$gene,]
-loc_Tb_lincRNA10 <-loc_lincRNA[loc_lincRNA$gene %in% Tb_lincRNA10$gene,]
-loc_Tb_lincRNA20 <-loc_lincRNA[loc_lincRNA$gene %in% Tb_lincRNA20$gene,]
-
-loc_nTb_lincRNA5 <-loc_lincRNA[loc_lincRNA$gene %in% nTb_lincRNA5$gene,]
-loc_nTb_lincRNA10 <-loc_lincRNA[loc_lincRNA$gene %in% nTb_lincRNA10$gene,]
-loc_nTb_lincRNA20 <-loc_lincRNA[loc_lincRNA$gene %in% nTb_lincRNA20$gene,]
-
-loc_Tb_pc5 <-loc_pcgene[loc_pcgene$gene %in% Tb_pc5$gene,]
-loc_Tb_pc10 <-loc_pcgene[loc_pcgene$gene %in% Tb_pc10$gene,]
-loc_Tb_pc20 <-loc_pcgene[loc_pcgene$gene %in% Tb_pc20$gene,]
-
-loc_nTb_pc5 <-loc_pcgene[loc_pcgene$gene %in% nTb_pc5$gene,]
-loc_nTb_pc10 <-loc_pcgene[loc_pcgene$gene %in% nTb_pc10$gene,]
-loc_nTb_pc20 <-loc_pcgene[loc_pcgene$gene %in% nTb_pc20$gene,]
-
-CData <-function(df){
-  return(cbind(df,fact=rep(deparse(substitute(df)),length(df[,1]))))
-}
-whole_loc <- rbind(CData(loc_Tb_pc5), CData(loc_Tb_pc10), CData(loc_Tb_pc20), CData(loc_nTb_pc5), CData(loc_nTb_pc10), CData(loc_nTb_pc20),
-                   CData(loc_Tb_lincRNA5), CData(loc_Tb_lincRNA10), CData(loc_Tb_lincRNA20), CData(loc_nTb_lincRNA5), CData(loc_nTb_lincRNA10), CData(loc_nTb_lincRNA20))
+```{r local, echo=FALSE,fig.height=8,fig.width=6}
 
 short_med<-function(x){return(round(median(log10(x)),3))}
 short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
+whole_loc$threshold <- as.factor(whole_loc$threshold)
 
+med.fac = ddply(whole_loc, .(gentype, threshold,TAD), function(.d)
+  data.frame(x=round(median(log10(.d$ratio)),3)))
+#data frame for annotation of p-value
+pl<-c()
+gl<-c()
+tl<-c()
+for(t in levels(whole_loc$threshold)){
+  for(g in levels(whole_loc$gentype)){
+    p <- short_wilcox(whole_loc[whole_loc$threshold==t & whole_loc$gentype==g &  whole_loc$TAD=="Tb","ratio"],
+                      whole_loc[whole_loc$threshold==t &  whole_loc$gentype==g & whole_loc$TAD=="nTb","ratio"])
+    pl<-append(pl,p)
+    tl<-append(tl,t)
+    gl<-append(gl,g)
+  }
+}
+wilcox_p <- data.frame(pval=pl,threshold=tl,gentype=gl)
+library(ggplot2)
+ggplot(data=whole_loc)+
+  facet_grid(gentype~threshold)+
+  geom_boxplot(aes(x=TAD, y=log10(ratio),fill=TAD),notch=T)+
+  geom_text(data=med.fac, aes(x=TAD, y=-1, label=x), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  geom_text(data=wilcox_p, aes(x=1.5, y=0.5, label=paste0("p-value=",pval)), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  theme_bw()
 
-
-l5 <-ggplot(data=whole_loc[whole_loc$fact %in% c("loc_Tb_lincRNA5","loc_nTb_lincRNA5"),])+
-  geom_boxplot(aes(fact, log10(ratio)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("lincRNA, 5%")+
-  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_loc$ratio[whole_loc$fact=="loc_Tb_lincRNA5"]), 
-                                                       short_med(whole_loc$ratio[whole_loc$fact=="loc_nTb_lincRNA5"])))+
-  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_loc$ratio[whole_loc$fact=="loc_Tb_lincRNA5"],
-                                                         whole_loc$ratio[whole_loc$fact=="loc_nTb_lincRNA5"]), sep=" "),
-                   labels=c("TADb", "non-TADb"))
-l10 <-ggplot(data=whole_loc[whole_loc$fact %in% c("loc_Tb_lincRNA10","loc_nTb_lincRNA10"),])+
-  geom_boxplot(aes(fact, log10(ratio)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("lincRNA, 10%")+
-  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_loc$ratio[whole_loc$fact=="loc_Tb_lincRNA10"]), 
-                                                       short_med(whole_loc$ratio[whole_loc$fact=="loc_nTb_lincRNA10"])))+
-  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_loc$ratio[whole_loc$fact=="loc_Tb_lincRNA10"],
-                                                         whole_loc$ratio[whole_loc$fact=="loc_nTb_lincRNA10"]), sep=" "),
-                   labels=c("TADb", "non-TADb"))
-l20 <-ggplot(data=whole_loc[whole_loc$fact %in% c("loc_Tb_lincRNA20","loc_nTb_lincRNA20"),])+
-  geom_boxplot(aes(fact, log10(ratio)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("lincRNA, 20%")+
-  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_loc$ratio[whole_loc$fact=="loc_Tb_lincRNA20"]), 
-                                                       short_med(whole_loc$ratio[whole_loc$fact=="loc_nTb_lincRNA20"])))+
-  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_loc$ratio[whole_loc$fact=="loc_Tb_lincRNA20"],
-                                                         whole_loc$ratio[whole_loc$fact=="loc_nTb_lincRNA20"]), sep=" "),
-                   labels=c("TADb", "non-TADb"))
-p5 <-ggplot(data=whole_loc[whole_loc$fact %in% c("loc_Tb_pc5","loc_nTb_pc5"),])+
-  geom_boxplot(aes(fact, log10(ratio)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("protein-coding, 5%")+
-  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_loc$ratio[whole_loc$fact=="loc_Tb_pc5"]), 
-                                                       short_med(whole_loc$ratio[whole_loc$fact=="loc_nTb_pc5"])))+
-  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_loc$ratio[whole_loc$fact=="loc_Tb_pc5"],
-                                                         whole_loc$ratio[whole_loc$fact=="loc_nTb_pc5"]), sep=" "),
-                   labels=c("TADb", "non-TADb"))
-p10 <-ggplot(data=whole_loc[whole_loc$fact %in% c("loc_Tb_pc10","loc_nTb_pc10"),])+
-  geom_boxplot(aes(fact, log10(ratio)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("protein-coding, 10%")+
-  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_loc$ratio[whole_loc$fact=="loc_Tb_pc10"]), 
-                                                       short_med(whole_loc$ratio[whole_loc$fact=="loc_nTb_pc10"])))+
-  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_loc$ratio[whole_loc$fact=="loc_Tb_pc10"],
-                                                         whole_loc$ratio[whole_loc$fact=="loc_nTb_pc10"]), sep=" "),
-                   labels=c("TADb", "non-TADb"))
-p20 <-ggplot(data=whole_loc[whole_loc$fact %in% c("loc_Tb_pc20","loc_nTb_pc20"),])+
-  geom_boxplot(aes(fact, log10(ratio)), fill=c("darkred","darkblue"), notch = T)+theme_bw()+ggtitle("protein-coding, 20%")+
-  annotate(x=c(1, 2),y=c(-1,-1),geom = "text", label=c(short_med(whole_loc$ratio[whole_loc$fact=="loc_Tb_pc20"]), 
-                                                       short_med(whole_loc$ratio[whole_loc$fact=="loc_nTb_pc20"])))+
-  scale_x_discrete(name=paste("p-value = ", short_wilcox(whole_loc$ratio[whole_loc$fact=="loc_Tb_pc20"],
-                                                         whole_loc$ratio[whole_loc$fact=="loc_nTb_pc20"]), sep=" "),
-                   labels=c("TADb", "non-TADb"))
-grid.arrange(nrow=2, l5, l10, l20, p5, p10, p20)
 ```
 
 ##Tissue specificity
 
+$\tau$ was calculated from a set of tissue-wise expression level for all transcripts. Again, there seem to be no difference in tissue specificity between TAD-bound and nonTAD-bound lincRNAs, whereas the TAD-bound protein coding genes appear to be less tissue specific. Overall the lincRNAs are more tissue specific than protein coding genes.
 
+```{r tissue, echo=FALSE,fig.height=8,fig.width=6}
 
-
+library(plyr)
+short_med<-function(x){return(round(median(log10(x)),3))}
+short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
+whole_tau$threshold <- as.factor(whole_tau$threshold)
+#dataf frame for annotation of median
+med.fac = ddply(whole_tau, .(gentype, threshold,TAD), function(.d)
+  data.frame(x=median(round(.d$tau,3))))
+#data frame for annotation of p-value
+pl<-c()
+gl<-c()
+tl<-c()
+for(t in levels(whole_tau$threshold)){
+  for(g in levels(whole_tau$gentype)){
+    p <- short_wilcox(whole_tau[whole_tau$threshold==t & whole_tau$gentype==g &  whole_tau$TAD=="Tb","tau"],
+                      whole_tau[whole_tau$threshold==t &  whole_tau$gentype==g & whole_tau$TAD=="nTb","tau"])
+    pl<-append(pl,p)
+    tl<-append(tl,t)
+    gl<-append(gl,g)
+  }
+}
+wilcox_p <- data.frame(pval=pl,threshold=tl,gentype=gl)
+library(ggplot2)
+ggplot(data=whole_tau)+
+  facet_grid(gentype~threshold)+
+  geom_boxplot(aes(x=TAD, y=tau,fill=TAD),notch=T)+
+  geom_text(data=med.fac, aes(x=TAD, y=0, label=x), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  geom_text(data=wilcox_p, aes(x=1.5, y=0.25, label=paste0("p-value=",pval)), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  theme_bw()
+```
 
 
