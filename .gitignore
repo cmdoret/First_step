@@ -16,9 +16,9 @@ data/
 *.cb2
 
 #Personal additions
-*.jpg
-*.jpeg
-*.png
+#*.jpg
+#*.jpeg
+#*.png
 *.docx
 *.xlsx
 *.tex
