@@ -151,4 +151,19 @@ summary(TADbound_pc$end - TADbound_pc$start)
 summary(pc_ori$end - pc_ori$start)
 summary(nonTADbound_pc$end - nonTADbound_pc$start)
 
+#==================================================
+# Dividing TAD boundaries into bins 
+setwd("/Users/cmatthe5/Documents/First_step/data")
+nTADb_lincRNA10 <- read.table("linc_RNA/nonTADbound-lincRNA10.bed")
+TADb_lincRNA10 <- read.table("linc_RNA/nonTADbound-lincRNA10.bed")
+TADb_pcgene10 <- read.table("pc_genes/TADbound-pcgene10.bed")
+nTADb_pcgene10 <- read.table("pc_genes/nonTADbound-pcgene10.bed")
+colnames(nTADb_lincRNA10)=colnames(TADb_pcgene10)=
+  colnames(TADb_lincRNA10) = colnames(nTADb_pcgene10)<-c("chr", "start","end","ID", "strand")
+TADb10 <- read.table("TAD/TAD_boundaries10.bed")
+TADb10 <- TADb10[,-4]
+TAD <- read.table("TAD/GM12878_TAD_domains.bed")
+TAD <- TAD[,-4]
+colnames(TADb10) = colnames(TAD)<-c("chr", "start","end","ID")
 
+TADbins <- 
