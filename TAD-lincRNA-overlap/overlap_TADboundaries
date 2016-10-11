@@ -1,1 +1,0 @@
-bsub -q priority 'bedtools intersect -a ../data/TAD/TAD_boundaries5.bed -b ../data/TAD_boundaries5.bed -f 0.25 -wa > lincRNA_5overlap_TADb.bed';

@@ -8,11 +8,11 @@ options(scipen=999)
 
 #Loading data
 setwd("/home/cyril/Documents/First_step/data/")
-TAD_ori <- read.table("GM12878_TAD_domains.bed")                #TADs
-colnames(TAD_ori) <- c("chr", "start", "end", "gene", "ID")
-RNA_ori <- read.table("LCL.expressed.lincRNA.bed")              #lincRNAs
+TAD_ori <- read.table("TAD/merged/merged_TAD.bed")                #TADs
+colnames(TAD_ori) <- c("chr", "start", "end")
+RNA_ori <- read.table("linc_RNA/LCL.expressed.lincRNA.bed")              #lincRNAs
 colnames(RNA_ori) <- c("chr", "start", "end", "gene", "strand")
-pc_ori <- read.table("LCL.expressed.pcgene.bed")                #protein coding genes
+pc_ori <- read.table("pc_genes/LCL.expressed.pcgene.bed")                #protein coding genes
 colnames(pc_ori) <- c("chr", "start", "end", "gene", "strand")
 
 #====================================================
@@ -23,35 +23,35 @@ TAD_len <- TAD_ori$end - TAD_ori$start # Computes the length of all TADs
 #5%----------------------------------------------------------
 
 #TADboundaries at the start of every TAD
-TAD_boundaries_start <- data.frame(TAD_ori$chr, start= (TAD_ori$start - TAD_len*0.05), end= (TAD_ori$start + TAD_len*0.05), TAD_ori$gene,TAD_ori$ID)
+TAD_boundaries_start <- data.frame(TAD_ori$chr, start= (TAD_ori$start - TAD_len*0.05), end= (TAD_ori$start + TAD_len*0.05))
 #Same at the end
-TAD_boundaries_end <- data.frame(TAD_ori$chr, start= (TAD_ori$end - TAD_len*0.05), end= (TAD_ori$end + TAD_len*0.05), TAD_ori$gene, TAD_ori$ID)
+TAD_boundaries_end <- data.frame(TAD_ori$chr, start= (TAD_ori$end - TAD_len*0.05), end= (TAD_ori$end + TAD_len*0.05))
 # merging dataframes together
 TAD_boundaries5 <- rbind(TAD_boundaries_start,TAD_boundaries_end)
 
 #10%--------------------------------------------------------
 
 #TADboundaries at the start of every TAD
-TAD_boundaries_start <- data.frame(TAD_ori$chr, start= (TAD_ori$start - TAD_len*0.1), end= (TAD_ori$start + TAD_len*0.1), TAD_ori$gene,TAD_ori$ID)
+TAD_boundaries_start <- data.frame(TAD_ori$chr, start= (TAD_ori$start - TAD_len*0.1), end= (TAD_ori$start + TAD_len*0.1))
 #Same at the end
-TAD_boundaries_end <- data.frame(TAD_ori$chr, start= (TAD_ori$end - TAD_len*0.1), end= (TAD_ori$end + TAD_len*0.1), TAD_ori$gene, TAD_ori$ID)
+TAD_boundaries_end <- data.frame(TAD_ori$chr, start= (TAD_ori$end - TAD_len*0.1), end= (TAD_ori$end + TAD_len*0.1))
 # merging dataframes together
 TAD_boundaries10 <- rbind(TAD_boundaries_start,TAD_boundaries_end)
 
 #20%--------------------------------------------------------
 
 #TADboundaries at the start of every TAD
-TAD_boundaries_start <- data.frame(TAD_ori$chr, start= (TAD_ori$start - TAD_len*0.2), end= (TAD_ori$start + TAD_len*0.2), TAD_ori$gene,TAD_ori$ID)
+TAD_boundaries_start <- data.frame(TAD_ori$chr, start= (TAD_ori$start - TAD_len*0.2), end= (TAD_ori$start + TAD_len*0.2))
 #Same at the end
-TAD_boundaries_end <- data.frame(TAD_ori$chr, start= (TAD_ori$end - TAD_len*0.2), end= (TAD_ori$end + TAD_len*0.2), TAD_ori$gene, TAD_ori$ID)
+TAD_boundaries_end <- data.frame(TAD_ori$chr, start= (TAD_ori$end - TAD_len*0.2), end= (TAD_ori$end + TAD_len*0.2))
 # merging dataframes together
 TAD_boundaries20 <- rbind(TAD_boundaries_start,TAD_boundaries_end)
 
 
 # generating new file with all TAD boundaries. uncomment to overwrite files.
-#write.table(TAD_boundaries5,file = "TAD_boundaries5.bed",sep="\t",quote = F,col.names = F,row.names = F)
-#write.table(TAD_boundaries10,file = "TAD_boundaries10.bed",sep="\t",quote = F,col.names = F,row.names = F)
-#write.table(TAD_boundaries20,file = "TAD_boundaries20.bed",sep="\t",quote = F,col.names = F,row.names = F)
+#write.table(TAD_boundaries5,file = "TAD/merged/TAD_boundaries5.bed",sep="\t",quote = F,col.names = F,row.names = F)
+#write.table(TAD_boundaries10,file = "TAD/merged/TAD_boundaries10.bed",sep="\t",quote = F,col.names = F,row.names = F)
+#write.table(TAD_boundaries20,file = "TAD/merged/TAD_boundaries20.bed",sep="\t",quote = F,col.names = F,row.names = F)
 
 # Next step: overlap lincRNAs to the TAD boundaries. Retain RNAs with at least 25% of their sequence aligned to a TAD boundary.
 
