@@ -1,9 +1,11 @@
 ---
-title: "Report: Expression level,subcellular localization and tissue-specificity of TADbound and non-TADbound lincRNAs."
+title: 'Report 2: Analyses of TADbound and non-TADbound lincRNAs after merging TADs'
 author: "Cyril Matthey-Doret"
-date: "October 6, 2016"
+date: "October 11, 2016"
 output: pdf_document
 ---
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -11,15 +13,15 @@ knitr::opts_chunk$set(echo = TRUE)
 #Loading data:
 #setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 setwd("/home/cyril/Documents/First_step/data/")
-whole_loc <- read.table("subcell_loc/whole_loc.txt", header=T)
-whole_exp <- read.table("expression/whole_exp.txt", header=T)
-whole_tau <- read.table("tissue_specificity/whole_tau.txt", header=T)
+whole_loc <- read.table("subcell_loc/merged/whole_loc.txt", header=T)
+whole_exp <- read.table("expression/merged/whole_exp.txt", header=T)
+whole_tau <- read.table("tissue_specificity/merged/whole_tau.txt", header=T)
 library(ggplot2)
 library(gridExtra)
 library(plyr)
 ```
 #TAD boundaries definition
-When defining TAD boundaries as the areas 20% before and after TAD borders, those boundaries seemed to overlap with those of the neighbouring domains. To solve this issue, the TAD boundaries have been set to 3 different, arbitrary threshold: 5%, 10% and 20% of the TAD length.
+As mentioned in the previous report, the original definition of TAD boundaries was problematic, because of the high number of overlapping TADs. Here, TAD boundaries are defined in the same way as before, except the TAD used are merged to consider only the large ones. By doing so, the number of TADs has been reduced from 9274 to 4533.
 
 #Overlapping genes with TAD boundaries
 Both lincRNAs and protein coding genes have been overlapped with TAD boundaries, using the intersect program with -f 0.25 (genes must have at least 25% of their sequence overlapping a boundary to be considered). The set of overlaps was then cleaned by removing duplicates.
@@ -30,17 +32,17 @@ Both lincRNAs and protein coding genes have been overlapped with TAD boundaries,
 
 Original set|Threshold|Overlaps|TAD-bound genes
 ------------|---------|--------|-----
-2510|5%|865|609 (`r round((100*609)/2510,1)`%)
-||10%|1481|960 (`r round((100*960)/2510,1)`%)
-||20%|2554|1420 (`r round((100*1420)/2510,1)`%)
+2510|5%|493|419 (`r round((100*419)/2510,1)`%)
+||10%|866|684 (`r round((100*684)/2510,1)`%)
+||20%|1527|1121 (`r round((100*1121)/2510,1)`%)
 
 ##Protein-coding genes
 
 Original set|Threshold|Overlaps|TAD-bound genes
 ------------|---------|--------|-----
-14846|5%|6576|4607 (`r round((100*4607)/14846,1)`%)
-||10%|12017|7495 (`r round((100*7495)/14846,1)`%)
-||20%|21544|11337 (`r round((100*11337)/14846,1)`%)
+14846|5%|4020|3306 (`r round((100*3306)/14846,1)`%)
+||10%|7288|5575 (`r round((100*5575)/14846,1)`%)
+||20%|12873|8980 (`r round((100*8980)/14846,1)`%)
 
 #Results
 
@@ -123,7 +125,7 @@ ggplot(data=whole_loc)+
 
 ##Tissue specificity
 
-$\tau$ was calculated from a set of tissue-wise expression level for all transcripts. Again, there seem to be no difference in tissue specificity between TAD-bound and nonTAD-bound lincRNAs, whereas the TAD-bound protein coding genes appear to be less tissue specific. Overall the lincRNAs are more tissue specific than protein coding genes.
+$\tau$ was calculated from a set of tissue-wise expression level for all transcripts. Neither lincRNA, nor protein coding gene show significant differences in tissue specificity between TADbound and non-TADbound genes. Overall the lincRNAs are more tissue specific than protein coding genes.
 
 ```{r tissue, echo=FALSE,fig.height=8,fig.width=8}
 
@@ -161,5 +163,4 @@ ggplot(data=whole_tau)+
 
 #Conclusion
 
-The TAD definition might not be appropriate. It was already pointed out (Rao et al, 2014) that the large TADs often contain mainy smaller TADs (see pictures from UCSC). These overlaps
-often cause the TAD boundaries to overlap and probably generate a lot of noise in the results. It might be more interesting to merge overlapping TADs in order to consider only the largest ones and their boundaries.
+Merging the TADs does not seem to have much effect on the results. It would seem either that expression levels, tissue specificity and subcellular localization of lincRNAs are not affected by proximity to TAD boundaries, or that the method used to define TAD boundaries is too broad and hides differences. 

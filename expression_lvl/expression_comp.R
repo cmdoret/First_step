@@ -15,21 +15,21 @@ bedcol <- c("chr", "start", "end", "gene", "strand")
 exp_lincRNA <- read.table("expression/LCL.lincRNA.expression.txt", header = F)
 exp_pcgene <- read.table("expression/LCL.pcgene.expression.txt", header = F)
 #loading TAD-bound lincRNAs sets
-Tb_lincRNA5 <- read.table("linc_RNA/TADbound-lincRNA5.bed")
-Tb_lincRNA10 <- read.table("linc_RNA/TADbound-lincRNA10.bed")
-Tb_lincRNA20 <- read.table("linc_RNA/TADbound-lincRNA20.bed")
+Tb_lincRNA5 <- read.table("linc_RNA/merged/TADbound-lincRNA5.bed")
+Tb_lincRNA10 <- read.table("linc_RNA/merged/TADbound-lincRNA10.bed")
+Tb_lincRNA20 <- read.table("linc_RNA/merged/TADbound-lincRNA20.bed")
 #loading TAD-bound pcgenes sets
-Tb_pc5 <- read.table("pc_genes/TADbound-pcgene5.bed")
-Tb_pc10 <- read.table("pc_genes/TADbound-pcgene10.bed")
-Tb_pc20 <- read.table("pc_genes/TADbound-pcgene20.bed")
+Tb_pc5 <- read.table("pc_genes/merged/TADbound-pcgene5.bed")
+Tb_pc10 <- read.table("pc_genes/merged/TADbound-pcgene10.bed")
+Tb_pc20 <- read.table("pc_genes/merged/TADbound-pcgene20.bed")
 #loading non-TAD-bound lincRNAs sets
-nTb_lincRNA5 <- read.table("linc_RNA/nonTADbound-lincRNA5.bed")
-nTb_lincRNA10 <- read.table("linc_RNA/nonTADbound-lincRNA10.bed")
-nTb_lincRNA20 <- read.table("linc_RNA/nonTADbound-lincRNA20.bed")
+nTb_lincRNA5 <- read.table("linc_RNA/merged/nonTADbound-lincRNA5.bed")
+nTb_lincRNA10 <- read.table("linc_RNA/merged/nonTADbound-lincRNA10.bed")
+nTb_lincRNA20 <- read.table("linc_RNA/merged/nonTADbound-lincRNA20.bed")
 #loading non-TAD-bound pcgenes sets
-nTb_pc5 <- read.table("pc_genes/nonTADbound-pcgene5.bed")
-nTb_pc10 <- read.table("pc_genes/nonTADbound-pcgene10.bed")
-nTb_pc20 <- read.table("pc_genes/nonTADbound-pcgene20.bed")
+nTb_pc5 <- read.table("pc_genes/merged/nonTADbound-pcgene5.bed")
+nTb_pc10 <- read.table("pc_genes/merged/nonTADbound-pcgene10.bed")
+nTb_pc20 <- read.table("pc_genes/merged/nonTADbound-pcgene20.bed")
 
 #adding colnames
 colnames(Tb_lincRNA5)= colnames(Tb_lincRNA10)=colnames(Tb_lincRNA20)=colnames(nTb_lincRNA5)=colnames(nTb_lincRNA10)=
@@ -55,21 +55,21 @@ exp_nTb_pc10 <-exp_pcgene[exp_pcgene$gene %in% nTb_pc10$gene,]
 exp_nTb_pc20 <-exp_pcgene[exp_pcgene$gene %in% nTb_pc20$gene,]
 
 #Writing into bed files for further use.
-write.table(exp_Tb_lincRNA5,file = "expression/exp_Tb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_Tb_lincRNA10,file = "expression/exp_Tb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_Tb_lincRNA20,file = "expression/exp_Tb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_Tb_lincRNA5,file = "expression/merged/exp_Tb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_Tb_lincRNA10,file = "expression/merged/exp_Tb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_Tb_lincRNA20,file = "expression/merged/exp_Tb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
-write.table(exp_nTb_lincRNA5,file = "expression/exp_nTb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_nTb_lincRNA10,file = "expression/exp_nTb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_nTb_lincRNA20,file = "expression/exp_nTb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_nTb_lincRNA5,file = "expression/merged/exp_nTb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_nTb_lincRNA10,file = "expression/merged/exp_nTb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_nTb_lincRNA20,file = "expression/merged/exp_nTb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
-write.table(exp_Tb_pc5,file = "expression/exp_Tb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_Tb_pc10,file = "expression/exp_Tb_pc10.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_Tb_pc20,file = "expression/exp_Tb_pc20.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_Tb_pc5,file = "expression/merged/exp_Tb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_Tb_pc10,file = "expression/merged/exp_Tb_pc10.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_Tb_pc20,file = "expression/merged/exp_Tb_pc20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
-write.table(exp_nTb_pc5,file = "expression/exp_nTb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_nTb_pc10,file = "expression/exp_nTb_pc10.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(exp_nTb_pc20,file = "expression/exp_nTb_pc20.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_nTb_pc5,file = "expression/merged/exp_nTb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_nTb_pc10,file = "expression/merged/exp_nTb_pc10.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(exp_nTb_pc20,file = "expression/merged/exp_nTb_pc20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
 #building large, single dataframe to make data more convenient.
 CData <-function(df){
@@ -89,7 +89,7 @@ whole_exp <- rbind(cbind(exp_Tb_pc5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep
                    cbind(exp_nTb_lincRNA5,threshold=rep("5"),TAD=rep("nTb"),gentype=rep("lincRNA")), 
                    cbind(exp_nTb_lincRNA10,threshold=rep("10"),TAD=rep("nTb"),gentype=rep("lincRNA")), 
                    cbind(exp_nTb_lincRNA20,threshold=rep("20"),TAD=rep("nTb"),gentype=rep("lincRNA")))
-write.table(x = whole_exp,file = "expression/whole_exp.txt",quote = F,sep = "\t",row.names = F,col.names = T)
+write.table(x = whole_exp,file = "expression/merged/whole_exp.txt",quote = F,sep = "\t",row.names = F,col.names = T)
 #====================================================
 
 #Visualizing data:
@@ -143,7 +143,4 @@ grid.arrange(nrow=2, l5, l10, l20, p5, p10, p20)
 
 #====================================================
 
-#Summary statistics:
 
-summary(); summary()
-summary(exp_Tb_pc$expression); summary(exp_nTb_pc$expression)

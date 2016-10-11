@@ -17,21 +17,21 @@ bedcol <- c("chr", "start", "end", "gene", "strand")
 loc_lincRNA <- read.table("subcell_loc/all.lincRNA.GM12878.subcellular.ratio.txt", header = T)
 loc_pcgene <- read.table("subcell_loc/all.pcgene.GM12878.subcellular.ratio.txt", header = T)
 #loading TAD-bound lincRNAs sets
-Tb_lincRNA5 <- read.table("linc_RNA/TADbound-lincRNA5.bed")
-Tb_lincRNA10 <- read.table("linc_RNA/TADbound-lincRNA10.bed")
-Tb_lincRNA20 <- read.table("linc_RNA/TADbound-lincRNA20.bed")
+Tb_lincRNA5 <- read.table("linc_RNA/merged/TADbound-lincRNA5.bed")
+Tb_lincRNA10 <- read.table("linc_RNA/merged/TADbound-lincRNA10.bed")
+Tb_lincRNA20 <- read.table("linc_RNA/merged/TADbound-lincRNA20.bed")
 #loading TAD-bound pcgenes sets
-Tb_pc5 <- read.table("pc_genes/TADbound-pcgene5.bed")
-Tb_pc10 <- read.table("pc_genes/TADbound-pcgene10.bed")
-Tb_pc20 <- read.table("pc_genes/TADbound-pcgene20.bed")
+Tb_pc5 <- read.table("pc_genes/merged/TADbound-pcgene5.bed")
+Tb_pc10 <- read.table("pc_genes/merged/TADbound-pcgene10.bed")
+Tb_pc20 <- read.table("pc_genes/merged/TADbound-pcgene20.bed")
 #loading non-TAD-bound lincRNAs sets
-nTb_lincRNA5 <- read.table("linc_RNA/nonTADbound-lincRNA5.bed")
-nTb_lincRNA10 <- read.table("linc_RNA/nonTADbound-lincRNA10.bed")
-nTb_lincRNA20 <- read.table("linc_RNA/nonTADbound-lincRNA20.bed")
+nTb_lincRNA5 <- read.table("linc_RNA/merged/nonTADbound-lincRNA5.bed")
+nTb_lincRNA10 <- read.table("linc_RNA/merged/nonTADbound-lincRNA10.bed")
+nTb_lincRNA20 <- read.table("linc_RNA/merged/nonTADbound-lincRNA20.bed")
 #loading non-TAD-bound pcgenes sets
-nTb_pc5 <- read.table("pc_genes/nonTADbound-pcgene5.bed")
-nTb_pc10 <- read.table("pc_genes/nonTADbound-pcgene10.bed")
-nTb_pc20 <- read.table("pc_genes/nonTADbound-pcgene20.bed")
+nTb_pc5 <- read.table("pc_genes/merged/nonTADbound-pcgene5.bed")
+nTb_pc10 <- read.table("pc_genes/merged/nonTADbound-pcgene10.bed")
+nTb_pc20 <- read.table("pc_genes/merged/nonTADbound-pcgene20.bed")
 
 colnames(Tb_lincRNA5)= colnames(Tb_lincRNA10)=colnames(Tb_lincRNA20)=colnames(nTb_lincRNA5)=colnames(nTb_lincRNA10)=
   colnames(nTb_lincRNA20)=colnames(Tb_pc5)=colnames(Tb_pc10)=colnames(Tb_pc20)=colnames(nTb_pc5)=colnames(nTb_pc10)=
@@ -57,21 +57,21 @@ loc_nTb_pc10 <-loc_pcgene[loc_pcgene$gene %in% nTb_pc10$gene,]
 loc_nTb_pc20 <-loc_pcgene[loc_pcgene$gene %in% nTb_pc20$gene,]
 
 #Writing into new files
-write.table(loc_Tb_lincRNA5,file = "subcell_loc/loc_Tb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(loc_Tb_lincRNA10,file = "subcell_loc/loc_Tb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(loc_Tb_lincRNA20,file = "subcell_loc/loc_Tb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(loc_Tb_lincRNA5,file = "subcell_loc/merged/loc_Tb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(loc_Tb_lincRNA10,file = "subcell_loc/merged/loc_Tb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(loc_Tb_lincRNA20,file = "subcell_loc/merged/loc_Tb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
-write.table(loc_nTb_lincRNA5,file = "subcell_loc/loc_nTb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(loc_nTb_lincRNA10,file = "subcell_loc/loc_nTb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(loc_nTb_lincRNA20,file = "subcell_loc/loc_nTb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(loc_nTb_lincRNA5,file = "subcell_loc/merged/loc_nTb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(loc_nTb_lincRNA10,file = "subcell_loc/merged/loc_nTb_lincRNA10.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(loc_nTb_lincRNA20,file = "subcell_loc/merged/loc_nTb_lincRNA20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
-write.table(loc_Tb_pc5,file = "subcell_loc/loc_Tb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(loc_Tb_pc10,file = "subcell_loc/loc_Tb_pc10.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(loc_Tb_pc20,file = "subcell_loc/loc_Tb_pc20.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(loc_Tb_pc5,file = "subcell_loc/merged/loc_Tb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(loc_Tb_pc10,file = "subcell_loc/merged/loc_Tb_pc10.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(loc_Tb_pc20,file = "subcell_loc/merged/loc_Tb_pc20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
-write.table(loc_nTb_pc5,file = "subcell_loc/loc_nTb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(loc_nTb_pc10,file = "subcell_loc/loc_nTb_pc10.txt",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(loc_nTb_pc20,file = "subcell_loc/loc_nTb_pc20.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(loc_nTb_pc5,file = "subcell_loc/merged/loc_nTb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(loc_nTb_pc10,file = "subcell_loc/merged/loc_nTb_pc10.txt",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(loc_nTb_pc20,file = "subcell_loc/merged/loc_nTb_pc20.txt",sep="\t",quote = F,col.names = F,row.names = F)
 
 #============================================================
 
@@ -116,8 +116,8 @@ whole_loc <- rbind(cbind(loc_Tb_pc5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep
                    cbind(loc_nTb_lincRNA5,threshold=rep("5"),TAD=rep("nTb"),gentype=rep("lincRNA")), 
                    cbind(loc_nTb_lincRNA10,threshold=rep("10"),TAD=rep("nTb"),gentype=rep("lincRNA")), 
                    cbind(loc_nTb_lincRNA20,threshold=rep("20"),TAD=rep("nTb"),gentype=rep("lincRNA")))
-write.table(x = whole_loc,file = "subcell_loc/whole_loc.txt",quote = F,sep = "\t",row.names = F,col.names = T)
-
+write.table(x = whole_loc,file = "subcell_loc/merged/whole_loc.txt",quote = F,sep = "\t",row.names = F,col.names = T)
+library(plyr)
 short_med<-function(x){return(round(median(log10(x)),3))}
 short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
 

@@ -6,8 +6,8 @@
 
 for t in 5 10 20;
 do
-bsub -q priority 'bedtools intersect -a ../data/LCL.expressed.lincRNA.bed -b ../data/TAD_boundaries${t}.bed -f 0.25 -wa > lincRNA_${t}overlap_TADb.bed';
+bsub -q priority 'bedtools intersect -a ../data/linc_RNA/LCL.expressed.lincRNA.bed -b ../data/TAD/merged/TAD_boundaries'"$t"'.bed -f 0.25 -wa > lincRNA_'"$t"'overlap_TADb.bed';
 
-bsub -q priority 'bedtools intersect -a ../data/LCL.expressed.pcgene.bed -b ../data/TAD_boundaries${t}.bed -f 0.25 -wa > pcgene_${t}overlap_TADb.bed';
+bsub -q priority 'bedtools intersect -a ../data/pc_genes/LCL.expressed.pcgene.bed -b ../data/TAD/merged/TAD_boundaries'"$t"'.bed -f 0.25 -wa > pcgene_'"$t"'overlap_TADb.bed';
 
 done

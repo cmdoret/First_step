@@ -59,7 +59,7 @@ TAD_boundaries20 <- rbind(TAD_boundaries_start,TAD_boundaries_end)
 
 #====================================================
 #lincRNAs:
-
+setwd("../TAD-lincRNA-overlap/")
 #overlaps performed, contains duplicates: Some (many) transcripts seem to overlap more than 1 TAD boundary.
 overlap_RNA5 <- read.table("lincRNA_5overlap_TADb.bed")
 overlap_RNA10 <- read.table("lincRNA_10overlap_TADb.bed")
@@ -81,22 +81,23 @@ TADbound_lincRNA10 <- overlap_RNA10[!duplicated(overlap_RNA10$gene),]
 TADbound_lincRNA20 <- overlap_RNA20[!duplicated(overlap_RNA20$gene),]
 
 #writing into .bed files:
-write.table(TADbound_lincRNA5,file = "TADbound-lincRNA5.bed",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(TADbound_lincRNA10,file = "TADbound-lincRNA10.bed",sep="\t",quote = F,col.names = F,row.names = F)
-write.table(TADbound_lincRNA20,file = "TADbound-lincRNA20.bed",sep="\t",quote = F,col.names = F,row.names = F)
+setwd("/home/cyril/Documents/First_step/data/")
+write.table(TADbound_lincRNA5,file = "linc_RNA/merged/TADbound-lincRNA5.bed",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(TADbound_lincRNA10,file = "linc_RNA/merged/TADbound-lincRNA10.bed",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(TADbound_lincRNA20,file = "linc_RNA/merged/TADbound-lincRNA20.bed",sep="\t",quote = F,col.names = F,row.names = F)
 
 #Identifying nonTADbound-lincRNAs and writing them into files:
 nonTADbound_lincRNA5 <- RNA_ori[!(RNA_ori$gene %in% TADbound_lincRNA5$gene),]
-write.table(nonTADbound_lincRNA5,file = "nonTADbound-lincRNA5.bed",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(nonTADbound_lincRNA5,file = "linc_RNA/merged/nonTADbound-lincRNA5.bed",sep="\t",quote = F,col.names = F,row.names = F)
 nonTADbound_lincRNA10 <- RNA_ori[!(RNA_ori$gene %in% TADbound_lincRNA10$gene),]
-write.table(nonTADbound_lincRNA10,file = "nonTADbound-lincRNA10.bed",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(nonTADbound_lincRNA10,file = "linc_RNA/merged/nonTADbound-lincRNA10.bed",sep="\t",quote = F,col.names = F,row.names = F)
 nonTADbound_lincRNA20 <- RNA_ori[!(RNA_ori$gene %in% TADbound_lincRNA20$gene),]
-write.table(nonTADbound_lincRNA20,file = "nonTADbound-lincRNA20.bed",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(nonTADbound_lincRNA20,file = "linc_RNA/merged/nonTADbound-lincRNA20.bed",sep="\t",quote = F,col.names = F,row.names = F)
 
 
 #==============================================================
 #Protein coding genes:
-
+setwd("../TAD-lincRNA-overlap/")
 overlap_pc5 <- read.table("pcgene_5overlap_TADb.bed")
 overlap_pc10 <- read.table("pcgene_10overlap_TADb.bed")
 overlap_pc20 <- read.table("pcgene_20overlap_TADb.bed")
@@ -116,20 +117,21 @@ TADbound_pc10 <- overlap_pc10[!duplicated(overlap_pc10$gene),]
 TADbound_pc20 <- overlap_pc20[!duplicated(overlap_pc20$gene),]
 
 #writing into bed files:
-write.table(TADbound_pc5, file = "TADbound-pcgene5.bed", sep="\t", quote=F, col.names = F, row.names = F)
-write.table(TADbound_pc10, file = "TADbound-pcgene10.bed", sep="\t", quote=F, col.names = F, row.names = F)
-write.table(TADbound_pc20, file = "TADbound-pcgene20.bed", sep="\t", quote=F, col.names = F, row.names = F)
+setwd("/home/cyril/Documents/First_step/data/")
+write.table(TADbound_pc5, file = "pc_genes/merged/TADbound-pcgene5.bed", sep="\t", quote=F, col.names = F, row.names = F)
+write.table(TADbound_pc10, file = "pc_genes/merged/TADbound-pcgene10.bed", sep="\t", quote=F, col.names = F, row.names = F)
+write.table(TADbound_pc20, file = "pc_genes/merged/TADbound-pcgene20.bed", sep="\t", quote=F, col.names = F, row.names = F)
 # Those are the TADbound-pcgenes
 
 #Identifying nonTADbound-pcgenes
 nonTADbound_pc5 <- pc_ori[!(pc_ori$gene %in% TADbound_pc5$gene),]
-write.table(nonTADbound_pc5,file = "nonTADbound-pcgene5.bed",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(nonTADbound_pc5,file = "pc_genes/merged/nonTADbound-pcgene5.bed",sep="\t",quote = F,col.names = F,row.names = F)
 
 nonTADbound_pc10 <- pc_ori[!(pc_ori$gene %in% TADbound_pc10$gene),]
-write.table(nonTADbound_pc10,file = "nonTADbound-pcgene10.bed",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(nonTADbound_pc10,file = "pc_genes/merged/nonTADbound-pcgene10.bed",sep="\t",quote = F,col.names = F,row.names = F)
 
 nonTADbound_pc20 <- pc_ori[!(pc_ori$gene %in% TADbound_pc20$gene),]
-write.table(nonTADbound_pc20,file = "nonTADbound-pcgene20.bed",sep="\t",quote = F,col.names = F,row.names = F)
+write.table(nonTADbound_pc20,file = "pc_genes/merged/nonTADbound-pcgene20.bed",sep="\t",quote = F,col.names = F,row.names = F)
 
 
 #===================================================
@@ -152,18 +154,6 @@ summary(pc_ori$end - pc_ori$start)
 summary(nonTADbound_pc$end - nonTADbound_pc$start)
 
 #==================================================
-# Dividing TAD boundaries into bins 
-setwd("/Users/cmatthe5/Documents/First_step/data")
-nTADb_lincRNA10 <- read.table("linc_RNA/nonTADbound-lincRNA10.bed")
-TADb_lincRNA10 <- read.table("linc_RNA/nonTADbound-lincRNA10.bed")
-TADb_pcgene10 <- read.table("pc_genes/TADbound-pcgene10.bed")
-nTADb_pcgene10 <- read.table("pc_genes/nonTADbound-pcgene10.bed")
-colnames(nTADb_lincRNA10)=colnames(TADb_pcgene10)=
-  colnames(TADb_lincRNA10) = colnames(nTADb_pcgene10)<-c("chr", "start","end","ID", "strand")
-TADb10 <- read.table("TAD/TAD_boundaries10.bed")
-TADb10 <- TADb10[,-4]
-TAD <- read.table("TAD/GM12878_TAD_domains.bed")
-TAD <- TAD[,-4]
-colnames(TADb10) = colnames(TAD)<-c("chr", "start","end","ID")
 
-TADbins <- 
+
+
