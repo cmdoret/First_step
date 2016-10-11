@@ -7,15 +7,59 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 #Loading data
-
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+library(ggplot2)
+library(gridExtra)
+m.TAD<- read.table("../data/TAD/merged/merged_TAD.bed") #merged TADs, or "Large TADs"
+m.TAD <- cbind(paste("merged",row.names(m.TAD),sep="_"),m.TAD) #adding arbitrary ID to TADs just in case
+TAD <- read.table("../data/TAD/GM12878_TAD_domains.bed") #original TADs, high number of overlapping domains
+TAD <- TAD[,-4]
+colnames(TAD) <- c("chr","start","end","ID")
+colnames(m.TAD) <- c("ID","chr","start","end")
+m.gap <- read.table("../data/TAD/merged/gaps.bed") #gaps between merged TADs
+m.TAD_b5 <- read.table("../data/TAD/merged/TAD_boundaries5.bed")
+m.TAD_b10 <- read.table("../data/TAD/merged/TAD_boundaries10.bed")
+m.TAD_b20 <- read.table("../data/TAD/merged/TAD_boundaries20.bed")
+TAD_b5 <- read.table("../data/TAD/TAD_boundaries5.bed")
+TAD_b10 <- read.table("../data/TAD/TAD_boundaries10.bed")
+TAD_b20 <- read.table("../data/TAD/TAD_boundaries20.bed")
 ```
 
 #Introduction
 
 Visualising and quantifying the distribution of TAD lengths, or the areas of ovelap between lincRNAs and TADs might help finding a better threshold for the definition of TAD boundaries. This report aims to provide support for the definition of those boundaries.
 
-1. Distribution of TAD, boundaries and gaps
+#1. Length distribution of TAD, boundaries and gaps
+   + Length of TADs:
+   TADs often contained many smaller TADs which causes the boundaries to overlap and makes it harder to distinguish between TAD-bound and non-TAD-bound RNAs. 
+   
+```{r TAD_length, echo=F, warning=F, error=F, fig.height=5, fig.width=6}
 
-2. Overlaps between RNA and areas of TAD boundaries
+options(scipen=4)
+dist_TAD <-ggplot(data=TAD)+
+  geom_histogram(aes(x=log10(end-start),y=..count..),fill="#5555cc",bins = 30)+
+  coord_cartesian(xlim = c(4.5,6.5))+
+  xlab(label = "")+
+  theme_bw()
+dist_mTAD <-ggplot(data=m.TAD)+
+  geom_histogram(aes(x=log10(end-start),y=..count..),fill="#55cc55",bins = 30)+
+  coord_cartesian(xlim = c(4.5,6.5))+
+  xlab(label = "Log10 Length")+
+  theme_bw()
+dist_TADvsmTAD <-ggplot()+
+  geom_boxplot(data=TAD,aes(x="original TADs",y=log10(end-start)),fill="#5555cc",notch = T)+
+  geom_boxplot(data=m.TAD,aes(x = "Large TADs",y=log10(end-start)),fill="#55cc55",notch = T)+
+  ylab(label = "Log10 Length")+
+  annotate(geom = "label",x = c(1,2),y=6,label=c(paste0("Mdn=",format(as.numeric(median(m.TAD$end-m.TAD$start)),scientific=T)),
+                                                 paste0("Mdn=",format(median(TAD$end-TAD$start),scientific = T))))+
+  xlab(paste0("p-value=",format(wilcox.test(m.TAD$end-m.TAD$start,TAD$end-TAD$start)$p.value,digits=2)))+
+  theme_bw()
+grid.arrange(layout_matrix = matrix(c(1,3,2,3),nrow = 2,byrow = T),grobs = list(dist_TAD,dist_mTAD,dist_TADvsmTAD))
+options(scipen=0)
 
-3. 
+```
+
+
+#2. Overlaps between RNA and areas of TAD boundaries
+
+#3. ...
