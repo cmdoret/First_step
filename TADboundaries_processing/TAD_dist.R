@@ -1,11 +1,11 @@
-# This script intends to cut TAD boundaries so that a boundary does not overlap with the boundary of the next TAD.
+# This script intends to display the distribution of TAD, gaps and boundaries length
 
 # Cyril Matthey-Doret 
 # 07.10.2016
 ######################################
 
-#setwd("/home/cyril/Documents/First_step/data/")
-setwd("/Users/cmatthe5/Documents/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/Users/cmatthe5/Documents/First_step/data/")
 
 # Visualizing the length of RNAs, TADs and boundaries (at 10% threshold)
 TADb10 <- read.table("TAD/TAD_boundaries10.bed")
@@ -22,17 +22,3 @@ hist(log10(TAD$end - TAD$start),xlim=c(2,7))
 hist(log10(TADb_pcgenes$end - TADb_pcgenes$start),xlim=c(2,7))
 hist(log10(TADb_lincRNA$end - TADb_lincRNA$start),xlim=c(2,7))
 
-# Cutting boundaries
-#by(chr,apply(TADb,fun))
-
-over.bound <- function(b1,b2){
-  
-}
-
-cut.bound<-function(df){
-  for(id in df$ID){
-    for(o in df$ID[-(df$ID==id),]){
-      
-    }
-  }
-}

@@ -1,7 +1,9 @@
-1. Look at distribution of length for TADs, TAD boundaries, gaps between TADs. }for all 3 thresholds
-2. define TAD boundaries so that they don't overlap each other:
+1. Look at distribution of length for TADs, TAD boundaries, gaps between TADs. }for all 3 thresholds, merged
+2. define TAD boundaries so that they don't overlap each other.
 3. Stop TAD boundaries when they meet another.
-4. Divide TADs into bins of 10% and look for number of transcripts in each bins. 
+4. Divide TADs into bins of 10%, + max3bins outside, depending on neighbour proximity. 
+5. Check what is the number of lincRNAs/pcgenes that overlap (by at least 25%) with each TAD bin
+X. Calculate and plot the distribution of the median overlap length of lincRNAs/pcgenes to each bin
 5. Include bins outside TADs, (10%, 20%, 30%) except if they overlap another TAD.
 6. Look for correlation between TAD length and number of transcripts.
 7. Sequence conservation across species.

@@ -1,0 +1,21 @@
+---
+title: 'Report 3: Length distributions'
+author: "Cyril Matthey-Doret"
+date: "11 octobre 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+#Loading data
+
+```
+
+#Introduction
+
+Visualising and quantifying the distribution of TAD lengths, or the areas of ovelap between lincRNAs and TADs might help finding a better threshold for the definition of TAD boundaries. This report aims to provide support for the definition of those boundaries.
+
+1. Distribution of TAD, boundaries and gaps
+
+2. Overlaps between RNA and areas of TAD boundaries
+
+3. 
