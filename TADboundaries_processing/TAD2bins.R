@@ -26,4 +26,40 @@ colnames(gaps) <- c("ID", "chr", "start", "end")
 # Division of TADs: each TAD must be divided into 10 bins, plus 3 bins outside.
 # The length of each bin should normally be 10% of the TAD length, but for outer bins, 
 # We will use the smallest value between 3*10% and 0.5*gap
+TAD_bins <- data.frame()
+TAD.splitter<-function(tad,gap){ #the function takes a list of TADs and the corresponding list of gaps.
+  tad_nr<-strsplit(as.character(tad[1]),split = "_",fixed = T)[[1]][2]
+  # Splitting id of the gap (e.g. gap_3_4). gap with first number = tad will be after, gap with second number = tad will be before
+  next.gap <- gap[as.numeric(strsplit(as.character(gap[,1]),split = "_")[[1]][2])==as.numeric(tad_nr),] 
+  prev.gap <- gap[as.numeric(strsplit(as.character(gap[,1]),split = "_")[[1]][3])==as.numeric(tad_nr),]
+  # Initiating left outer bins.
+  if((prev.gap/2)<(tad$end-tad$start)*0.05){
+    #no outer bins
+  }
+  else if((prev.gap/2)<(tad$end-tad$start)*0.1){
+    #only 0.05 outer bins
+  }else if((prev.gap/2)<(tad$end-tad$start)*0.2){
+    #only 0.1 and 0.05 outer bins
+  }
+  else{
+    #0.2,0.1 and 0.05 outer bins
+  }
+  # Initiating right outer bins
+  if((next.gap/2)<(tad$end-tad$start)*0.05){
+    #no outer bins
+  }
+  else if((next.gap/2)<(tad$end-tad$start)*0.1){
+    #only 0.05 outer bins
+  }else if((next.gap/2)<(tad$end-tad$start)*0.2){
+    #only 0.1 and 0.05 outer bins
+  }
+  else{
+    #0.2,0.1 and 0.05 outer bins
+  }
+  #initiating inner bins
+  for(i in seq(from=0,to=1,by=0.1)){
+    # split into 10 bins
+  }
+}
 
+apply(TAD, MARGIN = 1,FUN=TAD.splitter, gap=gaps)
