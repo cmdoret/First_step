@@ -7,7 +7,8 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 #Loading data
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
 library(ggplot2)
 library(gridExtra)
 m.TAD<- read.table("../data/TAD/merged/merged_TAD.bed") #merged TADs, or "Large TADs"
