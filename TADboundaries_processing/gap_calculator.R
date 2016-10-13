@@ -6,8 +6,8 @@
 
 #Loading data
 #setwd("/home/cyril/Documents/Master/sem_1/First_step/data")
-#setwd("/home/cyril/Documents/First_step/data/")
-setwd("Documents/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
+#setwd("Documents/First_step/data/")
 #Loading domains and boundaries.
 TADb10 <- read.table("TAD/merged/TAD_boundaries10.bed")
 #TADb10 <- TADb10[,-4]

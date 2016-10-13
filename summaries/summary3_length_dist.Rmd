@@ -8,8 +8,8 @@ output: pdf_document
 ```{r setup, include=FALSE}
 #Loading data
 #setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/home/cyril/Documents/First_step/data/")
-setwd("/Users/cmatthe5/Documents/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/Users/cmatthe5/Documents/First_step/data/")
 library(ggplot2)
 library(gridExtra)
 m.TAD<- read.table("../data/TAD/merged/merged_TAD.bed") #merged TADs, or "Large TADs"
@@ -25,6 +25,7 @@ m.TAD_b20 <- read.table("../data/TAD/merged/TAD_boundaries20.bed")
 TAD_b5 <- read.table("../data/TAD/TAD_boundaries5.bed")
 TAD_b10 <- read.table("../data/TAD/TAD_boundaries10.bed")
 TAD_b20 <- read.table("../data/TAD/TAD_boundaries20.bed")
+whole_TAD <- read.table("../data/TAD/merged/")
 ```
 
 #Introduction
