@@ -6,7 +6,8 @@
 ##################################
 
 # Loading data:
-setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/First_step/data/")
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
 TADbins <- read.table("TAD/merged/merged_TADbins.txt")
 lincRNA <- read.table("linc_RNA/LCL.expressed.lincRNA.bed")
@@ -18,8 +19,19 @@ over_lincRNA <- read.table("../TAD-lincRNA-overlap/bin-lincRNA_overlap.bed")
 
 # Counting overlaps:
 
-TADbins <- cbind(TADbins, lincRNA=rep(0,length(TADbins$ID)),pcgene=rep(0,length(TADbins$ID)))
+TADbins <- data.frame(TADbins, lincRNA=rep(0,length(TADbins$ID)),pcgene=rep(0,length(TADbins$ID)))
 
-for(id in row(TADbins)){
-  print(id)
+for(r in row(TADbins)){
+  TADbins[r,"lincRNA"]<-length(over_lincRNA[over_lincRNA[,7]==TADbins[r,"start"] &
+                                            over_lincRNA[,8]==TADbins[r,"end"] &
+                                            over_lincRNA[,6]==TADbins[r,"chr"],7])
+  TADbins[r,"pcgene"]<-length(over_pc[over_pc[,7]==TADbins[r,"start"] &
+                                          over_pc[,8]==TADbins[r,"end"] &
+                                          over_pc[,6]==TADbins[r,"chr"],7])
 }
+
+options(scipen=999)
+write.table(TADbins,file = "TAD/merged/RNAcount_TADbins.txt",quote = F,sep = "\t",row.names = F,col.names = F)
+options(scipen=0)
+
+
