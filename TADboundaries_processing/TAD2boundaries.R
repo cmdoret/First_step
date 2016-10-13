@@ -113,6 +113,7 @@ for(d in TAD_bound){
     whole_bound <- rbind(whole_bound,data.frame(d[i]))
   }
 }
+whole_bound <- read.table("../data/TAD/merged/whole_TAD_boundaries.txt")
 options(scipen=999)
 write.table(whole_bound, quote=F,sep="\t",row.names = F,col.names = F,file = "TAD/merged/whole_TAD_boundaries.txt")
 options(scipen=0)

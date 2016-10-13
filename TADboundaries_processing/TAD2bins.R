@@ -2,9 +2,9 @@
 #Cyril Matthey-Doret
 #11.10.2016
 
-setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/First_step/data/")
 #setwd("/home/cyril/Documents/Master/sem_1/First_step/data")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
+setwd("/Users/cmatthe5/Documents/First_step/data/")
 #Loading domains and boundaries.
 TADb10 <- read.table("TAD/merged/TAD_boundaries10.bed")
 #TADb10 <- TADb10[,-4]

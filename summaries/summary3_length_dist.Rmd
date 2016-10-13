@@ -8,8 +8,8 @@ output: pdf_document
 ```{r setup, include=FALSE}
 #Loading data
 #setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-setwd("/home/cyril/Documents/First_step/data/")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/First_step/data/")
+setwd("/Users/cmatthe5/Documents/First_step/data/")
 library(ggplot2)
 library(gridExtra)
 m.TAD<- read.table("../data/TAD/merged/merged_TAD.bed") #merged TADs, or "Large TADs"
@@ -25,7 +25,10 @@ m.TAD_b20 <- read.table("../data/TAD/merged/TAD_boundaries20.bed")
 TAD_b5 <- read.table("../data/TAD/TAD_boundaries5.bed")
 TAD_b10 <- read.table("../data/TAD/TAD_boundaries10.bed")
 TAD_b20 <- read.table("../data/TAD/TAD_boundaries20.bed")
-whole_TAD <- read.table("../data/TAD/merged/")
+m.TADbins <- read.table("../data/TAD/merged/merged_TADbins.txt")
+m.TADbound <- read.table("../data/TAD/merged/whole_TAD_boundaries.txt")
+colnames(m.TADbound)=colnames(m.TADbins) <- c("ID","chr","pos","start","end")
+
 ```
 
 #Introduction
@@ -64,6 +67,12 @@ options(scipen=0)
 
    + Length of TAD boundaries:
    TAD boundaries have been redefined so that they are more flexible. Again, three different thresholds have been used to define them, however a boundary cannot overlap another. A TAD boundary will always reach only as far as the smallest value between the threshold and half the gap between its TAD and the neighbour.
+   
+```{r boundaries_length, echo=F, warning=F, error=F, fig.height=5, fig.width=6}
+
+
+
+```
 
 #2. Overlaps between RNA and areas of TAD boundaries
 
