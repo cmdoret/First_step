@@ -6,7 +6,8 @@
 
 #Loading data
 #setwd("/home/cyril/Documents/Master/sem_1/First_step/data")
-setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/First_step/data/")
+setwd("Documents/First_step/data/")
 #Loading domains and boundaries.
 TADb10 <- read.table("TAD/merged/TAD_boundaries10.bed")
 #TADb10 <- TADb10[,-4]
@@ -51,6 +52,7 @@ gap_gen <- function(TADdf){
 
 # Calculating gaps
 gaplist <- gap_gen(TAD)
+gaplist <- na.omit(gaplist)
 options(scipen=999)
 write.table(gaplist,file = "TAD/merged/gaps.bed",sep="\t",quote = F,col.names = F,row.names = F)
 options(scipen=0)
