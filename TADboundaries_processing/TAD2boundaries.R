@@ -1,4 +1,4 @@
-# The purpose of this script is to divide TADs into bins 
+# The purpose of this script is to define "flexible" TAD boundaries that won't overlap the boundaries of the next TAD
 #Cyril Matthey-Doret
 #11.10.2016
 
@@ -25,11 +25,13 @@ colnames(gaps) <- c("ID", "chr", "start", "end")
 
 #==========================================
 
-# Division of TADs: each TAD must be divided into 10 bins, plus 3 bins outside.
+# Each TAD will have either a boundary of 20%, 10% or 5% of its length, depending on the desired threshold.
+# if this threshold implies that the boundary will be larger than half the distance until the next TAD, 
+# this value will be used instead
 # The length of each bin should normally be 10% of the TAD length, but for outer bins, 
 # We will use the smallest value between 3*10% and 0.5*gap
-TAD_bins <- data.frame()
-TAD.splitter<-function(tad,gap){ #the function takes a list of TADs and the corresponding list of gaps.
+TAD_bound <- data.frame()
+Bound.gen<-function(tad,gap){ #the function takes a list of TADs and the corresponding list of gaps.
   start_tad <- as.numeric(unname(tad[3]))
   end_tad<-as.numeric(unname(tad[4]))
   tad_nr<-strsplit(as.character(tad[1]),split = "_",fixed = T)[[1]][2]
@@ -45,29 +47,34 @@ TAD.splitter<-function(tad,gap){ #the function takes a list of TADs and the corr
     idx <- idx+1
   }
   # bins will take the form: c(TAD_ID,chr,bin_nr, start, end)
-  thr <- c(0.1,0.2, 0.3)
-  Lbin<-data.frame()
-  Rbin<-data.frame()
+  thr <- c(0.05,0.1, 0.2)
+  Lbound<-data.frame()
+  Rbound<-data.frame()
   for(t in 1:length(thr)){
-    Lbin <- rbind(Lbin, rep(NA,5))
-    Rbin <- rbind(Rbin, rep(NA,5))
+    Lbound <- rbind(Lbound, rep(NA,5))
+    Rbound <- rbind(Rbound, rep(NA,5))
   }
   prev.gap_len <-as.numeric(prev.gap[4])-as.numeric(prev.gap[3])
   next.gap_len <-as.numeric(next.gap[4])-as.numeric(next.gap[3]) 
-  # Initiating left outer bins.
+  # Initiating left outer boundary.
   if(all(!is.na(prev.gap), tad[2]==paste0("chr",prev.gap[2]))){  # Checking if TAD and left gap are on same chromosome
     c <- 1
     for(t in thr){
       if((prev.gap_len/2)>(end_tad-start_tad)*t){
-        Lbin[c,] <-c(tad[1],tad[2],paste0("L",t*100),start_tad-(end_tad-start_tad)*t,start_tad-(end_tad-start_tad)*(t-0.1))
-        }
+        Lbound[c,] <-c(tad[1],tad[2],paste0("L",t*100),start_tad-(end_tad-start_tad)*t,start_tad+(end_tad-start_tad)*t)
+        #using threshold
+      }
+      else{
+        Lbound[c,] <-c(tad[1],tad[2],paste0("L",t*100),start_tad-prev.gap_len/2,start_tad+(end_tad-start_tad)*t) 
+        #using gap/2 instead of threshold for outer side of boundary
+      }
       c <- c+1
     }
   }
   else{  # TAD and gap on separate chromosomes; all 3 left outer bins can be used
     c <- 1
     for(t in thr){
-      Lbin[c,] <-c(tad[1],tad[2],paste0("L",t*100),start_tad-(end_tad-start_tad)*t,start_tad-(end_tad-start_tad)*(t-0.1))
+      Lbound[c,] <-c(tad[1],tad[2],paste0("L",t*100),start_tad-(end_tad-start_tad)*t,start_tad+(end_tad-start_tad)*t)
       c <- c+1
     }
   }
@@ -76,43 +83,36 @@ TAD.splitter<-function(tad,gap){ #the function takes a list of TADs and the corr
     c <- 1
     for(t in thr){
       if((next.gap_len/2)>(end_tad-start_tad)*t){
-        Rbin[c,] <-c(tad[1],tad[2],paste0("R",t*100),end_tad+(end_tad-start_tad)*(t-0.1),end_tad+(end_tad-start_tad)*t)
-        } 
+        Rbound[c,] <-c(tad[1],tad[2],paste0("R",t*100),end_tad-(end_tad-start_tad)*t,end_tad+(end_tad-start_tad)*t)
+      } 
+      else{
+        Rbound[c,] <-c(tad[1],tad[2],paste0("R",t*100),end_tad-(end_tad-start_tad)*t,end_tad+(next.gap_len/2))
+      }
       c <- c+1
     }
   }
-  else{   #TAD and gap on separate chromosomes; all 3 left outer bins can be used
+  else{   #TAD and gap on separate chromosomes no need to trim boundaries.
     c <- 1
     for(t in thr){
-      Rbin[c,] <-c(tad[1],tad[2],paste0("R",t*100),end_tad+(end_tad-start_tad)*(t-0.1),end_tad+(end_tad-start_tad)*t)
+      Rbound[c,] <-c(tad[1],tad[2],paste0("R",t*100),end_tad-(end_tad-start_tad)*t,end_tad+(end_tad-start_tad)*t)
       c <- c+1
     }
   }
-  ibin <- data.frame()  #initiating inner bins
-  for(b in 1:10){
-    ibin <-rbind(ibin,c(rep(NA,5)))
-  }
-  c <- 1
-  for(i in seq(from=0.1,to=1,by=0.1)){
-    # split into 10 bins.
-    ibin[c,] <- c(tad[1],tad[2],as.character(i*100),start_tad+(end_tad-start_tad)*(i-0.1),start_tad+(end_tad-start_tad)*(i))
-    c <- c+1
-  }
   # appending all bins for a given TAD to the dataframe
-  return(list(Lbin,Rbin,ibin))
+  return(list(Lbound,Rbound))
 }
 
-TAD_bins <-apply(TAD, MARGIN = 1,FUN=TAD.splitter, gap=gaps)
+TAD_bound <-apply(TAD, MARGIN = 1,FUN=Bound.gen, gap=gaps)
 
 #=========================================================================
 
 #Concatenation of all lists into a single humongus dataframe (for further ggplot fun)
-whole_bins <- data.frame()
-for(d in TAD_bins){
-  for(i in 1:3){
-    whole_bins <- rbind(whole_bins,data.frame(d[i]))
+whole_bound <- data.frame()
+for(d in TAD_bound){
+  for(i in 1:2){
+    whole_bound <- rbind(whole_bound,data.frame(d[i]))
   }
 }
 options(scipen=999)
-write.table(na.omit(whole_bins), quote=F,sep="\t",row.names = F,col.names = F,file = "TAD/merged/merged_TADbins.txt")
+write.table(whole_bound, quote=F,sep="\t",row.names = F,col.names = F,file = "TAD/merged/whole_TAD_boundaries.txt")
 options(scipen=0)
