@@ -44,7 +44,7 @@ TAD.splitter<-function(tad,gap){ #the function takes a list of TADs and the corr
     idx <- idx+1
   }
   # bins will take the form: c(TAD_ID,chr,bin_nr, start, end)
-  thr <- c(0.05,0.1, 0.2)
+  thr <- c(0.1,0.2, 0.3)
   Lbin<-data.frame()
   Rbin<-data.frame()
   for(t in 1:length(thr)){
@@ -57,14 +57,16 @@ TAD.splitter<-function(tad,gap){ #the function takes a list of TADs and the corr
   if(all(!is.na(prev.gap), tad[2]==paste0("chr",prev.gap[2]))){  # Checking if TAD and left gap are on same chromosome
     c <- 1
     for(t in thr){
-      if((prev.gap_len/2)>(end_tad-start_tad)*t){Lbin[c,] <-c(tad[1],tad[2],paste0("L",t*100),start_tad-(end_tad-start_tad)*t,start_tad)}
+      if((prev.gap_len/2)>(end_tad-start_tad)*t){
+        Lbin[c,] <-c(tad[1],tad[2],paste0("L",t*100),start_tad-(end_tad-start_tad)*t,start_tad-(end_tad-start_tad)*(t-0.1))
+        }
       c <- c+1
     }
   }
-  else{  # TAD and gap on separate chromosomes; 0.2,0.1 and 0.05 left outer bins
+  else{  # TAD and gap on separate chromosomes; all 3 left outer bins can be used
     c <- 1
     for(t in thr){
-      Lbin[c,] <-c(tad[1],tad[2],paste0("L",t*100),start_tad-(end_tad-start_tad)*t,start_tad)
+      Lbin[c,] <-c(tad[1],tad[2],paste0("L",t*100),start_tad-(end_tad-start_tad)*t,start_tad-(end_tad-start_tad)*(t-0.1))
       c <- c+1
     }
   }
@@ -72,14 +74,16 @@ TAD.splitter<-function(tad,gap){ #the function takes a list of TADs and the corr
   if(all(!is.na(next.gap), tad[2]==as.character(next.gap[2]))){   # Checking if TAD and right gap are on same chromosome
     c <- 1
     for(t in thr){
-      if((next.gap_len/2)>(end_tad-start_tad)*t){Rbin[c,] <-c(tad[1],tad[2],paste0("R",t*100),end_tad,end_tad+(end_tad-start_tad)*t)} # only 0.05 left outer bin
+      if((next.gap_len/2)>(end_tad-start_tad)*t){
+        Rbin[c,] <-c(tad[1],tad[2],paste0("R",t*100),end_tad+(end_tad-start_tad)*(t-0.1),end_tad+(end_tad-start_tad)*t)
+        } 
       c <- c+1
     }
   }
-  else{   #TAD and gap on separate chromosomes; 0.2,0.1 and 0.05 right outer bins
+  else{   #TAD and gap on separate chromosomes; all 3 left outer bins can be used
     c <- 1
     for(t in thr){
-      Rbin[c,] <-c(tad[1],tad[2],paste0("R",t*100),end_tad,end_tad+(end_tad-start_tad)*t) # only 0.05 left outer bin
+      Rbin[c,] <-c(tad[1],tad[2],paste0("R",t*100),end_tad+(end_tad-start_tad)*(t-0.1),end_tad+(end_tad-start_tad)*t)
       c <- c+1
     }
   }
@@ -97,7 +101,7 @@ TAD.splitter<-function(tad,gap){ #the function takes a list of TADs and the corr
   return(list(Lbin,Rbin,ibin))
 }
 
-TAD_bins <-apply(TAD[1:50,], MARGIN = 1,FUN=TAD.splitter, gap=gaps)
+TAD_bins <-apply(TAD, MARGIN = 1,FUN=TAD.splitter, gap=gaps)
 
 #=========================================================================
 
