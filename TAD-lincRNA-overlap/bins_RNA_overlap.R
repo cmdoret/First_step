@@ -13,6 +13,8 @@ TADbins <- read.table("TAD/merged/merged_TADbins.txt")
 lincRNA <- read.table("linc_RNA/LCL.expressed.lincRNA.bed")
 colnames(lincRNA) <- c("chr","start","end","ID","strand")
 colnames(TADbins) <- c("ID","chr","pos","start","end")
+# Note: those files do not contain IDs but, the columns on the right correspond to bins, while the columns on the
+# left correspond to RNAs.
 over_pc <- read.table("../TAD-lincRNA-overlap/bin-pcgenes_overlap.bed")
 over_lincRNA <- read.table("../TAD-lincRNA-overlap/bin-lincRNA_overlap.bed")
 #================================
