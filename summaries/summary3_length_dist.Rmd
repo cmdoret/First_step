@@ -8,8 +8,8 @@ output: pdf_document
 ```{r setup, include=FALSE}
 #Loading data
 #setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/home/cyril/Documents/First_step/data/")
-setwd("/Users/cmatthe5/Documents/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/Users/cmatthe5/Documents/First_step/data/")
 library(ggplot2)
 library(gridExtra)
 m.TAD<- read.table("../data/TAD/merged/merged_TAD.bed") #merged TADs, or "Large TADs"
@@ -22,13 +22,12 @@ m.gap <- read.table("../data/TAD/merged/gaps.bed") #gaps between merged TADs
 m.TAD_b5 <- read.table("../data/TAD/merged/TAD_boundaries5.bed")
 m.TAD_b10 <- read.table("../data/TAD/merged/TAD_boundaries10.bed")
 m.TAD_b20 <- read.table("../data/TAD/merged/TAD_boundaries20.bed")
-TAD_b5 <- read.table("../data/TAD/TAD_boundaries5.bed")
-TAD_b10 <- read.table("../data/TAD/TAD_boundaries10.bed")
-TAD_b20 <- read.table("../data/TAD/TAD_boundaries20.bed")
 m.TADbins <- read.table("../data/TAD/merged/merged_TADbins.txt")
 m.TADbound <- read.table("../data/TAD/merged/whole_TAD_boundaries.txt")
 colnames(m.TADbound)=colnames(m.TADbins) <- c("ID","chr","pos","start","end")
-
+RNAcount_bin <- read.table("../data/TAD/merged/RNAcount_TADbins.txt")
+colnames(RNAcount_bin) <- c("ID","chr","pos","start","end","lincRNA","pcgene")
+  
 ```
 
 #Introduction
@@ -69,7 +68,10 @@ options(scipen=0)
    TAD boundaries have been redefined so that they are more flexible. Again, three different thresholds have been used to define them, however a boundary cannot overlap another. A TAD boundary will always reach only as far as the smallest value between the threshold and half the gap between its TAD and the neighbour.
    
 ```{r boundaries_length, echo=F, warning=F, error=F, fig.height=5, fig.width=6}
-
+ext.m.TADbound <- data.frame(m.TADbound, side=substr(m.TADbound$pos,1,1), threshold=strsplit(as.character(m.TADbound$pos),2,nchar(as.character(m.TADbound$pos))))
+ggplot(data=m.TADbound)+
+  facet_grid(substr(pos,1,1)~strsplit(pos,2,nchar(pos)))+
+  geom_boxplot(aes(y=end-start))
 
 
 ```
