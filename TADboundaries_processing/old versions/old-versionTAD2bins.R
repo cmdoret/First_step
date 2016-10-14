@@ -27,7 +27,7 @@ colnames(gaps) <- c("ID", "chr", "start", "end")
 
 # Division of TADs: each TAD must be divided into 10 bins, plus 3 bins outside.
 # The length of each bin should normally be 10% of the TAD length, but for outer bins, 
-# We will use the smallest value between 3*10% and 3*gap/6
+# We will use the smallest value between 3*10% and 0.5*gap
 TAD_bins <- data.frame()
 TAD.splitter<-function(tad,gap){ #the function takes a list of TADs and the corresponding list of gaps.
   start_tad <- as.numeric(unname(tad[3]))
@@ -56,51 +56,35 @@ TAD.splitter<-function(tad,gap){ #the function takes a list of TADs and the corr
   next.gap_len <-as.numeric(next.gap[4])-as.numeric(next.gap[3]) 
   # Initiating left outer bins.
   if(all(!is.na(prev.gap), tad[2]==paste0("chr",prev.gap[2]))){  # Checking if TAD and left gap are on same chromosome
-    if((prev.gap_len/2)>(end_tad-start_tad)*t*3){
-      c <- 1
-      for(t in thr){
-        Lbin[c,] <-c(tad[1],tad[2],paste0("L",t*10),start_tad-(end_tad-start_tad)*t,start_tad-(end_tad-start_tad)*(t-0.1))
-        c <- c+1
-      }
-    }
-    else{  # Half the gap is smaller than 30% of TAD length -> define outer bins as 1/6th of the gap each.
-      c <- 2
-      gap_thr <- ceiling(c(0,prev.gap_len/6,prev.gap_len/3,prev.gap_len/2))
-      for(t in gap_thr[2:4]){
-        Lbin[c-1,] <-c(tad[1],tad[2],paste0("L",(c-1)*10),start_tad-t,start_tad-gap_thr[c-1])
-        c <- c+1
-      }
+    c <- 1
+    for(t in thr){
+      if((prev.gap_len/2)>(end_tad-start_tad)*t){
+        Lbin[c,] <-c(tad[1],tad[2],paste0("L",t*100),start_tad-(end_tad-start_tad)*t,start_tad-(end_tad-start_tad)*(t-0.1))
+        }
+      c <- c+1
     }
   }
   else{  # TAD and gap on separate chromosomes; all 3 left outer bins can be used
     c <- 1
     for(t in thr){
-      Lbin[c,] <-c(tad[1],tad[2],paste0("L",t*10),start_tad-(end_tad-start_tad)*t,start_tad-(end_tad-start_tad)*(t-0.1))
+      Lbin[c,] <-c(tad[1],tad[2],paste0("L",t*100),start_tad-(end_tad-start_tad)*t,start_tad-(end_tad-start_tad)*(t-0.1))
       c <- c+1
     }
   }
   # Initiating right outer bins
   if(all(!is.na(next.gap), tad[2]==paste0("chr",next.gap[2]))){   # Checking if TAD and right gap are on same chromosome
-    if((next.gap_len/2)>(end_tad-start_tad)*t*3){
-      c <- 1
-      for(t in thr){
-        Rbin[c,] <-c(tad[1],tad[2],paste0("R",t*10),end_tad+(end_tad-start_tad)*(t-0.1),end_tad+(end_tad-start_tad)*t)
-        c <- c+1
-      } 
-    }
-    else{  # Half the gap is smaller than 30% of TAD length -> define outer bins as 1/6th of the gap each.
-      c <- 2
-      gap_thr <- floor(c(0,next.gap_len/6,next.gap_len/3,next.gap_len/2))
-      for(t in gap_thr[2:4]){
-        Rbin[c-1,] <-c(tad[1],tad[2],paste0("L",(c-1)*10),end_tad+gap_thr[c-1],end_tad+t)
-        c <- c+1
-      }
+    c <- 1
+    for(t in thr){
+      if((next.gap_len/2)>(end_tad-start_tad)*t){
+        Rbin[c,] <-c(tad[1],tad[2],paste0("R",t*100),end_tad+(end_tad-start_tad)*(t-0.1),end_tad+(end_tad-start_tad)*t)
+        } 
+      c <- c+1
     }
   }
   else{   #TAD and gap on separate chromosomes; all 3 left outer bins can be used
     c <- 1
     for(t in thr){
-      Rbin[c,] <-c(tad[1],tad[2],paste0("R",t*10),end_tad+(end_tad-start_tad)*(t-0.1),end_tad+(end_tad-start_tad)*t)
+      Rbin[c,] <-c(tad[1],tad[2],paste0("R",t*100),end_tad+(end_tad-start_tad)*(t-0.1),end_tad+(end_tad-start_tad)*t)
       c <- c+1
     }
   }

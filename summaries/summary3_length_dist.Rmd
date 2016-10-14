@@ -17,8 +17,8 @@ m.TAD <- cbind(paste("merged",row.names(m.TAD),sep="_"),m.TAD) #adding arbitrary
 TAD <- read.table("../data/TAD/GM12878_TAD_domains.bed") #original TADs, high number of overlapping domains
 TAD <- TAD[,-4]
 colnames(TAD) <- c("chr","start","end","ID")
-colnames(m.TAD) = colnames(m.gap) <- c("ID","chr","start","end")
 m.gap <- read.table("../data/TAD/merged/gaps.bed") #gaps between merged TADs
+colnames(m.TAD) = colnames(m.gap) <- c("ID","chr","start","end")
 m.TAD_b5 <- read.table("../data/TAD/merged/TAD_boundaries5.bed")
 m.TAD_b10 <- read.table("../data/TAD/merged/TAD_boundaries10.bed")
 m.TAD_b20 <- read.table("../data/TAD/merged/TAD_boundaries20.bed")
@@ -97,7 +97,7 @@ ggplot(data=ext.m.TADbound)+
    
 ```{r gap_length, echo=F, warning=F,error=F,fig.with=6,fig.height=4}
 
-hist(m.gap$V3  )
+hist(m.gap$end  - m.gap$start)
 
 ```
 
@@ -111,14 +111,15 @@ ordpos <- factor(RNAcount_bin, levels=c("L30","L20","L10",as.character(seq(from=
 RNAcount_bin$pos <- as.character(RNAcount_bin$pos)
 RNAcount_bin$pos <- factor(RNAcount_bin$pos, c("L30","L20","L10",seq(from=10,to=100,by=10),"R10","R20","R30"),ordered=T)
 #convert factor to character and convert back to state order of levels.
-l <- ggplot(data = RNAcount_bin, aes(x=pos,y=lincRNA,fill=pos))+
+l <- ggplot(data = RNAcount_bin, aes(x=pos,y=lincRNA/length(pos),fill=pos))+
   geom_bar(stat="identity")+
   scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
   guides(fill=F)+
   xlab("TAD bin")+
+  ylab("Number of lincRNA")
   ggtitle("lincRNA per TAD bin")+
   theme_bw()
-p <- ggplot(data = RNAcount_bin, aes(x=pos,y=pcgene,fill=pos))+
+p <- ggplot(data = RNAcount_bin, aes(x=pos,y=pcgene/length(pos),fill=pos))+
   geom_bar(stat="identity")+
   scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
   guides(fill=F)+
