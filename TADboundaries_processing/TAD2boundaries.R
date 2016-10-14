@@ -79,7 +79,7 @@ Bound.gen<-function(tad,gap){ #the function takes a list of TADs and the corresp
     }
   }
   # Initiating right outer bins
-  if(all(!is.na(next.gap), tad[2]==as.character(next.gap[2]))){   # Checking if TAD and right gap are on same chromosome
+  if(all(!is.na(next.gap), tad[2]==paste0("chr",next.gap[2]))){   # Checking if TAD and right gap are on same chromosome
     c <- 1
     for(t in thr){
       if((next.gap_len/2)>(end_tad-start_tad)*t){

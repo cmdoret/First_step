@@ -20,7 +20,7 @@ over_lincRNA <- read.table("../TAD-lincRNA-overlap/bin-lincRNA_overlap.bed")
 # Counting overlaps:
 
 TADbins <- data.frame(TADbins, lincRNA=rep(0,length(TADbins$ID)),pcgene=rep(0,length(TADbins$ID)))
-
+# Careful: Takes ages to run:
 for(r in row(TADbins)){
   TADbins[r,"lincRNA"]<-length(over_lincRNA[over_lincRNA[,7]==TADbins[r,"start"] &
                                             over_lincRNA[,8]==TADbins[r,"end"] &

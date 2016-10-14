@@ -8,8 +8,8 @@ output: pdf_document
 ```{r setup, include=FALSE}
 #Loading data
 #setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-setwd("/home/cyril/Documents/First_step/data/")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/First_step/data/")
+setwd("/Users/cmatthe5/Documents/First_step/data/")
 library(ggplot2)
 library(gridExtra)
 m.TAD<- read.table("../data/TAD/merged/merged_TAD.bed") #merged TADs, or "Large TADs"
@@ -17,7 +17,7 @@ m.TAD <- cbind(paste("merged",row.names(m.TAD),sep="_"),m.TAD) #adding arbitrary
 TAD <- read.table("../data/TAD/GM12878_TAD_domains.bed") #original TADs, high number of overlapping domains
 TAD <- TAD[,-4]
 colnames(TAD) <- c("chr","start","end","ID")
-colnames(m.TAD) <- c("ID","chr","start","end")
+colnames(m.TAD) = colnames(m.gap) <- c("ID","chr","start","end")
 m.gap <- read.table("../data/TAD/merged/gaps.bed") #gaps between merged TADs
 m.TAD_b5 <- read.table("../data/TAD/merged/TAD_boundaries5.bed")
 m.TAD_b10 <- read.table("../data/TAD/merged/TAD_boundaries10.bed")
@@ -67,15 +67,72 @@ options(scipen=0)
    + Length of TAD boundaries:
    TAD boundaries have been redefined so that they are more flexible. Again, three different thresholds have been used to define them, however a boundary cannot overlap another. A TAD boundary will always reach only as far as the smallest value between the threshold and half the gap between its TAD and the neighbour.
    
-```{r boundaries_length, echo=F, warning=F, error=F, fig.height=5, fig.width=6}
-ext.m.TADbound <- data.frame(m.TADbound, side=substr(m.TADbound$pos,1,1), threshold=strsplit(as.character(m.TADbound$pos),2,nchar(as.character(m.TADbound$pos))))
-ggplot(data=m.TADbound)+
-  facet_grid(substr(pos,1,1)~strsplit(pos,2,nchar(pos)))+
-  geom_boxplot(aes(y=end-start))
+```{r boundaries_length, echo=F, warning=F, error=F, fig.height=4, fig.width=5}
+# Splitting position into 2 factors so that they can be used to facet the plots.
+library(stringi)
+get.side <-function(TADbound){
+  side <- substr(TADbound[3],1,1)
+  return(side)
+}
+get.threshold <-function(TADbound){
+  threshold <- stri_sub(TADbound[3],2,-1)
+  return(threshold)
+}
+side <- apply(m.TADbound, MARGIN = 1,FUN = get.side)
+thresh <- apply(m.TADbound, MARGIN = 1,FUN = get.threshold)
+ext.m.TADbound <- data.frame(m.TADbound,side=side,threshold=thresh)
+med.TADbound <- by(ext.m.TADbound$end-ext.m.TADbound$start,INDICES = relevel(ext.m.TADbound$threshold,"5"),median)
+ggplot(data=ext.m.TADbound)+
+  geom_boxplot(aes(x=relevel(threshold,"5"),y=log10(end-start)),fill=c("#888866","#aa8866","#dd8866"))+
+  annotate(geom = "label",x=c(1,2,3),y=log10(c(med.TADbound[1:3])),label=c(paste0("Mdn=\n",med.TADbound[1:3])))+
+  xlab("Threshold")+
+  ylab("Boundary length")+
+  ggtitle("Length of redefined boundaries by threshold")+
+  theme_bw()
 
+```
+
+   + Length of gaps: 
+   Distribution gap length.
+   
+```{r gap_length, echo=F, warning=F,error=F,fig.with=6,fig.height=4}
+
+hist(m.gap$V3  )
 
 ```
 
 #2. Overlaps between RNA and areas of TAD boundaries
 
+TADs were divided into 10 bins, plus 3 outer bins on both sides. The length of each bin is 10% of TAD length. All RNAs with at least 25% of their sequence overlapping a TAD bin. This allows to in which area of the TADs linc RNA and protein coding genes are more likely to be expressed. The barplots below display the total number of lincRNAs or protein-coding genes that overlap with each bin. The bins depicted in orange are located outside TADs, while the ones in blue are inside. All bins beginning by L are on the left (before the TAD), while those beginning with R are on the right (after the TAD). 
+
+```{r overlap_bins, echo=F,warning=F,error=F,fig.width=6,fig.height=5}
+library(viridis)
+ordpos <- factor(RNAcount_bin, levels=c("L30","L20","L10",as.character(seq(from=10,to=100,by=10)),"R10","R20","R30"))
+RNAcount_bin$pos <- as.character(RNAcount_bin$pos)
+RNAcount_bin$pos <- factor(RNAcount_bin$pos, c("L30","L20","L10",seq(from=10,to=100,by=10),"R10","R20","R30"),ordered=T)
+#convert factor to character and convert back to state order of levels.
+l <- ggplot(data = RNAcount_bin, aes(x=pos,y=lincRNA,fill=pos))+
+  geom_bar(stat="identity")+
+  scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
+  guides(fill=F)+
+  xlab("TAD bin")+
+  ggtitle("lincRNA per TAD bin")+
+  theme_bw()
+p <- ggplot(data = RNAcount_bin, aes(x=pos,y=pcgene,fill=pos))+
+  geom_bar(stat="identity")+
+  scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
+  guides(fill=F)+
+  xlab("TAD bin")+
+  ggtitle("Protein-coding gene per TAD bin")+
+  theme_bw()
+grid.arrange(l,p)
+
+
+# Looks cool but doesn't work properly:
+#gg <- ggplot(RNAcount_bin, aes(x=chr, y=pos, fill=pcgene))
+#gg <- gg + geom_tile(color="white", size=0.1)
+#gg <- gg + scale_fill_viridis(name="# pc genes")
+#gg <- gg + coord_equal()
+
+```
 #3. ...
