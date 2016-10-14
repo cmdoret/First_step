@@ -67,7 +67,7 @@ TAD.splitter<-function(tad,gap){ #the function takes a list of TADs and the corr
       c <- 2
       gap_thr <- ceiling(c(0,prev.gap_len/6,prev.gap_len/3,prev.gap_len/2))
       for(t in gap_thr[2:4]){
-        Lbin[c-1,] <-c(tad[1],tad[2],paste0("L",(c-1)*10),start_tad-t,start_tad-gap_thr[c-1])
+        Lbin[c-1,] <-c(tad[1],tad[2],paste0("L",(c-1)),start_tad-t,start_tad-gap_thr[c-1])
         c <- c+1
       }
     }
@@ -92,7 +92,7 @@ TAD.splitter<-function(tad,gap){ #the function takes a list of TADs and the corr
       c <- 2
       gap_thr <- floor(c(0,next.gap_len/6,next.gap_len/3,next.gap_len/2))
       for(t in gap_thr[2:4]){
-        Rbin[c-1,] <-c(tad[1],tad[2],paste0("L",(c-1)*10),end_tad+gap_thr[c-1],end_tad+t)
+        Rbin[c-1,] <-c(tad[1],tad[2],paste0("R",(c-1)),end_tad+gap_thr[c-1],end_tad+t)
         c <- c+1
       }
     }
