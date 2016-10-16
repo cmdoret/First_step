@@ -7,8 +7,8 @@
 
 # Loading data:
 #setwd("/home/cyril/Documents/First_step/data/")
-#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-setwd("/Users/cmatthe5/Documents/First_step/data/")
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+#setwd("/Users/cmatthe5/Documents/First_step/data/")
 TADbins <- read.table("TAD/merged/merged_TADbins.txt")
 lincRNA <- read.table("linc_RNA/LCL.expressed.lincRNA.bed")
 colnames(lincRNA) <- c("chr","start","end","ID","strand")

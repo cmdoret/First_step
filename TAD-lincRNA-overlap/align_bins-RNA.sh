@@ -7,6 +7,9 @@
 
 module add UHTS/Analysis/BEDTools/2.22.1;
 
-bsub -q priority 'bedtools intersect -a ../data/linc_RNA/LCL.expressed.lincRNA.bed -b ../data/TAD/merged/short_TADbins.bed -f 0.25 -wb > bin-lincRNA_overlap.bed';
-bsub -q priority 'bedtools intersect -a ../data/pc_genes/LCL.expressed.pcgenes.bed -b ../data/TAD/merged/short_TADbins.bed -f 0.25 -wb > bin-pcgenes_overlap.bed';
+for bw in 1 5 10;
+do
+bsub -q priority 'bedtools intersect -a ../data/linc_RNA/LCL.expressed.lincRNA.bed -b ../data/TAD/merged/short_TADbins'"$bw"'.bed -f 0.25 -wb > bin-lincRNA_overlap'"$bw"'.bed';
+bsub -q priority 'bedtools intersect -a ../data/pc_genes/LCL.expressed.pcgene.bed -b ../data/TAD/merged/short_TADbins'"$bw"'.bed -f 0.25 -wb > bin-pcgenes_overlap'"$bw"'.bed';
+done
 

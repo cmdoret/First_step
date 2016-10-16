@@ -46,7 +46,6 @@ Bound.gen<-function(tad,gap){ #the function takes a list of TADs and the corresp
     #print(head(gap_nrs))
     idx <- idx+1
   }
-  # bins will take the form: c(TAD_ID,chr,bin_nr, start, end)
   thr <- c(0.05,0.1, 0.2)
   Lbound<-data.frame()
   Rbound<-data.frame()

@@ -7,9 +7,9 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 #Loading data
-#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 #setwd("/home/cyril/Documents/First_step/data/")
-setwd("/Users/cmatthe5/Documents/First_step/data/")
+#setwd("/Users/cmatthe5/Documents/First_step/data/")
 library(ggplot2)
 library(gridExtra)
 m.TAD<- read.table("../data/TAD/merged/merged_TAD.bed") #merged TADs, or "Large TADs"
@@ -25,18 +25,22 @@ m.TAD_b20 <- read.table("../data/TAD/merged/TAD_boundaries20.bed")
 m.TADbins <- read.table("../data/TAD/merged/merged_TADbins.txt")
 m.TADbound <- read.table("../data/TAD/merged/whole_TAD_boundaries.txt")
 colnames(m.TADbound)=colnames(m.TADbins) <- c("ID","chr","pos","start","end")
-RNAcount_bin <- read.table("../data/TAD/merged/RNAcount_TADbins.txt")
-colnames(RNAcount_bin) <- c("ID","chr","pos","start","end","lincRNA","pcgene")
+RNAcount_bin10 <- read.table("../data/TAD/merged/RNAcount_TADbins10.txt")
+RNAcount_bin5 <- read.table("../data/TAD/merged/RNAcount_TADbins5.txt")
+RNAcount_bin1 <- read.table("../data/TAD/merged/RNAcount_TADbins1.txt")
+colnames(RNAcount_bin)=colnames(RNAcount_bin5)=colnames(RNAcount_bin1)<-
+  c("ID","chr","pos","start","end","lincRNA","pcgene")
   
 ```
+
 
 #Introduction
 
 Visualising and quantifying the distribution of TAD lengths, or the areas of ovelap between lincRNAs and TADs might help finding a better threshold for the definition of TAD boundaries. This report aims to provide support for the definition of those boundaries.
 
-#1. Length distribution of TAD, boundaries and gaps
+#1. Length distribution of TADs, boundaries and gaps
    + Length of TADs:
-   TADs often contained many smaller TADs which causes the boundaries to overlap and makes it harder to distinguish between TAD-bound and non-TAD-bound RNAs. 
+   TADs often contained many smaller TADs which causes the boundaries to overlap and makes it harder to distinguish between TAD-bound and non-TAD-bound RNAs. All overlapping TADs were merge so that only large domains would be considered and there would not be any boundaries contained inside another domain. The mean of the length distribution for the newly generated TADs (Large TADs) is significantly higher.
    
 ```{r TAD_length, echo=F, warning=F, error=F, fig.height=5, fig.width=6}
 
@@ -83,7 +87,7 @@ thresh <- apply(m.TADbound, MARGIN = 1,FUN = get.threshold)
 ext.m.TADbound <- data.frame(m.TADbound,side=side,threshold=thresh)
 med.TADbound <- by(ext.m.TADbound$end-ext.m.TADbound$start,INDICES = relevel(ext.m.TADbound$threshold,"5"),median)
 ggplot(data=ext.m.TADbound)+
-  geom_boxplot(aes(x=relevel(threshold,"5"),y=log10(end-start)),fill=c("#888866","#aa8866","#dd8866"))+
+  geom_boxplot(aes(x=relevel(threshold,"5"),y=log10(end-start)),fill=c("#aa4444","#44aa44","#4444aa"))+
   annotate(geom = "label",x=c(1,2,3),y=log10(c(med.TADbound[1:3])),label=c(paste0("Mdn=\n",med.TADbound[1:3])))+
   xlab("Threshold")+
   ylab("Boundary length")+
@@ -93,47 +97,155 @@ ggplot(data=ext.m.TADbound)+
 ```
 
    + Length of gaps: 
-   Distribution gap length.
+   The distribution gap length show that the gaps are generally smaller than the TADs. The median length of gaps is `r round(median(m.TAD$end-m.TAD$start)/median(m.gap$end-m.gap$start),2)` times smaller than for TADs. The discrete distribution observed on a log scale is caused by the approximations that are used for defining the border of TADs.
    
-```{r gap_length, echo=F, warning=F,error=F,fig.with=6,fig.height=4}
+```{r gap_length, echo=F, warning=F,error=F,fig.with=5,fig.height=3}
 
-hist(m.gap$end  - m.gap$start)
+ggplot(data=m.gap,aes(x = log10(end-start)))+
+  geom_histogram(bins = 50, fill="steelblue")+
+  ggtitle("Distribution of gap length")+
+  xlab("Log10 length")+
+  geom_vline(xintercept = log10(median(m.gap$end - m.gap$start)),col="red")+
+  annotate(geom="label",label=paste0("Median length: ",median(m.gap$end - m.gap$start)),x=log10(median(m.gap$end - m.gap$start))+0.6,y=300)+
+  theme_bw()
 
 ```
 
-#2. Overlaps between RNA and areas of TAD boundaries
+#2. Overlaps between RNA and areas of TADs
 
-TADs were divided into 10 bins, plus 3 outer bins on both sides. The length of each bin is 10% of TAD length. All RNAs with at least 25% of their sequence overlapping a TAD bin. This allows to in which area of the TADs linc RNA and protein coding genes are more likely to be expressed. The barplots below display the total number of lincRNAs or protein-coding genes that overlap with each bin. The bins depicted in orange are located outside TADs, while the ones in blue are inside. All bins beginning by L are on the left (before the TAD), while those beginning with R are on the right (after the TAD). 
+TADs were divided into 10 bins, plus 3 outer bins on both sides. The length of each inner bin is 10% of its TAD length. For outer bins, the length was adjusted so that it would not overlap with the next TAD. If half the distance until the next TAD was larger than 30% (i.e. 3 bins of 10%) of TAD length, the size of outer bins remains unchanged. Otherwise, half the gap between neighbouring TADs is split into the 3 bins, meaning each bin is resized to one sixth of its TAD length.
 
-```{r overlap_bins, echo=F,warning=F,error=F,fig.width=6,fig.height=5}
-library(viridis)
-ordpos <- factor(RNAcount_bin, levels=c("L30","L20","L10",as.character(seq(from=10,to=100,by=10)),"R10","R20","R30"))
-RNAcount_bin$pos <- as.character(RNAcount_bin$pos)
-RNAcount_bin$pos <- factor(RNAcount_bin$pos, c("L30","L20","L10",seq(from=10,to=100,by=10),"R10","R20","R30"),ordered=T)
-#convert factor to character and convert back to state order of levels.
-l <- ggplot(data = RNAcount_bin, aes(x=pos,y=lincRNA/length(pos),fill=pos))+
+In order to know in which area of TADs lincRNAs and protein coding genes are more likely to be located, all of these genes with at least 25% of their sequence overlapping a bin were counted. The total number of lincRNAs or protein-coding genes that overlap with each bin was then calculated. 
+
+Using the raw number of genes overlapping each bin would be biased since longer TADs have have longer bins, and those bins will have more weight on the plot. The barplots below show the values after they have been normalized by bin length. The bins depicted in orange are located outside TADs, while the ones in blue are inside. All bins beginning by L are on the left (before the TAD), while those beginning with R are on the right (after the TAD).
+
+
+
+```{r normalized_overlap_bins, echo=F,warning=F,error=F,fig.width=6,fig.height=5,}
+
+short_RNAcount_bin10 <- data.frame(pos=rep(0,length(levels(RNAcount_bin10$pos))),
+                                 pcgene=rep(0,length(levels(RNAcount_bin10$pos))),
+                                 lincRNA=rep(0,length(levels(RNAcount_bin10$pos))))
+c <- 1
+for(i in levels(RNAcount_bin10$pos)){
+  pc_short_count <- sum(RNAcount_bin10[RNAcount_bin10$pos==i,"pcgene"]/(RNAcount_bin10[RNAcount_bin10$pos==i,"end"]
+                                                                     -RNAcount_bin10[RNAcount_bin10$pos==i,"start"]))
+  lincRNA_short_count <- sum(RNAcount_bin10[RNAcount_bin10$pos==i,"lincRNA"]/(RNAcount_bin10[RNAcount_bin10$pos==i,"end"]
+                                                                     -RNAcount_bin10[RNAcount_bin10$pos==i,"start"]))
+  short_RNAcount_bin10[c,] <- cbind(i,pc_short_count,lincRNA_short_count)
+  c <- c+1
+}
+
+short_RNAcount_bin10$pos <- factor(short_RNAcount_bin10$pos,c("L3","L2","L1",seq(from=10,to=100,by=10),"R1","R2","R3"),ordered=T)
+
+l <- ggplot(data = short_RNAcount_bin10, aes(x=pos,y=as.numeric(lincRNA),fill=pos))+
   geom_bar(stat="identity")+
   scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
   guides(fill=F)+
   xlab("TAD bin")+
-  ylab("Number of lincRNA")
-  ggtitle("lincRNA per TAD bin")+
+  ylab("Normalized N lincRNAs")+
+  ggtitle("lincRNA per base per TAD bin")+
   theme_bw()
-p <- ggplot(data = RNAcount_bin, aes(x=pos,y=pcgene/length(pos),fill=pos))+
+p <- ggplot(data = short_RNAcount_bin10, aes(x=pos,y=as.numeric(pcgene),fill=pos))+
   geom_bar(stat="identity")+
   scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
   guides(fill=F)+
   xlab("TAD bin")+
-  ggtitle("Protein-coding gene per TAD bin")+
+  ylab("Normalized N p.c. genes")+
+  ggtitle("Protein-coding gene per base per TAD bin")+
   theme_bw()
 grid.arrange(l,p)
 
-
 # Looks cool but doesn't work properly:
-#gg <- ggplot(RNAcount_bin, aes(x=chr, y=pos, fill=pcgene))
+#gg <- ggplot(RNAcount_bin10, aes(x=chr, y=pos, fill=pcgene))
 #gg <- gg + geom_tile(color="white", size=0.1)
 #gg <- gg + scale_fill_viridis(name="# pc genes")
 #gg <- gg + coord_equal()
 
 ```
+
+Below are the same barplots, using respectively 5% and 1% for binwidth instead of 10%. Having different resolutions for the detection of genes location in TAD boundaries will help defining a better threshold for the TAD boundaries.
+
+
+```{r overlap_bins5, echo=F,warning=F,error=F,fig.width=6,fig.height=5,}
+
+short_RNAcount_bin5 <- data.frame(pos=rep(0,length(levels(RNAcount_bin5$pos))),
+                                 pcgene=rep(0,length(levels(RNAcount_bin5$pos))),
+                                 lincRNA=rep(0,length(levels(RNAcount_bin5$pos))))
+c <- 1
+for(i in levels(RNAcount_bin5$pos)){
+  pc_short_count <- sum(RNAcount_bin5[RNAcount_bin5$pos==i,"pcgene"]/(RNAcount_bin5[RNAcount_bin5$pos==i,"end"]
+                                                                     -RNAcount_bin5[RNAcount_bin5$pos==i,"start"]))
+  lincRNA_short_count <- sum(RNAcount_bin5[RNAcount_bin5$pos==i,"lincRNA"]/(RNAcount_bin5[RNAcount_bin5$pos==i,"end"]
+                                                                     -RNAcount_bin5[RNAcount_bin5$pos==i,"start"]))
+  short_RNAcount_bin5[c,] <- cbind(i,pc_short_count,lincRNA_short_count)
+  c <- c+1
+}
+
+short_RNAcount_bin5$pos <- factor(short_RNAcount_bin5$pos,c(paste0("L",seq(from=6,to=1)),
+                                                            seq(from=10,to=100,by=10),
+                                                            paste0("R",seq(from=1,to=6))),ordered=T)
+
+l <- ggplot(data = short_RNAcount_bin5, aes(x=pos,y=as.numeric(lincRNA),fill=pos))+
+  geom_bar(stat="identity")+
+  scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
+  guides(fill=F)+
+  xlab("TAD bin")+
+  ylab("Normalized N lincRNAs")+
+  ggtitle("lincRNA per base per TAD bin")+
+  theme_bw()
+p <- ggplot(data = short_RNAcount_bin5, aes(x=pos,y=as.numeric(pcgene),fill=pos))+
+  geom_bar(stat="identity")+
+  scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
+  guides(fill=F)+
+  xlab("TAD bin")+
+  ylab("Normalized N p.c. genes")+
+  ggtitle("Protein-coding gene per base per TAD bin")+
+  theme_bw()
+grid.arrange(l,p)
+
+
+```
+
+```{r overlap_bins1, echo=F,warning=F,error=F,fig.width=6,fig.height=5,}
+
+short_RNAcount_bin1 <- data.frame(pos=rep(0,length(levels(RNAcount_bin1$pos))),
+                                 pcgene=rep(0,length(levels(RNAcount_bin1$pos))),
+                                 lincRNA=rep(0,length(levels(RNAcount_bin1$pos))))
+c <- 1
+for(i in levels(RNAcount_bin1$pos)){
+  pc_short_count <- sum(RNAcount_bin1[RNAcount_bin1$pos==i,"pcgene"]/(RNAcount_bin1[RNAcount_bin1$pos==i,"end"]
+                                                                     -RNAcount_bin1[RNAcount_bin1$pos==i,"start"]))
+  lincRNA_short_count <- sum(RNAcount_bin1[RNAcount_bin1$pos==i,"lincRNA"]/(RNAcount_bin1[RNAcount_bin1$pos==i,"end"]
+                                                                     -RNAcount_bin1[RNAcount_bin1$pos==i,"start"]))
+  short_RNAcount_bin1[c,] <- cbind(i,pc_short_count,lincRNA_short_count)
+  c <- c+1
+}
+
+short_RNAcount_bin1$pos <- factor(short_RNAcount_bin1$pos,c(paste0("L",seq(from=6,to=1)),
+                                                            seq(from=10,to=100,by=10),
+                                                            paste0("R",seq(from=1,to=6))),ordered=T)
+
+l <- ggplot(data = short_RNAcount_bin1, aes(x=pos,y=as.numeric(lincRNA),fill=pos))+
+  geom_bar(stat="identity")+
+  scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
+  guides(fill=F)+
+  xlab("TAD bin")+
+  ylab("Normalized N lincRNAs")+
+  ggtitle("lincRNA per base per TAD bin")+
+  theme_bw()
+p <- ggplot(data = short_RNAcount_bin1, aes(x=pos,y=as.numeric(pcgene),fill=pos))+
+  geom_bar(stat="identity")+
+  scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
+  guides(fill=F)+
+  xlab("TAD bin")+
+  ylab("Normalized N p.c. genes")+
+  ggtitle("Protein-coding gene per base per TAD bin")+
+  theme_bw()
+grid.arrange(l,p)
+
+
+```
+
+
 #3. ...
