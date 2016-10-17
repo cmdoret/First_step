@@ -137,3 +137,8 @@ for(i in TAD_bins){
 options(scipen=999)
 write.table(na.omit(whole_bins), quote=F,sep="\t",row.names = F,col.names = F,file = "TAD/merged/merged_TADbins1.txt")
 options(scipen=0)
+#===============================================================================
+# formatting file for bedtools
+whole_bins <- read.table("TAD/merged/merged_TADbins10.txt")
+whole_bins <- whole_bins[,c(2,4,5,1,3)]
+write.table(whole_bins, quote=F,sep="\t",row.names = F,col.names = F,file = "TAD/merged/short_TADbins10.bed")

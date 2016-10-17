@@ -7,8 +7,8 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 #Loading data
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
 library(ggplot2)
 library(gridExtra)
@@ -22,14 +22,13 @@ colnames(m.TAD) = colnames(m.gap) <- c("ID","chr","start","end")
 m.TAD_b5 <- read.table("../data/TAD/merged/TAD_boundaries5.bed")
 m.TAD_b10 <- read.table("../data/TAD/merged/TAD_boundaries10.bed")
 m.TAD_b20 <- read.table("../data/TAD/merged/TAD_boundaries20.bed")
-m.TADbins <- read.table("../data/TAD/merged/merged_TADbins.txt")
 m.TADbound <- read.table("../data/TAD/merged/whole_TAD_boundaries.txt")
-colnames(m.TADbound)=colnames(m.TADbins) <- c("ID","chr","pos","start","end")
+colnames(m.TADbound) <- c("ID","chr","pos","start","end")
 RNAcount_bin10 <- read.table("../data/TAD/merged/RNAcount_TADbins10.txt")
 RNAcount_bin5 <- read.table("../data/TAD/merged/RNAcount_TADbins5.txt")
 RNAcount_bin1 <- read.table("../data/TAD/merged/RNAcount_TADbins1.txt")
-colnames(RNAcount_bin)=colnames(RNAcount_bin5)=colnames(RNAcount_bin1)<-
-  c("ID","chr","pos","start","end","lincRNA","pcgene")
+colnames(RNAcount_bin10)=colnames(RNAcount_bin5)=colnames(RNAcount_bin1)<-
+  c("chr","start","end","ID","pos","lincRNA","pcgene")
   
 ```
 
@@ -183,25 +182,27 @@ for(i in levels(RNAcount_bin5$pos)){
 }
 
 short_RNAcount_bin5$pos <- factor(short_RNAcount_bin5$pos,c(paste0("L",seq(from=6,to=1)),
-                                                            seq(from=10,to=100,by=10),
+                                                            seq(from=5,to=100,by=5),
                                                             paste0("R",seq(from=1,to=6))),ordered=T)
 
 l <- ggplot(data = short_RNAcount_bin5, aes(x=pos,y=as.numeric(lincRNA),fill=pos))+
   geom_bar(stat="identity")+
-  scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
+  scale_fill_manual(values=c(rep("#E69F00",6),rep("#6666E6",20),rep("#E69F00",6)))+
   guides(fill=F)+
   xlab("TAD bin")+
   ylab("Normalized N lincRNAs")+
   ggtitle("lincRNA per base per TAD bin")+
-  theme_bw()
+  theme_bw()+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
 p <- ggplot(data = short_RNAcount_bin5, aes(x=pos,y=as.numeric(pcgene),fill=pos))+
   geom_bar(stat="identity")+
-  scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
+  scale_fill_manual(values=c(rep("#E69F00",6),rep("#6666E6",20),rep("#E69F00",6)))+
   guides(fill=F)+
   xlab("TAD bin")+
   ylab("Normalized N p.c. genes")+
   ggtitle("Protein-coding gene per base per TAD bin")+
-  theme_bw()
+  theme_bw()+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
 grid.arrange(l,p)
 
 
@@ -222,13 +223,13 @@ for(i in levels(RNAcount_bin1$pos)){
   c <- c+1
 }
 
-short_RNAcount_bin1$pos <- factor(short_RNAcount_bin1$pos,c(paste0("L",seq(from=6,to=1)),
-                                                            seq(from=10,to=100,by=10),
-                                                            paste0("R",seq(from=1,to=6))),ordered=T)
+short_RNAcount_bin1$pos <- factor(short_RNAcount_bin1$pos,c(paste0("L",seq(from=30,to=1)),
+                                                            seq(from=1,to=100,by=1),
+                                                            paste0("R",seq(from=1,to=30))),ordered=T)
 
 l <- ggplot(data = short_RNAcount_bin1, aes(x=pos,y=as.numeric(lincRNA),fill=pos))+
   geom_bar(stat="identity")+
-  scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
+  scale_fill_manual(values=c(rep("#E69F00",30),rep("#6666E6",100),rep("#E69F00",30)))+
   guides(fill=F)+
   xlab("TAD bin")+
   ylab("Normalized N lincRNAs")+
@@ -236,7 +237,7 @@ l <- ggplot(data = short_RNAcount_bin1, aes(x=pos,y=as.numeric(lincRNA),fill=pos
   theme_bw()
 p <- ggplot(data = short_RNAcount_bin1, aes(x=pos,y=as.numeric(pcgene),fill=pos))+
   geom_bar(stat="identity")+
-  scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
+  scale_fill_manual(values=c(rep("#E69F00",30),rep("#6666E6",100),rep("#E69F00",30)))+
   guides(fill=F)+
   xlab("TAD bin")+
   ylab("Normalized N p.c. genes")+
