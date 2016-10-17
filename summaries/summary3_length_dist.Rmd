@@ -96,7 +96,7 @@ ggplot(data=ext.m.TADbound)+
 ```
 
    + Length of gaps: 
-   The distribution gap length show that the gaps are generally smaller than the TADs. The median length of gaps is `r round(median(m.TAD$end-m.TAD$start)/median(m.gap$end-m.gap$start),2)` times smaller than for TADs. The discrete distribution observed on a log scale is caused by the approximations that are used for defining the border of TADs.
+   The distribution of gap length show that the gaps are generally smaller than the TADs. The median length of gaps is `r round(median(m.TAD$end-m.TAD$start)/median(m.gap$end-m.gap$start),2)` times smaller than for TADs. The discrete distribution observed on a log scale is caused by the approximations that are used for defining the border of TADs.
    
 ```{r gap_length, echo=F, warning=F,error=F,fig.with=5,fig.height=3}
 
@@ -114,7 +114,7 @@ ggplot(data=m.gap,aes(x = log10(end-start)))+
 
 TADs were divided into 10 bins, plus 3 outer bins on both sides. The length of each inner bin is 10% of its TAD length. For outer bins, the length was adjusted so that it would not overlap with the next TAD. If half the distance until the next TAD was larger than 30% (i.e. 3 bins of 10%) of TAD length, the size of outer bins remains unchanged. Otherwise, half the gap between neighbouring TADs is split into the 3 bins, meaning each bin is resized to one sixth of its TAD length.
 
-In order to know in which area of TADs lincRNAs and protein coding genes are more likely to be located, all of these genes with at least 25% of their sequence overlapping a bin were counted. The total number of lincRNAs or protein-coding genes that overlap with each bin was then calculated. 
+In order to know in which area of TADs lincRNAs and protein coding genes are more likely to be expressed, all of these genes with at least 25% of their sequence overlapping a bin were counted. The total number of lincRNAs or protein-coding genes that overlap with each bin was then calculated. Those steps were performed at once using BEDtools intersect version 2.25.
 
 Using the raw number of genes overlapping each bin would be biased since longer TADs have have longer bins, and those bins will have more weight on the plot. The barplots below show the values after they have been normalized by bin length. The bins depicted in orange are located outside TADs, while the ones in blue are inside. All bins beginning by L are on the left (before the TAD), while those beginning with R are on the right (after the TAD).
 
@@ -141,7 +141,7 @@ l <- ggplot(data = short_RNAcount_bin10, aes(x=pos,y=as.numeric(lincRNA),fill=po
   geom_bar(stat="identity")+
   scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
   guides(fill=F)+
-  xlab("TAD bin")+
+  xlab("10% TAD bin")+
   ylab("Normalized N lincRNAs")+
   ggtitle("lincRNA per base per TAD bin")+
   theme_bw()
@@ -149,7 +149,7 @@ p <- ggplot(data = short_RNAcount_bin10, aes(x=pos,y=as.numeric(pcgene),fill=pos
   geom_bar(stat="identity")+
   scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
   guides(fill=F)+
-  xlab("TAD bin")+
+  xlab("10% TAD bin")+
   ylab("Normalized N p.c. genes")+
   ggtitle("Protein-coding gene per base per TAD bin")+
   theme_bw()
@@ -189,20 +189,20 @@ l <- ggplot(data = short_RNAcount_bin5, aes(x=pos,y=as.numeric(lincRNA),fill=pos
   geom_bar(stat="identity")+
   scale_fill_manual(values=c(rep("#E69F00",6),rep("#6666E6",20),rep("#E69F00",6)))+
   guides(fill=F)+
-  xlab("TAD bin")+
+  xlab("5% TAD bin")+
   ylab("Normalized N lincRNAs")+
   ggtitle("lincRNA per base per TAD bin")+
   theme_bw()+
-  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
+  theme(axis.text = element_text(size = rel(0.5)))
 p <- ggplot(data = short_RNAcount_bin5, aes(x=pos,y=as.numeric(pcgene),fill=pos))+
   geom_bar(stat="identity")+
   scale_fill_manual(values=c(rep("#E69F00",6),rep("#6666E6",20),rep("#E69F00",6)))+
   guides(fill=F)+
-  xlab("TAD bin")+
+  xlab("5% TAD bin")+
   ylab("Normalized N p.c. genes")+
   ggtitle("Protein-coding gene per base per TAD bin")+
   theme_bw()+
-  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
+  theme(axis.text = element_text(size = rel(0.5)))
 grid.arrange(l,p)
 
 
@@ -231,22 +231,26 @@ l <- ggplot(data = short_RNAcount_bin1, aes(x=pos,y=as.numeric(lincRNA),fill=pos
   geom_bar(stat="identity")+
   scale_fill_manual(values=c(rep("#E69F00",30),rep("#6666E6",100),rep("#E69F00",30)))+
   guides(fill=F)+
-  xlab("TAD bin")+
+  xlab("1% TAD bin")+
   ylab("Normalized N lincRNAs")+
   ggtitle("lincRNA per base per TAD bin")+
-  theme_bw()
+  theme_bw()+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
 p <- ggplot(data = short_RNAcount_bin1, aes(x=pos,y=as.numeric(pcgene),fill=pos))+
   geom_bar(stat="identity")+
   scale_fill_manual(values=c(rep("#E69F00",30),rep("#6666E6",100),rep("#E69F00",30)))+
   guides(fill=F)+
-  xlab("TAD bin")+
+  xlab("1% TAD bin")+
   ylab("Normalized N p.c. genes")+
   ggtitle("Protein-coding gene per base per TAD bin")+
-  theme_bw()
+  theme_bw()+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
 grid.arrange(l,p)
 
 
 ```
 
 
-#3. ...
+#3. Overlap length
+
+Looking at the distribution of the overlap length betweeen RNAs and bins may give an insight into where genes are expressed in TADs. This is done by looking at all overlaps between TAD bins and RNAs without any minimum overlap requirement, and computing the median overlap length for each bin.
