@@ -7,8 +7,8 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 #Loading data
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
 library(ggplot2)
 library(gridExtra)
@@ -29,7 +29,15 @@ RNAcount_bin5 <- read.table("../data/TAD/merged/RNAcount_TADbins5.txt")
 RNAcount_bin1 <- read.table("../data/TAD/merged/RNAcount_TADbins1.txt")
 colnames(RNAcount_bin10)=colnames(RNAcount_bin5)=colnames(RNAcount_bin1)<-
   c("chr","start","end","ID","pos","lincRNA","pcgene")
-  
+
+medover_len1 <- read.table("../data/TAD/merged/overlaps/median_overlap_bin1-RNA.txt")
+medover_len5 <- read.table("../data/TAD/merged/overlaps/median_overlap_bin5-RNA.txt")
+medover_len10 <- read.table("../data/TAD/merged/overlaps/median_overlap_bin10-RNA.txt")
+colnames(medover_len1)=colnames(medover_len5)=colnames(medover_len10) <- c("pos","pc","lincRNA")
+LCL.lincRNA <-read.table("../data/linc_RNA/LCL.expressed.lincRNA.bed")
+LCL.pc <-read.table("../data/pc_genes/LCL.expressed.pcgene.bed")
+colnames(LCL.pc)=colnames(LCL.lincRNA) <- c("chr","start","end","ID","strand")
+
 ```
 
 
@@ -104,7 +112,7 @@ ggplot(data=m.gap,aes(x = log10(end-start)))+
   geom_histogram(bins = 50, fill="steelblue")+
   ggtitle("Distribution of gap length")+
   xlab("Log10 length")+
-  geom_vline(xintercept = log10(median(m.gap$end - m.gap$start)),col="red")+
+  geom_vline(xintercept = log10(median(m.gap$end - m.gap$start)),col="black")+
   annotate(geom="label",label=paste0("Median length: ",median(m.gap$end - m.gap$start)),x=log10(median(m.gap$end - m.gap$start))+0.6,y=300)+
   theme_bw()
 
@@ -251,6 +259,89 @@ grid.arrange(l,p)
 ```
 
 
-#3. Overlap length
+#3. Length of overlap per bin
 
-Looking at the distribution of the overlap length betweeen RNAs and bins may give an insight into where genes are expressed in TADs. This is done by looking at all overlaps between TAD bins and RNAs without any minimum overlap requirement, and computing the median overlap length for each bin.
+The distribution of median overlap length betweeen RNAs and bins may help define TAD boundaries. This is done by looking at all overlaps between TAD bins and RNAs without any minimum overlap requirement, and computing the median overlap length for each bin. The values are then normalized by dividing overlap length by the length of the RNA. The resulting values represent the portion of genes length that overlap a bin.
+
+
+```{r overlap_median_length, echo=F, warning=F, error=F, fig.width=7, fig.height=7}
+
+library(grid)
+#reordering pos levels:
+reorder_pos <-function(i){
+  thr <- 1/length(i$pos) + 0.6/length(i$pos)
+  i$pos <- as.character(i$pos)
+  i$pos <- factor(i$pos,c(paste0("L",seq(from=(0.3/thr),to=1,by=-1)),
+                                         seq(from=thr*100,to=100,by=thr*100),
+                                         paste0("R",seq(from=1,to=(0.3/thr),by=1))),ordered = T)
+  return(i)
+}
+medover_len1 <- reorder_pos(medover_len1)
+medover_len5 <- reorder_pos(medover_len5)
+medover_len10 <- reorder_pos(medover_len10)
+
+linc10 <- ggplot(data = medover_len10,aes(x = pos,y= lincRNA,fill=pos))+
+  geom_bar(stat="identity")+
+  scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
+  guides(fill=F)+
+  xlab("10% TAD bin")+theme_bw()+
+  theme(axis.text = element_text(size = rel(0.5)))
+pc10 <- ggplot(data = medover_len10,aes(x = pos,y= pc,fill=pos))+
+  geom_bar(stat="identity")+
+  scale_fill_manual(values=c(rep("#E69F00",3),rep("#6666E6",10),rep("#E69F00",3)))+
+  guides(fill=F)+
+  xlab("10% TAD bin")+theme_bw()+
+  theme(axis.text = element_text(size = rel(0.5)))
+
+linc5 <- ggplot(data = medover_len5,aes(x = pos,y= lincRNA,fill=pos))+
+  geom_bar(stat="identity")+
+  scale_fill_manual(values=c(rep("#E69F00",6),rep("#6666E6",20),rep("#E69F00",6)))+
+  guides(fill=F)+
+  xlab("5% TAD bin")+theme_bw()+
+  theme(axis.text = element_text(size = rel(0.4)))
+pc5 <- ggplot(data = medover_len5,aes(x = pos,y= pc,fill=pos))+
+  geom_bar(stat="identity")+
+  scale_fill_manual(values=c(rep("#E69F00",6),rep("#6666E6",20),rep("#E69F00",6)))+
+  guides(fill=F)+
+  xlab("5% TAD bin")+theme_bw()+
+  theme(axis.text = element_text(size = rel(0.4)))
+
+linc1 <- ggplot(data = medover_len1,aes(x = pos,y= lincRNA,fill=pos))+
+  geom_bar(stat="identity")+
+  scale_fill_manual(values=c(rep("#E69F00",30),rep("#6666E6",100),rep("#E69F00",30)))+
+  guides(fill=F)+
+   theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
+pc1 <- ggplot(data = medover_len1,aes(x = pos,y= pc,fill=pos))+
+  geom_bar(stat="identity")+theme_bw()+
+  scale_fill_manual(values=c(rep("#E69F00",30),rep("#6666E6",100),rep("#E69F00",30)))+
+  guides(fill=F)+
+  xlab("1% TAD bin")+
+  theme_bw()+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
+
+mylab <-grid.text(label= "Median proportion of TAD-bins overlap by expressed genes",draw=F)
+grid.arrange(layout_matrix = matrix(c(1,1,2,3,2,3,4,5,4,5,6,7,6,7),ncol = 2,byrow = T),grobs = list(mylab,linc10,pc10,linc5,pc5,linc1,pc1))
+#grid.arrange(nrow=3,linc10,pc10,linc5,pc5,linc1,pc1)
+
+options(scipen=999)
+```
+
+
+Bins located at the borders of TADs tend to contain higher portion of the sequence of protein-coding genes. It seems to be the case for lincRNAs as well, but the lincRNAs also have regular drops  inside the TADs. These regular drops might be linked to the small length of lincRNA compared to protein coding genes (median length: `r median(LCL.lincRNA$end - LCL.lincRNA$start)` vs $`r median(LCL.pc$end - LCL.pc$start)`$ ). They could also be caused by smaller TAD's located inside TADs which have disappeared when they were merged together.
+
+The 10% almost all contain 100% of the lincRNAs sequence, suggesting they are much larger, but only between 16.7 and 24.4% of protein-coding genes.
+The 5% bins contain between 30.7 and 77.8% of lincRNAs sequence, and between 8.3 and 12.9% of protein-coding genes. 
+1% bins contain betwteen 2.6 and 11.2% of lincRNA, and between 1.7 and 2.7% of protein-coding genes.
+
+#4. Determination of TAD boundaries:
+
+From the results obtained in __2__, it seems 10% bins are larger than the area that is enriched in expressed genes and may be too large to be used as TAD-boundaries. On the other hand, the 1% bins capture well the differences, but using 1% TAD boundaries would not englobe the whole area. The best threshold among those 3 may be 5%, which would offer a fair trade off between size and accuracy.
+
+Results from __3__ yield the following summary statics for sequences overlapping 5% bins:
+
+```{r summary_overlap,echo=T, error=F, warning=F}
+summary(medover_len5$lincRNA)  # Proportion of lincRNAs sequence overlapping 5% TAD bins.
+summary(medover_len5$pc)  # Proportion of protein-coding genes sequence overlapping  5% TAD bins.
+```
+
+Next: How to choose minimum overlapping requirement.
