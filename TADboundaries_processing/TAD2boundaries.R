@@ -2,9 +2,9 @@
 #Cyril Matthey-Doret
 #11.10.2016
 
-setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/First_step/data/")
 #setwd("/home/cyril/Documents/Master/sem_1/First_step/data")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
+setwd("/Users/cmatthe5/Documents/First_step/data/")
 #Loading domains and boundaries.
 TADb10 <- read.table("TAD/merged/TAD_boundaries10.bed")
 #TADb10 <- TADb10[,-4]
@@ -112,7 +112,12 @@ for(d in TAD_bound){
     whole_bound <- rbind(whole_bound,data.frame(d[i]))
   }
 }
-whole_bound <- read.table("../data/TAD/merged/whole_TAD_boundaries.txt")
 options(scipen=999)
 write.table(whole_bound, quote=F,sep="\t",row.names = F,col.names = F,file = "TAD/merged/whole_TAD_boundaries.txt")
 options(scipen=0)
+
+
+#After studying other things, it seems 5% is the best threshold.
+whole_bound <- read.table("../data/TAD/merged/whole_TAD_boundaries.txt")
+flexibound5 <- whole_bound[whole_bound$V3 %in% c("L5","R5"),c(2,4,5,1)]
+write.table(flexibound5,file = "TAD/merged/flexibound5.bed",quote=F,sep="\t",row.names = F,col.names = F)
