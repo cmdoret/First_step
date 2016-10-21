@@ -1,4 +1,4 @@
-# In this script, I try to define TAD boundaries using the insulation score as described in Smith et al, 2016.
+# In this script, I normalize the hicdata matrix.
 # Cyril Matthey-Doret
 # 20.10.2016
 #BSUB -o raw_observed_norm_chr1_5kb.txt
@@ -26,23 +26,12 @@ normatrix <- function(i){
   return(nr)
 }
 
+
 indexlist <- seq(1,length(raw_hic$V1))
 normalized <-lapply(X = indexlist, FUN = normatrix)
 normalized <-(unname(unlist(normalized)))
 normalized <-cbind(raw_hic[,c(1,2)],norm=normalized)
-normalized
 write.table(x = normalized,file = "writetable.raw_observed_norm_chr1_5kb.txt",sep = "\t",quote = F,row.names = F,col.names = F)
-#==================
-# Tests
-df <- data.frame(a=c(1,2,3,4),b=c(10,20,30,40),c=c(100,200,300,400))
-apply(X=df,MARGIN = c(1,2),FUN=normatrix)
 
-testfunc <- function(i){
-  print(str(as.numeric(i)))
-  return(i)
-}
-
-testlist <- seq(1,30)
-testres<-lapply(X = testlist, FUN=testfunc)
 
 
