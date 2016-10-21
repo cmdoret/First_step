@@ -5,32 +5,26 @@
 
 
 # give the filename base as an argument to the R CMD run
-fn.base <- "chr1_5kb"
+#fn.base <- "chr1_5kb"
 
-
-
+setwd("/Users/cmatthe5/Documents/First_step/data/")
+chr <- paste0("raw_hic_5kb_res/chr",c,"/MAPQGE30/")
 
 ## load data ## ====================================
 
 # load sparse matrix data
 library(data.table)                                    # pour utiliser fread - ca lira plus vite!
-#raw_hic <- fread(
-#  paste0("gunzip < ",file.path(
-#    ".",paste0(fn.base, ".RAWobserved.gz")),""),       # on passe une commande shell pour dezipper on-the-fly sans que ca n'affecte le zip original
-#  sep="\t", header=FALSE)
-setwd("/Users/cmatthe5/Documents/First_step/data/")
-raw_hic <- fread("raw_hic_chr1_5kbres/MAPQGE30/chr1_5kb.RAWobserved")
+raw_hic <- fread(
+  paste0("gunzip < ",file.path(
+    ".",paste0(chr, ".RAWobserved.gz")),""),       # on passe une commande shell pour dezipper on-the-fly sans que ca n'affecte le zip original
+  sep="\t", header=FALSE)
+raw_hic <- fread(paste0(chr,"_5kb.RAWobserved"))
 colnames(raw_hic) <- c("row_pos","col_pos", "value")   # pour reference plus facile
 raw_hic <- as.data.frame(raw_hic)                      # NB: raw_hic is a data.table, not a data.frame, so we'll convert it
-# NB: les lignes & colonnes sont identifiees par leurs coordonnees genomiques 
-#     Chaque coordonnée représente la gauche d'un segment
-#     plutot que par des indices de lignes/colonnes
-
 
 # load normalisation vector data
-#gzfc <- gzfile(file.path(".",paste0(fn.base, ".VCnorm.gz")),"rt")
-#norm.vec <- read.table(gzfc)
-norm.vec <- read.table("raw_hic_chr1_5kbres/MAPQGE30/chr1_5kb.KRnorm")
+gzfc <- gzfile(file.path(".",paste0(chr, "_5kb.VCnorm.gz")),"rt")
+norm.vec <- read.table(gzfc)
 #close(gzfc)
 norm.vec <- norm.vec[,1] # make into vector
 # NB: il y a une entree par ligne/colonne de la matrice
@@ -64,16 +58,16 @@ raw_hic$norm.value  <- (raw_hic$value / raw_hic$norm.factor)
 # a sparse matrix will hardly take up any more memory than the data.frame
 # and MUCH less than a normal matrix IF it is, in fact, sparse (ie many zeros)
 library(Matrix)
-print(system.time(
-  raw.hic.sm <- sparseMatrix(i = raw_hic$row_index, 
-                             j = raw_hic$col_index, 
+
+raw.hic.sm <- sparseMatrix(i = raw_hic$row_pos, 
+                             j = raw_hic$col_pos, 
                              x = raw_hic$norm.value,
                              dims = c(length(norm.vec), length(norm.vec)),
                              dimnames=list(matrix.starnames, matrix.starnames))
-)) # ~5sec
 
 
 #write.table(x=raw.hic.sm,file="norm_hic_data/chr1_5kb_norm.txt",quote=F,row.names = F,col.names = F,sep="\t")
-writeMM(obj = raw.hic.sm,file="norm_hic_data/chr1_5kb_norm.txt")
+writeMM(obj = raw.hic.sm,file=paste0("norm_hic_data/chr",chr,"_5kb_norm.txt"))
+
 
 # EOF
