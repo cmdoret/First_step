@@ -1,0 +1,36 @@
+
+---
+title: 'Report 4: Raw Hi-C data processing'
+author: "Cyril Matthey-Doret"
+date: "22 octobre 2016"
+output: pdf_document
+mainfont: Calibri Light
+sansfont: Calibri Light
+linkcolor: NavyBlue
+---
+
+
+```{r setup, include=FALSE}
+```
+
+NOTE: NOTIFY JENNIFER THAT I WAS WRONG; SHE SHOULD NOT USE GENOME WIDE BALANCING IN JUICEBOX. IT ALSO TAKES INTERCHROMOSOMAL MATRICES OR STH (Rao et al, 2014, page: S40 (bottom))
+
+
+#Introduction
+
+All previous definitions of TAD-boundaries relied on arbitrary thresholds and their sizes were proportional to the length of their respective TAD. This has not much biological meaning and It would be better to define boundaries separately for each TAD. A straight-forward approach is to use the contact matrices obtained from Hi-C experiments\footnote{Matrices used are from the GSE63525 GM12878 primary intrachromosomal contact matrices dataset}. Here I follow the procedures described by [__Rao et al (2014)__](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE63525) to process the matrices.
+
+#1. Normalization
+
+Two normalization vectors were provided with the dataset; VC (Vanilla Coverage) and KR (Knight et Ruiz). I used the KR vector as this is the same used in [the article where the data comes from](http://www.cell.com/abstract/S0092-8674(14)01497-4). I worked only with the matrices at 5kb (highest) resolution. Matrices are in sparse matrix format. where the row/column indexes correspond to the left edge of the bin.
+
+The normalization procedure consists in dividing each entry in the contact matrix by a corresponding value in the vector:
+
+$M^*_{i,j}=\frac{M_{i,j}}{V_{KR}[\frac{i}{res}]*V_{KR}[\frac{j}{res}]}$
+
+Where $M$ is the raw matrix and $M^*$ the normalized matrix.
+
+The normalization algorithm did not converge for all entries, so there are missing values in the vector. The values that could not be normalized are considered as 0 in the matrix (i.e. not listed in sparse format).
+
+```{r matplot, echo=F, warning=F, error=F, fig.height=4, fig.width=5}
+```

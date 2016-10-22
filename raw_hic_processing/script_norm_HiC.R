@@ -1,48 +1,39 @@
-#
+
 # script to normalise the raw HiC data
 # NB: I gzipped the HiC data
 #
 
 
-if (is.null(n.cores)) { 
-  stopifnot(require(parallel)) 
-  n.cores <- parallel:::detectCores() 
-}
-stopifnot(require(snow))
-
-clus <- makeSOCKcluster( n.cores  )
-on.exit( stopCluster(clus) )  
-setwd("/Users/cmatthe5/Documents/First_step/data/")
-
-norm<-function(c){
-  
-  chr <- paste0("/Users/cmatthe5/Documents/First_step/data/raw_hic_5kb_res/chr",c,"/MAPQGE30/chr",c)
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")  # Path on PC
+#setwd("/Users/cmatthe5/Documents/First_step/data/")  # Path on CHUV mac
+for(c in c(1:22,"X")){
+  chr <- paste0("/home/cyril/Documents/Master/sem_1/First_step/data/raw_hic_5kb_res/chr",c,"/MAPQGE30/chr",c)  # Path on PC
+  #chr <- paste0("/Users/cmatthe5/Documents/First_step/data/raw_hic_5kb_res/chr",c,"/MAPQGE30/chr",c)  # Path on CHUV mac
   
   ## load data ## ====================================
   
   # load sparse matrix data
-  library(data.table)                                    # pour utiliser fread - ca lira plus vite!
+  library(data.table)                                    # allows the use of fread function. It's faster !
   raw_hic <- fread(
     paste0("gunzip < ",file.path(
-      paste0(chr, "_5kb.RAWobserved.gz")),""),       # on passe une commande shell pour dezipper on-the-fly sans que ca n'affecte le zip original
+      paste0(chr, "_5kb.RAWobserved.gz")),""),       # passing shell command to unzip file on the fly without affecting the original.
     sep="\t", header=FALSE)
-  colnames(raw_hic) <- c("row_pos","col_pos", "value")   # pour reference plus facile
+  colnames(raw_hic) <- c("row_pos","col_pos", "value")   # more convenient
   raw_hic <- as.data.frame(raw_hic)                      # NB: raw_hic is a data.table, not a data.frame, so we'll convert it
   
   # load normalisation vector data
-  gzfc <- gzfile(file.path(paste0(chr, "_5kb.KRnorm.gz")),"rt")
-  norm.vec <- read.table(gzfc)
-  close(gzfc)
-  norm.vec <- norm.vec[,1] # make into vector
-  # NB: il y a une entree par ligne/colonne de la matrice
-  
+  gzfc <- gzfile(file.path(paste0(chr, "_5kb.KRnorm.gz")),"rt") # Loading .gz compressed vector
+  norm.vec <- read.table(gzfc)  # reading vector
+  close(gzfc)  # Closing connection with .gz file
+  norm.vec <- norm.vec[,1] # make into vector object
+  # NB: The normalization vector has one entry per row/col in the matrix
   
   
   
   ## normalise values ## ==============================
   # functions to convert positions into indexes & vice-versa
-  pos_2_index <- function(pos, resolution=5000) { return(1 + (pos / resolution))  }
-  index_2_pos <- function(ind, resolution=5000) { return(resolution * (ind - 1))  }
+  pos_2_index <- function(pos, resolution=5000) { return(1 + (pos / resolution))  }  # Finding index in vector from entry in matrix
+  index_2_pos <- function(ind, resolution=5000) { return(resolution * (ind - 1))  }  # Finding entry in matrix corresponding to index in vector
   
   
   # list all the possible POSITIONS 
@@ -73,16 +64,10 @@ norm<-function(c){
                                dimnames=list(matrix.starnames, matrix.starnames))
   
   
-  #write.table(x=raw.hic.sm,file="norm_hic_data/chr1_5kb_norm.txt",quote=F,row.names = F,col.names = F,sep="\t")
-  return(raw.hic.sm)
+
+  writeMM(obj = raw.hic.sm,file=paste0("norm_hic_data/","chr",c,"_5kb_norm.txt"))
+  # Writing file as a matrix object (could be written as a dataframe)
+  # Next step is to compute the sum of interactions for each bin.
 }
-
-clusterCall( clus, function() { 
-  require(Matrix) ; require(data.table)       # appel pour executer ce code sur chaque noeud. 
-  # Utile au debut pour charger les librairies necessaires dans chaque instance de R.
-} )
-clusterExport(clus, c("truc", "muche", ...???), envir=environment())
-
-tmp <- clusterApplyLB( clus, c(1:22,"X"), norm)
 
 # EOF

@@ -4,13 +4,18 @@
 #
 
 
-# give the filename base as an argument to the R CMD run
-#fn.base <- "chr1_5kb"
+if (is.null(n.cores)) { 
+  stopifnot(require(parallel)) 
+  n.cores <- parallel:::detectCores() 
+}
+stopifnot(require(snow))
 
+clus <- makeSOCKcluster( n.cores  )
+on.exit( stopCluster(clus) )  
 setwd("/Users/cmatthe5/Documents/First_step/data/")
-for(c in c(1:22,"X")){
+
+norm<-function(c){
   
-  chr <- paste0("/Users/cmatthe5/Documents/First_step/data/raw_hic_5kb_res/chr",c,"/MAPQGE30/chr",c)
   
   ## load data ## ====================================
   
@@ -68,7 +73,15 @@ for(c in c(1:22,"X")){
   
   
   #write.table(x=raw.hic.sm,file="norm_hic_data/chr1_5kb_norm.txt",quote=F,row.names = F,col.names = F,sep="\t")
-  writeMM(obj = raw.hic.sm,file=paste0("norm_hic_data/","chr",c,"_5kb_norm.txt"))
+  return(raw.hic.sm)
 }
+
+clusterCall( clus, function() { 
+  require(Matrix) ; require(data.table)       # appel pour executer ce code sur chaque noeud. 
+  # Utile au debut pour charger les librairies necessaires dans chaque instance de R.
+} )
+#clusterExport(clus, c("truc", "muche", ...???), envir=environment())
+
+tmp <- clusterApplyLB( clus, c(1:22,"X"), norm)
 
 # EOF
