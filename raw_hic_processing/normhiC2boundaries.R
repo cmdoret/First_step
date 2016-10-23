@@ -14,7 +14,7 @@ setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 
 if (!exists("n.cores")) { 
   stopifnot(require(parallel)) 
-  n.cores <- parallel:::detectCores() # Value depends on number of cores in the CPU
+  n.cores <- parallel:::detectCores()-2 # Value depends on number of cores in the CPU
 }
 stopifnot(require(snow))
 stopifnot(require(Matrix))
@@ -36,15 +36,33 @@ on.exit( stopCluster(clus) )
 #Defining functions
 
 find_bound<-function(m){
-  sub_TAD <- TAD[as.character(TAD$chr)==paste0("chr",m[2]),]  # subsetting TAD dataframe by chromosome (1chr/node)
-  sub_TAD$maxint <- rep(0,length(sub_TAD$start))  # allocating space for max interaction observed in each TAD.
+  sub_TAD <- TAD[as.character(TAD$chr)==paste0("chr",m[[2]]),]  # subsetting TAD dataframe by chromosome (1chr/node)
+  
+  sub_TAD$Lbound.start = sub_TAD$Lbound.end = sub_TAD$Rbound.start =
+    sub_TAD$Rbound.end = sub_TAD$maxint <- rep(0,length(sub_TAD$start))  # allocating space for max interaction observed in each TAD.
+  
   for(i in 1:length(sub_TAD$start)){  # Iterating over TADs
     start.ind <- pos_2_index(sub_TAD$start[i])  # transforming TAD start position to row in matrix. (TADs are already at 5kb res, so no need to approximate)
     end.ind <- pos_2_index(sub_TAD$end[i])  # Same for end position
-    sub_TAD$maxint[i]<-max(rowSums(m[1][[1]][start.ind:end.ind,]))  # putting max interaction value for each TAD in dataframe.
-    # compute threshold based on interactions at border and max interactions in TAD
-    # slide before and after border to find bins corresponding to threshold
-    # corresponding bins will be the limits of TAD boundaries. Keep in mind the coordinate obtained with index_2_pos(i) is bin's left edge.
+    sub_TAD$maxint[i]<-max(rowSums(m[[1]][start.ind:end.ind,]))  # putting max interaction value for each TAD in dataframe.
+    sl=el <- c(start.ind, sum(m[[1]][start.ind,]))  # Initiating left and right limits of left boundary
+    
+    while(sl[2]<sub_TAD$maxint[i]/10){  # Start of left boundary -> sliding to the left
+      sl[1] <- sl[1]-1; sl[2] <-sum(m[[1]][sl[1],])}
+    sub_TAD$Lbound.start[i] <- index_2_pos(sl[1]+1)  # + 1 because position corresponds to left edge of the bin.
+    
+    while(el[2]<sub_TAD$maxint[i]/10){  # End of left boundary -> sliding to the right
+      el[1] <- el[1]+1; el[2] <-sum(m[[1]][el[1],])}
+    sub_TAD$Lbound.end[i] <- index_2_pos(el[1])
+    sr=er <-c(end.ind, sum(m[[1]][end.ind,]))  # Initiating left and right limits of right boundary
+    
+    while(sr[2]<sub_TAD$maxint[i]/10){  # Start of right boundary -> sliding to the left
+      sr[1] <- sr[1]-1; sr[2] <-sum(m[[1]][sr[1],])}
+    sub_TAD$Rbound.start[i] <- index_2_pos(sr[1]+1)  # + 1 because position corresponds to left edge of the bin.
+    
+    while(er[2]<sub_TAD$maxint[i]/10){  # End of right boundary -> sliding to the right
+      er[1] <- er[1]+1; er[2] <-sum(m[[1]][er[1],])}
+    sub_TAD$Rbound.end[i] <- index_2_pos(er[1])
   }
   return(sub_TAD)
 }
