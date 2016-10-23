@@ -33,13 +33,18 @@ colnames(TAD) <- c("chr","start","end")
 clus <- makeSOCKcluster( n.cores  )  # Creating cluster
 on.exit( stopCluster(clus) )  
 
+#Defining functions
+
 find_bound<-function(m){
-  sub_TAD <- TAD[as.character(TAD$chr)==paste0("chr",m[2]),]
-  sub_TAD$maxint <- rep(0,length(sub_TAD$start))
-  for(i in 1:length(sub_TAD$start)){
-    start.ind <- pos_2_index(sub_TAD$start[i])
-    end.ind <- pos_2_index(sub_TAD$end[i])
-    sub_TAD$maxint[i]<-max(rowSums(m[1][[1]][start.ind:end.ind,]))
+  sub_TAD <- TAD[as.character(TAD$chr)==paste0("chr",m[2]),]  # subsetting TAD dataframe by chromosome (1chr/node)
+  sub_TAD$maxint <- rep(0,length(sub_TAD$start))  # allocating space for max interaction observed in each TAD.
+  for(i in 1:length(sub_TAD$start)){  # Iterating over TADs
+    start.ind <- pos_2_index(sub_TAD$start[i])  # transforming TAD start position to row in matrix. (TADs are already at 5kb res, so no need to approximate)
+    end.ind <- pos_2_index(sub_TAD$end[i])  # Same for end position
+    sub_TAD$maxint[i]<-max(rowSums(m[1][[1]][start.ind:end.ind,]))  # putting max interaction value for each TAD in dataframe.
+    # compute threshold based on interactions at border and max interactions in TAD
+    # slide before and after border to find bins corresponding to threshold
+    # corresponding bins will be the limits of TAD boundaries. Keep in mind the coordinate obtained with index_2_pos(i) is bin's left edge.
   }
   return(sub_TAD)
 }
@@ -53,5 +58,6 @@ clusterCall( clus, function() {
   require(Matrix)       # executed on each node. 
   # Loading required libraries in each instance of R
 } )
-clusterExport(clus, varlist=c("TAD", "index_2_pos", "pos_2_index"), envir=environment())  # Exporting the list of TADs to each node in the cluster.
+# Exporting the list of TADs and the required functions to each node in the cluster.
+clusterExport(clus, c("TAD", "index_2_pos", "pos_2_index"), envir=environment())
 tmp <- clusterApplyLB( clus, matlist, find_bound)
