@@ -47,7 +47,7 @@ for(c in c(1:22,"X")){
   raw_hic$col_index   <- pos_2_index(raw_hic$col_pos)
   raw_hic$norm.factor <- norm.vec[raw_hic$row_index] * norm.vec[raw_hic$col_index]
   raw_hic$norm.value  <- (raw_hic$value / raw_hic$norm.factor)
-  
+  raw_hic <- raw_hic[!is.na(raw_hic$norm.value),]
   
   
   
