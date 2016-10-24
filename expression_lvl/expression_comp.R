@@ -9,8 +9,8 @@ library(gridExtra)
 ######################################################
 
 #Loading data:
-setwd("/home/cyril/Documents/First_step/data/")
-#setwd("/home/cyril/Documents/Master/sem_1/First step/data/")
+#setwd("/home/cyril/Documents/First_step/data/")
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 bedcol <- c("chr", "start", "end", "gene", "strand")
 exp_lincRNA <- read.table("expression/LCL.lincRNA.expression.txt", header = F)
 exp_pcgene <- read.table("expression/LCL.pcgene.expression.txt", header = F)
@@ -91,6 +91,66 @@ whole_exp <- rbind(cbind(exp_Tb_pc5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep
                    cbind(exp_nTb_lincRNA20,threshold=rep("20"),TAD=rep("nTb"),gentype=rep("lincRNA")))
 write.table(x = whole_exp,file = "expression/merged/whole_exp.txt",quote = F,sep = "\t",row.names = F,col.names = T)
 #====================================================
+# SAME WITH FLEXIBLE BOUNDARIES:
+  
+
+#Loading data:
+#setwd("/home/cyril/Documents/First_step/data/")
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+bedcol <- c("chr", "start", "end", "gene", "strand")
+exp_lincRNA <- read.table("expression/LCL.lincRNA.expression.txt", header = F)
+exp_pcgene <- read.table("expression/LCL.pcgene.expression.txt", header = F)
+#loading TAD-bound lincRNAs sets
+Tb_lincRNA5 <- read.table("linc_RNA/merged/flexTADbound-lincRNA5.bed")
+
+#loading TAD-bound pcgenes sets
+Tb_pc5 <- read.table("pc_genes/merged/flexTADbound-pcgene5.bed")
+
+#loading non-TAD-bound lincRNAs sets
+nTb_lincRNA5 <- read.table("linc_RNA/merged/flexnonTADbound-lincRNA5.bed")
+
+#loading non-TAD-bound pcgenes sets
+nTb_pc5 <- read.table("pc_genes/merged/flexnonTADbound-pcgene5.bed")
+
+
+#adding colnames
+colnames(Tb_lincRNA5) =colnames(nTb_lincRNA5) = colnames(Tb_pc5) = colnames(nTb_pc5) <-c("chr", "start", "end", "gene", "strand")
+colnames(exp_pcgene)=colnames(exp_lincRNA) <- c("gene", "expression")
+
+#Splitting expression levels data into TADbound (Tb) and non-TADbound (nTb)
+exp_Tb_lincRNA5 <-exp_lincRNA[exp_lincRNA$gene %in% Tb_lincRNA5$gene,]
+
+exp_nTb_lincRNA5 <-exp_lincRNA[exp_lincRNA$gene %in% nTb_lincRNA5$gene,]
+
+exp_Tb_pc5 <-exp_pcgene[exp_pcgene$gene %in% Tb_pc5$gene,]
+
+exp_nTb_pc5 <-exp_pcgene[exp_pcgene$gene %in% nTb_pc5$gene,]
+
+#Writing into bed files for further use.
+write.table(exp_Tb_lincRNA5,file = "expression/merged/flex_exp_Tb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+
+write.table(exp_nTb_lincRNA5,file = "expression/merged/flex_exp_nTb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+
+write.table(exp_Tb_pc5,file = "expression/merged/flex_exp_Tb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+
+write.table(exp_nTb_pc5,file = "expression/merged/flex_exp_nTb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+
+#building large, single dataframe to make data more convenient.
+CData <-function(df){
+  return(cbind(df,fact=rep(deparse(substitute(df)),length(df[,1]))))
+}
+
+
+whole_exp <- rbind(cbind(exp_Tb_pc5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep("pc")), 
+                   cbind(exp_nTb_pc5,threshold=rep("5"),TAD=rep("nTb"),gentype=rep("pc")), 
+                   cbind(exp_Tb_lincRNA5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep("lincRNA")), 
+                   cbind(exp_nTb_lincRNA5,threshold=rep("5"),TAD=rep("nTb"),gentype=rep("lincRNA")))
+write.table(x = whole_exp,file = "expression/merged/flex_whole_exp.txt",quote = F,sep = "\t",row.names = F,col.names = T)
+
+
+
+
+
 
 #Visualizing data:
 

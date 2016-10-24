@@ -7,6 +7,7 @@ options(scipen=999)
 #=====================================================
 
 #Loading data
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 setwd("/home/cyril/Documents/First_step/data/")
 TAD_ori <- read.table("TAD/merged/merged_TAD.bed")                #TADs
 colnames(TAD_ori) <- c("chr", "start", "end")
@@ -155,5 +156,53 @@ summary(nonTADbound_pc$end - nonTADbound_pc$start)
 
 #==================================================
 
+# WITH NEW FLEXIBLE BOUNDARIES AND DIFFERENT THRESHOLDS FOR PC AND LINC:
+
+#lincRNAs:
+setwd("../TAD-RNA-overlap/")
+#overlaps performed, contains duplicates: Some (many) transcripts seem to overlap more than 1 TAD boundary.
+overlap_RNA5 <- read.table("lincRNA_5overlap_flexible_TADb.bed")
+colnames(overlap_RNA5) <- c("chr", "start", "end", "gene", "strand")
+
+#Number of overlaps: 
+length(overlap_RNA5$gene);length(overlap_RNA10$gene);length(overlap_RNA20$gene)
+#number of duplicates (lincRNAs matching 2 or more TADb):
+length(overlap_RNA5$gene[duplicated(overlap_RNA5$gene)])
+
+#removing duplicates:
+TADbound_lincRNA5 <- overlap_RNA5[!duplicated(overlap_RNA5$gene),]
+
+#writing into .bed files:
+setwd("/home/cyril/Documents/First_step/data/")
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+write.table(TADbound_lincRNA5,file = "linc_RNA/merged/flexTADbound-lincRNA5.bed",sep="\t",quote = F,col.names = F,row.names = F)
+
+#Identifying nonTADbound-lincRNAs and writing them into files:
+nonTADbound_lincRNA5 <- RNA_ori[!(RNA_ori$gene %in% TADbound_lincRNA5$gene),]
+write.table(nonTADbound_lincRNA5,file = "linc_RNA/merged/flexnonTADbound-lincRNA5.bed",sep="\t",quote = F,col.names = F,row.names = F)
+
+#==============================================================
+#Protein coding genes:
+setwd("../TAD-RNA-overlap/")
+overlap_pc5 <- read.table("pcgene_5overlap_flexible_TADb.bed")
+colnames(overlap_pc5) <- c("chr", "start", "end", "gene", "strand")
+
+#number of overlaps found:
+length(overlap_pc5$gene); length(overlap_pc10$gene); length(overlap_pc20$gene)
+
+#number of duplicates:
+length(overlap_pc5$gene[duplicated(overlap_pc5$gene)])
+
+#removing duplicates:
+TADbound_pc5 <- overlap_pc5[!duplicated(overlap_pc5$gene),]
+
+#writing into bed files:
+setwd("/home/cyril/Documents/First_step/data/")
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+write.table(TADbound_pc5, file = "pc_genes/merged/flexTADbound-pcgene5.bed", sep="\t", quote=F, col.names = F, row.names = F)
+
+#Identifying nonTADbound-pcgenes
+nonTADbound_pc5 <- pc_ori[!(pc_ori$gene %in% TADbound_pc5$gene),]
+write.table(nonTADbound_pc5,file = "pc_genes/merged/flexnonTADbound-pcgene5.bed",sep="\t",quote = F,col.names = F,row.names = F)
 
 

@@ -142,6 +142,120 @@ whole_tau <- rbind(cbind(tau_Tb_pc5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep
                    cbind(tau_nTb_lincRNA10,threshold=rep("10"),TAD=rep("nTb"),gentype=rep("lincRNA")), 
                    cbind(tau_nTb_lincRNA20,threshold=rep("20"),TAD=rep("nTb"),gentype=rep("lincRNA")))
 write.table(x = whole_tau,file = "tissue_specificity/merged/whole_tau.txt",quote = F,sep = "\t",row.names = F,col.names = T)
+#========================
+#SAME FOR FLEXIBLE BOUNDARIES:
+
+#Loading data
+options(scipen=999)
+setwd("/home/cyril/Documents/First_step/data/")
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+id_convert <- read.table("tissue_specificity/xloc2ensg")
+colnames(id_convert) <- c("XLOC_ID","ENS_ID")
+linc_RNA_tissue <- read.table("tissue_specificity/all.lincRNA.tissue.encode.txt", header=T,stringsAsFactors = F)
+linc_RNA_tissue <- na.omit(linc_RNA_tissue)
+linc_RNA_tissue[,2:637] <- sapply(linc_RNA_tissue[,2:637],as.numeric)
+pc_tissue <- read.table("tissue_specificity/all.pcgene.tissue.encode.txt",header=T,stringsAsFactors = F)
+
+#convert IDs to ENSG:
+linc_RNA_tissue <- merge(x=linc_RNA_tissue, y= id_convert,by.x="ID",by.y="XLOC_ID",all=F)
+linc_RNA_tissue <- linc_RNA_tissue[,-1]
+linc_RNA_tissue <- linc_RNA_tissue[,c(637,1:636)]
+pc_tissue <- merge(x=pc_tissue, y=id_convert, by.x="ID", by.y="XLOC_ID", all=F)
+pc_tissue <- pc_tissue[,-1]
+pc_tissue <- pc_tissue[,c(637,1:636)]
+
+#Calculation of tissue specificity:
+### following methods from Robinson's TS review ###
+## http://bib.oxfordjournals.org/content/early/2016/02/17/bib.bbw008.full
+
+
+calcTDR <- function( mat, cutoff=0 ) {  
+  # transcript detection rate: in what proportion of samples were each transcript seen?
+  # cutoff optional
+  100 * rowSums(mat>cutoff) / ncol(mat)
+}
+calcTau <- function( v, cutoff=0 ) {     
+  # Tau measure of specificity (0: generic, 1:specific)
+  # cutoff optional
+  v[v<cutoff] <- cutoff
+  sum(1-(v/max(v)))/(length(v)-1)
+}
+calcNormExpr <- function(mat, cutoff=0.1) { 
+  # transform: shifted log10
+  # cutoff optional
+  mat[mat<=cutoff] <- 0
+  log10( mat + 1 )
+}
+
+# transform expression
+
+rownames(linc_RNA_tissue)<- linc_RNA_tissue$ENS_ID
+linc_RNA_tissue.norm <- calcNormExpr(linc_RNA_tissue[,-1])
+rownames(pc_tissue)<- pc_tissue$ENS_ID
+pc_tissue.norm <- calcNormExpr(pc_tissue[,-1])
+
+# get "naive" TDRs to filter transcripts never detected
+pc_tdr <- calcTDR(pc_tissue.norm) 
+linc_RNA_tdr <- calcTDR(linc_RNA_tissue.norm) 
+
+linc_RNA_tissue.norm_filt <- linc_RNA_tissue.norm[linc_RNA_tdr>0,]
+pc_tissue.norm_filt <- pc_tissue.norm[pc_tdr>0,]
+
+
+# calculate tissue-averaged Taus
+taus.pc_tissue <- apply(pc_tissue.norm_filt, MARGIN=1, FUN=calcTau)
+taus.linc_RNA_tissue <- apply(linc_RNA_tissue.norm_filt, MARGIN=1, FUN=calcTau)
+
+tau_pc <-data.frame(ID=names(taus.pc_tissue),tau=unname(taus.pc_tissue))
+tau_linc_RNA <-data.frame(ID=names(taus.linc_RNA_tissue),tau=unname(taus.linc_RNA_tissue))
+par(mfrow=c(1,2))
+hist(tau_linc_RNA$tau);hist(tau_pc$tau)
+# lincRNA are very tissue-specific.
+#========================================================
+# Splitting into TAD-bound and nonTAD-bound
+
+#loading TAD-bound lincRNAs sets
+Tb_lincRNA5 <- read.table("linc_RNA/merged/flexTADbound-lincRNA5.bed")
+
+#loading TAD-bound pcgenes sets
+Tb_pc5 <- read.table("pc_genes/merged/flexTADbound-pcgene5.bed")
+
+#loading non-TAD-bound lincRNAs sets
+nTb_lincRNA5 <- read.table("linc_RNA/merged/flexnonTADbound-lincRNA5.bed")
+
+#loading non-TAD-bound pcgenes sets
+nTb_pc5 <- read.table("pc_genes/merged/flexnonTADbound-pcgene5.bed")
+
+# adding colnames
+colnames(Tb_lincRNA5)=colnames(nTb_lincRNA5)=colnames(Tb_pc5)=colnames(nTb_pc5)<-c("chr", "start", "end", "gene", "strand")
+
+#splitting specificity values into TADb and nTADb
+crop <- function(s){sub("\\..*","",s)} # Removes version number in gene ID
+tau_Tb_lincRNA5 <-tau_linc_RNA[tau_linc_RNA$ID %in% crop(Tb_lincRNA5$gene),]
+
+tau_nTb_lincRNA5 <-tau_linc_RNA[tau_linc_RNA$ID %in% crop(nTb_lincRNA5$gene),]
+
+tau_Tb_pc5 <-tau_pc[tau_pc$ID %in% crop(Tb_pc5$gene),]
+
+tau_nTb_pc5 <-tau_pc[tau_pc$ID %in% crop(nTb_pc5$gene),]
+
+
+#writing into bed files for further use:
+write.table(tau_Tb_lincRNA5,file = "tissue_specificity/merged/flex_tau_Tb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+
+write.table(tau_nTb_lincRNA5,file = "tissue_specificity/merged/flex_tau_nTb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+
+write.table(tau_Tb_pc5,file = "tissue_specificity/merged/flex_tau_Tb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+
+write.table(tau_nTb_pc5,file = "tissue_specificity/merged/flex_tau_nTb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+
+# Putting all values in the same dataframe, for the sake of convenience
+whole_tau <- rbind(cbind(tau_Tb_pc5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep("pc")), 
+                   cbind(tau_nTb_pc5,threshold=rep("5"),TAD=rep("nTb"),gentype=rep("pc")), 
+                   cbind(tau_Tb_lincRNA5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep("lincRNA")), 
+                   cbind(tau_nTb_lincRNA5,threshold=rep("5"),TAD=rep("nTb"),gentype=rep("lincRNA")))
+write.table(x = whole_tau,file = "tissue_specificity/merged/flex_whole_tau.txt",quote = F,sep = "\t",row.names = F,col.names = T)
+
 #Visualizing:
 
 library(plyr)

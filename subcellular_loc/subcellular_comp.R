@@ -117,6 +117,88 @@ whole_loc <- rbind(cbind(loc_Tb_pc5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep
                    cbind(loc_nTb_lincRNA10,threshold=rep("10"),TAD=rep("nTb"),gentype=rep("lincRNA")), 
                    cbind(loc_nTb_lincRNA20,threshold=rep("20"),TAD=rep("nTb"),gentype=rep("lincRNA")))
 write.table(x = whole_loc,file = "subcell_loc/merged/whole_loc.txt",quote = F,sep = "\t",row.names = F,col.names = T)
+
+# SAME FOR FLEX BOUNDARIES:
+#Loading data:
+#setwd("/home/cyril/Documents/First_step/data/")
+#Loading data:
+#setwd("/home/cyril/Documents/First_step/data/")
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+bedcol <- c("chr", "start", "end", "gene", "strand")
+loc_lincRNA <- read.table("subcell_loc/all.lincRNA.GM12878.subcellular.ratio.txt", header = T)
+loc_pcgene <- read.table("subcell_loc/all.pcgene.GM12878.subcellular.ratio.txt", header = T)
+#loading TAD-bound lincRNAs sets
+Tb_lincRNA5 <- read.table("linc_RNA/merged/flexTADbound-lincRNA5.bed")
+
+#loading TAD-bound pcgenes sets
+Tb_pc5 <- read.table("pc_genes/merged/flexTADbound-pcgene5.bed")
+
+#loading non-TAD-bound lincRNAs sets
+nTb_lincRNA5 <- read.table("linc_RNA/merged/flexnonTADbound-lincRNA5.bed")
+
+#loading non-TAD-bound pcgenes sets
+nTb_pc5 <- read.table("pc_genes/merged/flexnonTADbound-pcgene5.bed")
+
+colnames(Tb_lincRNA5)=colnames(nTb_lincRNA5)=colnames(Tb_pc5)=colnames(nTb_pc5) <-c("chr", "start", "end", "gene", "strand")
+
+
+#Splitting localisation data into TADbound (Tb) and non-TADbound (nTb)
+
+loc_Tb_lincRNA5 <-loc_lincRNA[loc_lincRNA$gene %in% Tb_lincRNA5$gene,]
+
+loc_nTb_lincRNA5 <-loc_lincRNA[loc_lincRNA$gene %in% nTb_lincRNA5$gene,]
+
+loc_Tb_pc5 <-loc_pcgene[loc_pcgene$gene %in% Tb_pc5$gene,]
+
+loc_nTb_pc5 <-loc_pcgene[loc_pcgene$gene %in% nTb_pc5$gene,]
+
+
+#Writing into new files
+write.table(loc_Tb_lincRNA5,file = "subcell_loc/merged/flex_loc_Tb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+
+write.table(loc_nTb_lincRNA5,file = "subcell_loc/merged/flex_loc_nTb_lincRNA5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+
+write.table(loc_Tb_pc5,file = "subcell_loc/merged/flex_loc_Tb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+
+write.table(loc_nTb_pc5,file = "subcell_loc/merged/flex_loc_nTb_pc5.txt",sep="\t",quote = F,col.names = F,row.names = F)
+
+
+#============================================================
+
+#Comparing overall mean ratio between Tb and nTb:
+
+#lincRNAs:
+hist_linc <-ggplot()+
+  geom_histogram(data=loc_Tb_lincRNA, aes(x=ratio, y=..density..), fill="#0000dd", alpha=0.5, bins = 300)+
+  geom_histogram(data=loc_nTb_lincRNA, aes(x=ratio, y=..density..), fill="#bb0000", alpha=0.5, bins = 300)+
+  ggtitle("lincRNAs")
+summary(loc_Tb_lincRNA$ratio);summary(loc_nTb_lincRNA$ratio)
+
+#Protein-coding genes:
+hist_pc<-ggplot()+
+  geom_histogram(data=loc_Tb_pc, aes(x=ratio, y=..density..), fill="#0000dd", alpha=0.5, bins = 300)+
+  geom_histogram(data=loc_nTb_pc, aes(x=ratio, y=..density..), fill="#bb0000", alpha=0.5, bins = 300)+
+  ggtitle("Protein-coding genes")
+summary(loc_Tb_lincRNA$ratio);summary(loc_nTb_lincRNA$ratio)
+
+grid.arrange(hist_linc, hist_pc)
+#It doesn't seem TADbound lincRNAs/proteins are more localized in the nucleus/cytoplasm than non-TADbound ones.
+boxplot(notch=T, log10(loc_Tb_lincRNA$ratio), log10(loc_nTb_lincRNA$ratio))
+wilcox.test(loc_Tb_lincRNA$ratio, loc_nTb_lincRNA$ratio)
+#==========================================================
+
+#building large, single dataframe to make data more convenient.
+
+whole_loc <- rbind(cbind(loc_Tb_pc5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep("pc")), 
+                   cbind(loc_nTb_pc5,threshold=rep("5"),TAD=rep("nTb"),gentype=rep("pc")), 
+                   cbind(loc_Tb_lincRNA5,threshold=rep("5"),TAD=rep("Tb"),gentype=rep("lincRNA")), 
+                   cbind(loc_nTb_lincRNA5,threshold=rep("5"),TAD=rep("nTb"),gentype=rep("lincRNA")))
+
+write.table(x = whole_loc,file = "subcell_loc/merged/flex_whole_loc.txt",quote = F,sep = "\t",row.names = F,col.names = T)
+
+#===================
+#Visualisation
+
 library(plyr)
 short_med<-function(x){return(round(median(log10(x)),3))}
 short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
