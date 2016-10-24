@@ -100,7 +100,6 @@ ggplot(data=ext.m.TADbound)+
   ylab("Boundary length")+
   ggtitle("Length of redefined boundaries by threshold")+
   theme_bw()
-
 ```
 
    + Length of gaps: 

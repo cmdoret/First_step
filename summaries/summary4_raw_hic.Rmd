@@ -13,7 +13,7 @@ linkcolor: NavyBlue
 ```{r setup, include=FALSE}
 ```
 
-NOTE: NOTIFY JENNIFER THAT I WAS WRONG; SHE SHOULD NOT USE GENOME WIDE BALANCING IN JUICEBOX. IT ALSO TAKES INTERCHROMOSOMAL MATRICES OR STH (Rao et al, 2014, page: S40 (bottom))
+
 
 
 #Introduction
@@ -22,7 +22,7 @@ All previous definitions of TAD-boundaries relied on arbitrary thresholds and th
 
 #1. Normalization
 
-Two normalization vectors were provided with the dataset; VC (Vanilla Coverage) and KR (Knight et Ruiz). I used the KR vector as this is the same used in [the article where the data comes from](http://www.cell.com/abstract/S0092-8674(14)01497-4). I worked only with the matrices at 5kb (highest) resolution. Matrices are in sparse matrix format. where the row/column indexes correspond to the left edge of the bin.
+Two normalization vectors were provided with the dataset; VC (Vanilla Coverage) and KR (Knight et Ruiz). I used the KR vector as this is the same used in [the article where the data comes from](http://www.cell.com/abstract/S0092-8674(14)01497-4). I worked only with the matrices at 5kb (highest) resolution and MAPQ $\geq$ 30. Matrices are in sparse matrix format. where the row/column indexes correspond to the left edge of the bin.
 
 The normalization procedure consists in dividing each entry in the contact matrix by a corresponding value in the vector:
 

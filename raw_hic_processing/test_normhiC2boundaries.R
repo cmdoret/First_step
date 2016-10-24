@@ -17,7 +17,7 @@ stopifnot(require(snow))
 stopifnot(require(Matrix))
 # Loading all matrices in a list (takes pretty long)
 matlist <- list()
-for(c in c(1:22,"X")){
+for(c in c(22,"X")){
   tmp <- gzfile(paste0("norm_hic_data/chr",c,"_5kb_norm.txt.gz"),"rt")  # Files are unzipped before read
   matlist[[c]] <- c(readMM(tmp),c)
   close(tmp)  # Freeing connection for next matrix
@@ -34,33 +34,6 @@ on.exit( stopCluster(clus) )
 
 find_bound<-function(m){
   sub_TAD <- TAD[as.character(TAD$chr)==paste0("chr",m[[2]]),]  # subsetting TAD dataframe by chromosome (1chr/node)
-  
-  sub_TAD$Lbound.start = sub_TAD$Lbound.end = sub_TAD$Rbound.start =
-    sub_TAD$Rbound.end = sub_TAD$maxint <- rep(0,length(sub_TAD$start))  # allocating space for max interaction observed in each TAD.
-  
-  for(i in 1:length(sub_TAD$start)){  # Iterating over TADs
-    start.ind <- pos_2_index(sub_TAD$start[i])  # transforming TAD start position to row in matrix. (TADs are already at 5kb res, so no need to approximate)
-    end.ind <- pos_2_index(sub_TAD$end[i])  # Same for end position
-    sub_TAD$maxint[i]<-max(rowSums(m[[1]][start.ind:end.ind,]))  # putting max interaction value for each TAD in dataframe.
-    sl=el <- c(start.ind, sum(m[[1]][start.ind,]))  # Initiating left and right limits of left boundary
-    
-    while(sl[2]<sub_TAD$maxint[i]/30){  # Start of left boundary -> sliding to the left
-      sl[1] <- sl[1]-1; sl[2] <-sum(m[[1]][sl[1],])}
-    sub_TAD$Lbound.start[i] <- index_2_pos(sl[1])  # + 1 because position corresponds to left edge of the bin. (don't want to include bin with interactions in boundary) ...forget it
-    
-    while(el[2]<sub_TAD$maxint[i]/30){  # End of left boundary -> sliding to the right
-      el[1] <- el[1]+1; el[2] <-sum(m[[1]][el[1],])}
-    sub_TAD$Lbound.end[i] <- index_2_pos(el[1])
-    sr=er <-c(end.ind, sum(m[[1]][end.ind,]))  # Initiating left and right limits of right boundary
-    
-    while(sr[2]<sub_TAD$maxint[i]/30){  # Start of right boundary -> sliding to the left
-      sr[1] <- sr[1]-1; sr[2] <-sum(m[[1]][sr[1],])}
-    sub_TAD$Rbound.start[i] <- index_2_pos(sr[1])  
-    
-    while(er[2]<sub_TAD$maxint[i]/30){  # End of right boundary -> sliding to the right
-      er[1] <- er[1]+1; er[2] <-sum(m[[1]][er[1],])}
-    sub_TAD$Rbound.end[i] <- index_2_pos(er[1])
-  }
   return(sub_TAD)
 }
 
@@ -76,7 +49,6 @@ clusterCall( clus, function() {
 # Exporting the list of TADs and the required functions to each node in the cluster.
 clusterExport(clus, c("TAD", "index_2_pos", "pos_2_index"), envir=environment())
 tmp <- clusterApplyLB( clus, matlist, find_bound)
-full <- do.call("rbind", tmp)
-full
-write(full, file="BOUNDARIES_HIC.txt", sep= "\t")
-#write.table(full, file = "TAD/merged/hic_bound.txt",quote = F,col.names = F,row.names = F,sep = "\t")
+for(i in as.character(c(1:22,"X"))){
+
+  }
