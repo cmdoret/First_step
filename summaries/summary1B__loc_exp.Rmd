@@ -31,14 +31,14 @@ Those thresholds were chosen based on the mean value of median overlap length fo
 
 Original set|Threshold|Overlaps|TAD-bound genes
 ------------|---------|--------|-----
-2510|5%|438|375 (`r round((100*375)/2510,1)`%)
+2510|5%|437|375 (`r round((100*375)/2510,1)`%)
 
 
 ##Protein-coding genes
 
 Original set|Threshold|Overlaps|TAD-bound genes
 ------------|---------|--------|-----
-14846|5%|5725|4542 (`r round((100*4542)/14846,1)`%)
+14846|5%|5687|4534 (`r round((100*4534)/14846,1)`%)
 
 
 #Results
