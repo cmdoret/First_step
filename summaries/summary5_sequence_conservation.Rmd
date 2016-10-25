@@ -1,0 +1,94 @@
+---
+title: 'Report 5: Seqence conservation'
+author: "Cyril Matthey-Doret"
+date: "25 octobre 2016"
+output: pdf_document
+linkcolor: "blue"
+---
+
+```{r setup, include=FALSE}
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+whole_cons <- read.table("../data/seq_conserv/flex_whole_cons.txt", header=T)
+```
+
+#Introduction
+
+Sequence conservation across species can be quantified using [__phastCons scores__](http://genome.cshlp.org/content/15/8/1034.full). Here I compare averaged sequence conservation of TAD bound (TADb) and non-TAD bound (nTADb) lincRNAs and protein-coding genes. Ancestral repeats (AR) are also used as a comparison, since those elements are assumed to be evolving neutrally. Genes that have a higher phastCons score than ancestral repeats are likely to be under purifying selection, while those with a lower score should be under positive selection.
+
+The TAD boundaries used to define if a gene is TAD bound or not are the "flexible" boundaries, described in report 3, section 1.
+
+#Comparison of sequence conservation
+
+```{r cons_comp, echo=F, error=F,warning=F,fig.width=8,fig.height=6}
+library(ggplot2);library(gridExtra);library(plyr);library(scales)
+options(digits=3,scipen=0)
+short_med<-function(x){return(round(median(x),3))}
+short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
+#dataf frame for annotation of median
+med.fac <- ddply(whole_cons, .(gentype, gr,TAD), function(.d)
+  data.frame(x=median(na.rm = T,round(.d$avg_score,3))))
+#data frame for annotation of p-value
+pl<-c()
+gl<-c()
+tl<-c()
+cons <- whole_cons[whole_cons$gentype!="AR",]
+cons$gentype <- droplevels(cons$gentype);cons$TAD <- droplevels(cons$TAD)
+for(t in levels(cons$gr)){
+  for(g in levels(cons$gentype)){
+    p <- short_wilcox(cons[cons$gr==t & cons$gentype==g &  cons$TAD=="TADb","avg_score"],
+                      cons[cons$gr==t &  cons$gentype==g & cons$TAD=="nTADb","avg_score"])
+    p <- as.numeric(p)
+    if(nchar(p)>4){p <-format(p,scientific=T)}
+    pl<-append(pl,p)
+    tl<-append(tl,t)
+    gl<-append(gl,g)
+  }
+}
+wilcox_p <- data.frame(pval=pl,gr=tl,gentype=gl)
+
+dl <- ggplot(data = whole_cons,aes(x=avg_score),stat=..density..)+
+  geom_histogram(data = whole_cons[whole_cons$gentype=="linc" & whole_cons$TAD=="nTADb",],bins=60,fill="#bb6666")+
+  geom_histogram(data = whole_cons[whole_cons$gentype=="linc" & whole_cons$TAD=="TADb",],bins=60,fill="#6666bb")+
+  theme_bw()+ggtitle("lincRNAs")+theme(axis.title=element_blank())
+
+dp <- ggplot(data = whole_cons,aes(x=avg_score),stat=..density..)+
+  geom_histogram(data = whole_cons[whole_cons$gentype=="pc" & whole_cons$TAD=="nTADb",],bins=60,fill="#bb6666")+
+  geom_histogram(data = whole_cons[whole_cons$gentype=="pc" & whole_cons$TAD=="TADb",],bins=60,fill="#6666bb")+
+  theme_bw()+ggtitle("Protein-coding genes")+theme(axis.title=element_blank())
+
+dr <- ggplot(data = whole_cons[whole_cons$gentype=="AR",],aes(x=avg_score))+
+  geom_histogram(bins=60,fill="#66bb66")+ggtitle("Ancestral repeats")+
+  theme_bw()+theme(axis.title.y=element_blank())+xlab("averaged phastCons")
+
+group_names <- c(`mam` = "mammals",`pri` = "primates")
+gentype_names <- c(`linc` = "lincRNAs",`pc` = "protein-coding")
+AR_medcons <- data.frame(val=c(median(whole_cons$avg_score[whole_cons$gentype=="AR" & whole_cons$gr=="mam"],na.rm = T),
+                               median(whole_cons$avg_score[whole_cons$gentype=="AR" & whole_cons$gr=="mam"],na.rm = T),
+                               median(whole_cons$avg_score[whole_cons$gentype=="AR" & whole_cons$gr=="pri"],na.rm = T),
+                               median(whole_cons$avg_score[whole_cons$gentype=="AR" & whole_cons$gr=="pri"],na.rm = T)),
+                         gentype=c("linc","pc","linc","pc"),gr=c("mam","mam","pri","pri"))
+
+c <- ggplot(data=whole_cons[whole_cons$gentype!="AR",])+
+  facet_grid(gr~gentype,labeller = labeller(gentype = as_labeller(gentype_names),
+                                                 gr = as_labeller(group_names)))+
+  geom_boxplot(aes(x=TAD,y=avg_score,fill=TAD),notch=T)+
+  geom_hline(data= AR_medcons,aes(yintercept = AR_medcons$val,fill="AR"),size=1,col="#66bb66",show.legend= T)+
+  scale_fill_manual(values = c("#66bb66","#bb6666","#6666bb"))+
+  scale_linetype_manual("Title", values = 2) +
+  guides(fill = guide_legend(title = element_blank(),override.aes=list(linetype=0)))+
+  geom_text(data=wilcox_p, aes(x=1.7, y=1, label=paste0("p=",pval)), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  geom_label(data=med.fac[med.fac$gentype!="AR",], aes(x=TAD, y=x+0.01, label=x), 
+            colour="black", inherit.aes=FALSE, parse=FALSE,size=3)+
+  theme_bw()+ ylab("averaged phastCons")
+
+grid.arrange(layout_matrix=matrix(c(1,4,4,2,4,4,3,4,4),nrow = 3,byrow = T),grobs = list(dl,dp,dr,c))
+
+
+
+```
+
+#Conclusion
+
+non-TAD bound lincRNAs seem to be more conserved across mammals than TAD bound ones, however there is no difference in primates.
+non-TAD bound protein-coding genes on the other hand, are always less conserved. These results indicate a stronger purifying selection for protein-coding genes inside TAD-boundaries, and a somewhat lower purifying selection for lincRNAs inside those boundaries.

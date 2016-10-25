@@ -7,3 +7,10 @@ X. Calculate and plot the distribution of the median overlap length of lincRNAs/
 5. Include bins outside TADs, (10%, 20%, 30%) except if they overlap another TAD.
 6. Look for correlation between TAD length and number of transcripts.
 7. Sequence conservation across species.
+------------------------------
+25.10:
+1. Rerun usual analyses with new boundaries:
+    -subcell loc, expression levels, tissue specificity
+2. Conservation across species
+3. Is the expression level of TADbound-lincRNAs correlated with each pc gene within the same TAD compared to what's expected by random chance ? Requires GEUVADIS expression matrix. Compare pairwise comparison to a distribution representing expression by chance generated via permuted expression values across samples for each lincRNA (1000Xperm).
+4.  Is the expression level of the lincRNA correlated with the amount of DNA-DNA interaction happening at that locus across different tissues and cell types ? expr of all lincRNA in different lines -> download matching hiC data  -> look for correlation between expression values and contact matrix values. also divide into LCL-TADbound and non-TADbound -> look if there is a diff.

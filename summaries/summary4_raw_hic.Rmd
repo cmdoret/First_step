@@ -36,9 +36,11 @@ The normalization algorithm did not converge for all entries, so there are missi
 
 Since I already have a set of TADs, there is no need to compute the insulation score to find the TAD borders at local minima. The procedure I use to define TAD boundaries is:
 
-1. Compute the maximum interactions value for each TAD.
-2. slide from the TAD borders until the number of interaction reaches a portion of this value (e.g. 10%)
-3. define the areas between these points as boundaries.
+1. Slide a diamond of 100kb*100kb over the matrix diagonal with a stepsize of 5kb and store the total number of interactions inside the diamond.
+    + Note: the diamond can only slide from rows nr [diamond size] to i-[diamond size] otherwise it will get out of the matrix. The positions where the diamond did not slide are = 0
+2. Compute the maximum interactions value for each TAD.
+3. slide from the TAD borders until the number of interaction (recorded by the diamond) reaches a portion of this value (e.g. 10%)
+4. define the areas between these points as boundaries.
 
 
 ```{r matplot, echo=F, warning=F, error=F, fig.height=4, fig.width=5}
