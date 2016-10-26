@@ -9,8 +9,8 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 
 #Loading data:
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
 whole_loc <- read.table("../data/subcell_loc/merged/flex_whole_loc.txt", header=T)
 whole_exp <- read.table("../data/expression/merged/flex_whole_exp.txt", header=T)
 whole_tau <- read.table("../data/tissue_specificity/merged/flex_whole_tau.txt", header=T)

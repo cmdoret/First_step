@@ -7,7 +7,8 @@ linkcolor: "blue"
 ---
 
 ```{r setup, include=FALSE}
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
 whole_cons <- read.table("../data/seq_conserv/flex_whole_cons.txt", header=T)
 ```
 

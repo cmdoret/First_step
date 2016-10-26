@@ -48,20 +48,24 @@ find_bound<-function(m,resolution=5000, diam_size=100000){
     sub_TAD$maxint[i]<-max(diam$int[start.ind:end.ind])  # putting max interaction value for each TAD in dataframe.
     sl=el <- c(start.ind, diam$int[start.ind])  # Initiating left and right limits of left boundary
     while(sl[2]<sub_TAD$maxint[i]/10){  # Start of left boundary -> sliding to the left
-      sl[1] <- sl[1]-1; sl[2] <-diam$int[sl[1]]}
+      sl[1] <- sl[1]-1; sl[2] <-diam$int[sl[1]]
+      if(sl[1]==pos_2_index(diam_size)){break}}
     sub_TAD$Lbound.start[i] <- index_2_pos(sl[1])  # + 1 because position corresponds to left edge of the bin. (don't want to include bin with interactions in boundary) ...forget it
 
     while(el[2]<sub_TAD$maxint[i]/10){  # End of left boundary -> sliding to the right
-      el[1] <- el[1]+1; el[2] <-diam$int[el[1]]}
+      el[1] <- el[1]+1; el[2] <-diam$int[el[1]]
+      if(el[1]==(length(m[[1]][1,])-(diam_size/resolution))){break}}
     sub_TAD$Lbound.end[i] <- index_2_pos(el[1])
     sr=er <-c(end.ind, diam$int[end.ind])  # Initiating left and right limits of right boundary
 
     while(sr[2]<sub_TAD$maxint[i]/10){  # Start of right boundary -> sliding to the left
-      sr[1] <- sr[1]-1; sr[2] <-diam$int[sr[1]]}
+      sr[1] <- sr[1]-1; sr[2] <-diam$int[sr[1]]
+      if(sr[1]==pos_2_index(diam_size)){break}}
     sub_TAD$Rbound.start[i] <- index_2_pos(sr[1])
 
     while(er[2]<sub_TAD$maxint[i]/10){  # End of right boundary -> sliding to the right
-      er[1] <- er[1]+1; er[2] <-diam$int[er[1]]}
+      er[1] <- er[1]+1; er[2] <-diam$int[er[1]]
+      if(er[1]==(length(m[[1]][1,])-(diam_size/resolution))){break}}
     sub_TAD$Rbound.end[i] <- index_2_pos(er[1])
   }
   return(sub_TAD)
