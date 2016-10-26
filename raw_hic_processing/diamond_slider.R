@@ -49,7 +49,7 @@ diam_slide<-function(m,R=5000, D=100000){
   diam <- rep(0,length(M[1,])) # preallocating space for diamond-summed data.
   diam[(D/R+1):(length(M[1,])-(D/R))] <- sapply(X = seq(D/R+1,(length(M[1,])-(D/R))),
                                                 simplify = T, FUN= function(d){
-                                                  return(sum(M[d:(d+(D/R-1)),d:(d+(D/R-1))]))})
+                                                  sum(M[d:(d-(D/R+1)),d:(d+(D/R-1))])})
   return(diam)
 }
 
@@ -59,7 +59,7 @@ vec_diam_slide<-function(m,R=5000, D=100000){  #Vectorized version of the slider
   diam <- rep(0,L) # preallocating space for diamond-summed data.
   diam[(D/R+1):(L-(D/R))] <- sapply(X = seq(from=(D/R+L*D/R+1),to=(L*L-(D/R+L*D/R)),by=(L+1)),
                                                 simplify = T, FUN= function(d){
-                                                  return(sum(vec_sub_square(v=M,s=(d-L*(D/R-1)),e=(d+(D/R-1)),n=L,w=(D/R))))})
+                                                  sum(vec_sub_square(v=M,s=(d-L*(D/R-1)),e=(d+(D/R-1)),n=L,w=(D/R)))})
   return(diam)
 }
 #Benchmark
@@ -72,9 +72,11 @@ for(i in seq(from=40,to=1000,by=10)){
   time_rec$res_vec[time_rec$size==i] <- sum(vec_diam_slide(matlist[[22]][[1]][4000:(4000+i),4000:(4000+i)]))
   time_rec$time_vec[time_rec$size==i] <-(proc.time()-tpm)[3]
 }
-plot(time_rec$size,time_rec$res_mat,xlab="Number of iterations",ylab="Time [s]",main="Number of iterations on a matrix",col="red")
+plot(time_rec$size,time_rec$res_mat,xlab="Number of iterations",ylab="Sum of results",
+     main="Number of iterations \n(matrix increase of 10x10 per iteration)",col="red")
 points(time_rec$size,time_rec$res_vec,col="blue")
-plot(time_rec$size,time_rec$time_mat,xlab="Number of iterations",ylab="Time [s]",main="Number of iterations on a matrix",col="red")
+plot(time_rec$size,time_rec$time_mat,xlab="Number of iterations \n(matrix increase of 10x10 per iteration)"
+     ,ylab="Time [s]",main="Number of iterations on a matrix",col="red")
 points(time_rec$size,time_rec$time_vec,col="blue")
 
 # ISSUE: VEC_DIAM_SLIDE RETURNS A VECTOR OF LENGTH 21 instead of 21^2
