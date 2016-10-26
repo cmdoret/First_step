@@ -165,7 +165,7 @@ overlap_RNA5 <- read.table("lincRNA_5overlap_flexible_TADb.bed")
 colnames(overlap_RNA5) <- c("chr", "start", "end", "gene", "strand")
 
 #Number of overlaps: 
-length(overlap_RNA5$gene);length(overlap_RNA10$gene);length(overlap_RNA20$gene)
+length(overlap_RNA5$gene)
 #number of duplicates (lincRNAs matching 2 or more TADb):
 length(overlap_RNA5$gene[duplicated(overlap_RNA5$gene)])
 

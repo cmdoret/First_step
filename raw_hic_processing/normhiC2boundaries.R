@@ -32,6 +32,16 @@ on.exit( stopCluster(clus) )
 
 #Defining functions
 
+vec_diam_slide<-function(m,R=5000, D=100000){
+  L <- length(m[[1]][1,])
+  M <- as.vector(m[[1]])
+  diam <- rep(0,L) # preallocating space for diamond-summed data.
+  diam[(D/R+1):(L-(D/R))] <- sapply(X = seq(from=(D/R+L*D/R+1),to=(L*L-(D/R+L*D/R)),by=(L+1)),
+                                    simplify = T, FUN= function(d){
+                                      sum(M[(d-L*D/R):(d+D/R)])})
+  return(diam)
+}
+
 find_bound<-function(m,resolution=5000, diam_size=100000){
   sub_TAD <- TAD[as.character(TAD$chr)==paste0("chr",m[[2]]),]  # subsetting TAD dataframe by chromosome (1chr/node)
   sub_TAD$Lbound.start = sub_TAD$Lbound.end = sub_TAD$Rbound.start =
@@ -42,33 +52,33 @@ find_bound<-function(m,resolution=5000, diam_size=100000){
                                                                                                 length(m[[1]][1,]))-(diam_size/resolution),
                                                                                         simplify = T, FUN= function(d){
     sum(rowSums(m[[1]][d:(d+(diam_size/resolution)),d:(d+(diam_size/resolution))]))})
-  for(i in 1:length(sub_TAD$start)){  # Iterating over TADs
-    start.ind <- pos_2_index(sub_TAD$start[i])  # transforming TAD start position to row in matrix. (TADs are already at 5kb res, so no need to approximate)
-    end.ind <- pos_2_index(sub_TAD$end[i])  # Same for end position
-    sub_TAD$maxint[i]<-max(diam$int[start.ind:end.ind])  # putting max interaction value for each TAD in dataframe.
-    sl=el <- c(start.ind, diam$int[start.ind])  # Initiating left and right limits of left boundary
-    while(sl[2]<sub_TAD$maxint[i]/10){  # Start of left boundary -> sliding to the left
-      sl[1] <- sl[1]-1; sl[2] <-diam$int[sl[1]]
-      if(sl[1]==pos_2_index(diam_size)){break}}
-    sub_TAD$Lbound.start[i] <- index_2_pos(sl[1])  # + 1 because position corresponds to left edge of the bin. (don't want to include bin with interactions in boundary) ...forget it
-
-    while(el[2]<sub_TAD$maxint[i]/10){  # End of left boundary -> sliding to the right
-      el[1] <- el[1]+1; el[2] <-diam$int[el[1]]
-      if(el[1]==(length(m[[1]][1,])-(diam_size/resolution))){break}}
-    sub_TAD$Lbound.end[i] <- index_2_pos(el[1])
-    sr=er <-c(end.ind, diam$int[end.ind])  # Initiating left and right limits of right boundary
-
-    while(sr[2]<sub_TAD$maxint[i]/10){  # Start of right boundary -> sliding to the left
-      sr[1] <- sr[1]-1; sr[2] <-diam$int[sr[1]]
-      if(sr[1]==pos_2_index(diam_size)){break}}
-    sub_TAD$Rbound.start[i] <- index_2_pos(sr[1])
-
-    while(er[2]<sub_TAD$maxint[i]/10){  # End of right boundary -> sliding to the right
-      er[1] <- er[1]+1; er[2] <-diam$int[er[1]]
-      if(er[1]==(length(m[[1]][1,])-(diam_size/resolution))){break}}
-    sub_TAD$Rbound.end[i] <- index_2_pos(er[1])
-  }
-  return(sub_TAD)
+  # for(i in 1:length(sub_TAD$start)){  # Iterating over TADs
+  #   start.ind <- pos_2_index(sub_TAD$start[i])  # transforming TAD start position to row in matrix. (TADs are already at 5kb res, so no need to approximate)
+  #   end.ind <- pos_2_index(sub_TAD$end[i])  # Same for end position
+  #   sub_TAD$maxint[i]<-max(diam$int[start.ind:end.ind])  # putting max interaction value for each TAD in dataframe.
+  #   sl=el <- c(start.ind, diam$int[start.ind])  # Initiating left and right limits of left boundary
+  #   while(sl[2]<sub_TAD$maxint[i]/10){  # Start of left boundary -> sliding to the left
+  #     sl[1] <- sl[1]-1; sl[2] <-diam$int[sl[1]]
+  #     if(sl[1]==pos_2_index(diam_size)){break}}
+  #   sub_TAD$Lbound.start[i] <- index_2_pos(sl[1])  # + 1 because position corresponds to left edge of the bin. (don't want to include bin with interactions in boundary) ...forget it
+  # 
+  #   while(el[2]<sub_TAD$maxint[i]/10){  # End of left boundary -> sliding to the right
+  #     el[1] <- el[1]+1; el[2] <-diam$int[el[1]]
+  #     if(el[1]==(length(m[[1]][1,])-(diam_size/resolution))){break}}
+  #   sub_TAD$Lbound.end[i] <- index_2_pos(el[1])
+  #   sr=er <-c(end.ind, diam$int[end.ind])  # Initiating left and right limits of right boundary
+  # 
+  #   while(sr[2]<sub_TAD$maxint[i]/10){  # Start of right boundary -> sliding to the left
+  #     sr[1] <- sr[1]-1; sr[2] <-diam$int[sr[1]]
+  #     if(sr[1]==pos_2_index(diam_size)){break}}
+  #   sub_TAD$Rbound.start[i] <- index_2_pos(sr[1])
+  # 
+  #   while(er[2]<sub_TAD$maxint[i]/10){  # End of right boundary -> sliding to the right
+  #     er[1] <- er[1]+1; er[2] <-diam$int[er[1]]
+  #     if(er[1]==(length(m[[1]][1,])-(diam_size/resolution))){break}}
+  #   sub_TAD$Rbound.end[i] <- index_2_pos(er[1])
+  # }
+  return(diam)
 }
 
 index_2_pos <- function(ind, resolution=5000) { return(resolution * (ind - 1)) }# Finding actual position in genome from bin number.
@@ -87,3 +97,4 @@ full <- do.call("rbind", tmp)
 full
 write(full, file="BOUNDARIES_HIC.txt", sep= "\t")
 #write.table(full, file = "TAD/merged/hic_bound.txt",quote = F,col.names = F,row.names = F,sep = "\t")
+

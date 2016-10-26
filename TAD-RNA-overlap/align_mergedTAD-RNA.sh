@@ -6,8 +6,8 @@
 
 for t in 5;
 do
-bedtools intersect -a ../data/linc_RNA/LCL.expressed.lincRNA.bed -b ../data/TAD/merged/TAD_boundaries"$t".bed -f 0.51 -wa > lincRNA_"$t"overlap_flexible_TADb.bed;
+bedtools intersect -a ../data/linc_RNA/LCL.expressed.lincRNA.bed -b ../data/TAD/merged/flexibound"$t".bed -f 0.51 -wa -wb > NEWlincRNA_"$t"overlap_flexible_TADb.bed;
 
-bedtools intersect -a ../data/pc_genes/LCL.expressed.pcgene.bed -b ../data/TAD/merged/TAD_boundaries"$t".bed -f 0.11 -wa > pcgene_"$t"overlap_flexible_TADb.bed;
+bedtools intersect -a ../data/pc_genes/LCL.expressed.pcgene.bed -b ../data/TAD/merged/flexibound"$t".bed -f 0.11 -wa -wb > NEWpcgene_"$t"overlap_flexible_TADb.bed;
 
 done

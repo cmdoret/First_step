@@ -1,5 +1,5 @@
 ---
-title: "Report: Expression level,subcellular localization and tissue-specificity of TADbound and non-TADbound lincRNAs."
+title: "Report 1: Expression level,subcellular localization and tissue-specificity of TADbound and non-TADbound lincRNAs."
 author: "Cyril Matthey-Doret"
 date: "October 6, 2016"
 output: pdf_document
@@ -9,8 +9,8 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 
 #Loading data:
-#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-setwd("/home/cyril/Documents/First_step/data/")
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+#setwd("/home/cyril/Documents/First_step/data/")
 whole_loc <- read.table("subcell_loc/whole_loc.txt", header=T)
 whole_exp <- read.table("expression/whole_exp.txt", header=T)
 whole_tau <- read.table("tissue_specificity/whole_tau.txt", header=T)
