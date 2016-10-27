@@ -41,7 +41,7 @@ vec_sub_square <- function(v,s,e,n,w){
 }
 
 diam_slide<-function(m,R=5000, D=100000){
-  M <- m[[1]]
+  M <- m
   diam <- rep(0,length(M[1,])) # preallocating space for diamond-summed data.
   diam[(D/R+1):(length(M[1,])-(D/R))] <- sapply(X = seq(D/R+1,(length(M[1,])-(D/R))),
                                                 simplify = T, FUN= function(d){
@@ -50,12 +50,25 @@ diam_slide<-function(m,R=5000, D=100000){
 }
 
 vec_diam_slide<-function(m,R=5000, D=100000){  #Vectorized version of the slider. MUCH FASTER!
-  L <- length(m[[1]][1,])
-  M <- as.vector(t(m[[1]]))
+  L <- length(m[1,])
+  M <- as.vector(t(m))
   diam <- rep(0,L) # preallocating space for diamond-summed data.
   diam[(D/R+1):(L-(D/R))] <- sapply(X = seq(from=(D/R+L*D/R+1),to=(L*L-(D/R+L*D/R)),by=(L+1)),
                                                 simplify = T, FUN= function(d){
                                                   sum(vec_sub_square(v=M,s=(d-L*(D/R-1)),e=(d+(D/R-1)),n=L,w=(D/R)))})
+  return(diam)
+}
+
+for_diam_slide<-function(m,R=5000, D=100000){  #Vectorized version of the slider. MUCH FASTER!
+  L <- length(m[1,])
+  M <- as.vector(t(m))
+  diam <- rep(0,L) # preallocating space for diamond-summed data.
+  c <- 1
+  for(r in (D/R+1):(L-D/R)){
+    i = seq(from=(D/R+L*D/R+1),to=(L*L-(D/R+L*D/R)),by=(L+1))
+    diam[r] <- sum(vec_sub_square(v=M,s=(i[c]-L*(D/R-1)),e=(i[c]+D/R-1),n=L,w=(D/R)))
+    c <- c+1
+  }
   return(diam)
 }
 
@@ -70,21 +83,31 @@ tmp <- clusterApplyLB( clus, matlist, vec_diam_slide)
 
 #===============================================================
 #Benchmark
-time_rec <- data.frame(size= seq(from=40,to=3000,by=10),time_mat=rep(0),time_vec=rep(0),res_mat=rep(0),res_vec=rep(0))
-for(i in seq(from=40,to=3000,by=10)){
-  tpm <- proc.time()
-  time_rec$res_mat[time_rec$size==i] <- sum(diam_slide(matlist[[22]][[1]][4000:(4000+i),4000:(4000+i)]))
-  time_rec$time_mat[time_rec$size==i] <-(proc.time()-tpm)[3]
-  tpm <- proc.time()
+time_rec <- data.frame(size= seq(from=40,to=10000,by=10),time_mat=rep(0),time_vec=rep(0),res_mat=rep(0),res_vec=rep(0),
+                       res_for=rep(0),time_for=rep(0))
+for(i in seq(from=40,to=10000,by=10)){
+  #tpm <- proc.time()
+  #time_rec$res_mat[time_rec$size==i] <- sum(diam_slide(matlist[[22]][[1]][4000:(4000+i),4000:(4000+i)]))
+  #time_rec$time_mat[time_rec$size==i] <-(proc.time()-tpm)[3]
+  #tpm <- proc.time()
   time_rec$res_vec[time_rec$size==i] <- sum(vec_diam_slide(matlist[[22]][[1]][4000:(4000+i),4000:(4000+i)]))
   time_rec$time_vec[time_rec$size==i] <-(proc.time()-tpm)[3]
+  tpm <- proc.time()
+  time_rec$res_for[time_rec$size==i] <- sum(for_diam_slide(matlist[[22]][[1]][4000:(4000+i),4000:(4000+i)]))
+  time_rec$time_for[time_rec$size==i] <-(proc.time()-tpm)[3]
 }
 plot(time_rec$size,time_rec$res_mat,xlab="Matrix size",ylab="Sum of results",
      main="speed comparison",col="red")
 points(time_rec$size,time_rec$res_vec,col="blue")
+points(time_rec$size,time_rec$res_for,col="green")
 plot(time_rec$size,time_rec$time_mat,xlab="Matrix size"
      ,ylab="Time [s]",main="Results comparison",col="red")
 points(time_rec$size,time_rec$time_vec,col="blue")
+points(time_rec$size,time_rec$time_for,col="green")
+
+plot(time_rec$size,time_rec$time_vec,xlab="Matrix size"
+     ,ylab="Time [s]",main="Results comparison",col="blue")
+points(time_rec$size,time_rec$time_for,col="green")
 
 
 a <- vec_diam_slide(matlist[[22]][[1]][4000:(4000+i),4000:(4000+i)])
