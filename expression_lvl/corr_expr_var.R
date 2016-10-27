@@ -46,7 +46,7 @@ Tb_linc$countpc <- rep(0)
 for(l in row(Tb_linc)){
   Tb_linc$countpc[l] <-TAD$countpc[TAD$ID==Tb_linc$TAD_ID[l]]
 }
-smoothScatter(Tb_linc$expression,)
+smoothScatter(log10(Tb_linc$expression),Tb_linc$countpc)
 #Question: What is "in a TAD"? in:
   #a) same TAD boundary
   #b) same TAD boundary or other boundary of same TAD
