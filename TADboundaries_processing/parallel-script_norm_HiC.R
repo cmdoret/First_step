@@ -1,88 +1,60 @@
-#
-# script to normalise the raw HiC data
-# NB: I gzipped the HiC data
-#
+# This script processes a set of TADs to remove the large encompassing ones and keep only those that do not completely overlap.
+# Cyril Matthey-Doret
+# Fri Oct 28 08:49:55 2016 ------------------------------
 
-
-if (is.null(n.cores)) { 
-  stopifnot(require(parallel)) 
-  n.cores <- parallel:::detectCores() 
-}
-stopifnot(require(snow))
-
-clus <- makeSOCKcluster( n.cores  )
-on.exit( stopCluster(clus) )  
+# Loading data:
+setwd("/home/cyril/Documents/First_step/data/")
 setwd("/Users/cmatthe5/Documents/First_step/data/")
+TAD <- read.table("TAD/GM12878_TAD_domains.bed")
+TAD <- TAD[,c(1,2,3,5)]
+colnames(TAD) <- c("chr","start","end","ID")
+library(intervals)
 
-norm<-function(c){
-  
-  chr <- paste0("/Users/cmatthe5/Documents/First_step/data/raw_hic_5kb_res/chr",c,"/MAPQGE30/chr",c)
-  
-  ## load data ## ====================================
-  
-  # load sparse matrix data
-  library(data.table)                                    # pour utiliser fread - ca lira plus vite!
-  raw_hic <- fread(
-    paste0("gunzip < ",file.path(
-      paste0(chr, "_5kb.RAWobserved.gz")),""),       # on passe une commande shell pour dezipper on-the-fly sans que ca n'affecte le zip original
-    sep="\t", header=FALSE)
-  colnames(raw_hic) <- c("row_pos","col_pos", "value")   # pour reference plus facile
-  raw_hic <- as.data.frame(raw_hic)                      # NB: raw_hic is a data.table, not a data.frame, so we'll convert it
-  
-  # load normalisation vector data
-  gzfc <- gzfile(file.path(paste0(chr, "_5kb.KRnorm.gz")),"rt")
-  norm.vec <- read.table(gzfc)
-  close(gzfc)
-  norm.vec <- norm.vec[,1] # make into vector
-  # NB: il y a une entree par ligne/colonne de la matrice
-  
-  
-  
-  
-  ## normalise values ## ==============================
-  # functions to convert positions into indexes & vice-versa
-  pos_2_index <- function(pos, resolution=5000) { return(1 + (pos / resolution))  }
-  index_2_pos <- function(ind, resolution=5000) { return(resolution * (ind - 1))  }
-  
-  
-  # list all the possible POSITIONS 
-  # as suggested by the length of the normalisation vector
-  # (since not all positions are actually "seen" in the raw_hic data.frame)
-  matrix.starnames <- index_2_pos(1:length(norm.vec))
-  
-  
-  # prepare normalisation factors & normalise
-  raw_hic$row_index   <- pos_2_index(raw_hic$row_pos)
-  raw_hic$col_index   <- pos_2_index(raw_hic$col_pos)
-  raw_hic$norm.factor <- norm.vec[raw_hic$row_index] * norm.vec[raw_hic$col_index]
-  raw_hic$norm.value  <- (raw_hic$value / raw_hic$norm.factor)
-  
-  
-  
-  
-  ## prepare sparse matrix ## ========================
-  # (if needed)
-  # a sparse matrix will hardly take up any more memory than the data.frame
-  # and MUCH less than a normal matrix IF it is, in fact, sparse (ie many zeros)
-  library(Matrix)
-  
-  raw.hic.sm <- sparseMatrix(i = raw_hic$row_index, 
-                               j = raw_hic$col_index, 
-                               x = raw_hic$norm.value,
-                               dims = c(length(norm.vec), length(norm.vec)),
-                               dimnames=list(matrix.starnames, matrix.starnames))
-  
-  
-  #write.table(x=raw.hic.sm,file="norm_hic_data/chr1_5kb_norm.txt",quote=F,row.names = F,col.names = F,sep="\t")
-  return(raw.hic.sm)
+#======================================
+# Removing ALL large TADs overlapping
+
+reduce_TAD <- function(TAD){
+  blacklist <- list()
+  for (c in levels(TAD$chr)){  # Doing operations separately by chromosomes
+    blacklist[[c]] <- c()
+    TAD_tmp<-Intervals(matrix(c(TAD$start[TAD$chr==c],
+                                TAD$end[TAD$chr==c]),ncol=2))
+    rownames(TAD_tmp) <- TAD$ID[TAD$chr==c]  # Naming intervals after TADs
+    over <-interval_overlap(TAD_tmp,TAD_tmp)  # Calling overlaps between all TADs
+    for(k in names(over)){  # Iterating over TAD names
+      if(length(over[[k]])>1){  # If the number of overlaps for a TAD is gt 1 (i.e. overlaps not only with itself)
+        for(t in over[[k]]){  # Iterating over items overlapping this TAD
+          if(k!=names(over[t]) & size(TAD_tmp[k])<=size(TAD_tmp[t])){  # Only counting overlaps that are not the TAD itself
+            blacklist[[c]] <- append(blacklist[[c]],rownames(TAD_tmp[t]))
+          }
+        }
+      }
+    }
+  }
+  return(blacklist)
 }
+large <-reduce_TAD(TAD)
+short <- TAD[!(TAD$ID %in% unname(unlist(large))),]
+write.table(short,"TAD/short_TADs.bed",sep="\t",quote = F,col.names=F,row.names=F)
+#==============================================
+# other method: proceeding at the boundary level
+TADb <- data.frame(chr=rep(0,2*length(TAD$ID)),
+                   start=rep(0,2*length(TAD$ID)),
+                   end=rep(0,2*length(TAD$ID)),
+                   ID=rep(0,2*length(TAD$ID)))
 
-clusterCall( clus, function() { 
-  require(Matrix) ; require(data.table)       # appel pour executer ce code sur chaque noeud. 
-  # Utile au debut pour charger les librairies necessaires dans chaque instance de R.
-} )
-clusterExport(clus, c("truc", "muche", ...???), envir=environment())
+for(i in 1:length(TAD$ID)){
+  start <- TAD$start[i]
+  end <- TAD$end[i]
+  lb <- c(as.character(TAD$chr[i]),start,start+(end-start)*0.05,paste0(TAD$ID[i],"L"))
+  rb <- c(as.character(TAD$chr[i]),end-(end-start)*0.05,end,paste0(TAD$ID[i],"R"))
+  TADb[2*i-1,] <-lb
+  TADb[2*i,] <- rb
+}
+TADb$start <- as.numeric(TADb$start)
+TADb$end <- as.numeric(TADb$end)
+TADb$chr <- as.factor(TADb$chr)
+large_b <- reduce_TAD(TADb)
+short_b <- TADb[!(TADb$ID %in% unname(unlist(large_b))),]
+write.table(TADb, file="TAD/short_in5_boundaries.bed",sep="\t",col.names=F,row.names=F,quote = F)
 
-tmp <- clusterApplyLB( clus, c(1:22,"X"), norm)
-
-# EOF
