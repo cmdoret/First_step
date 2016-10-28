@@ -1,0 +1,25 @@
+---
+title: 'Report 6: Redirection'
+author: "Cyril Matthey-Doret"
+date: "28 octobre 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Introduction
+
+The largely different gene length between protein-coding genes and lincRNAs made it more difficult than expected to find appropriate thresholds to call TAD-bound and non TAD-bound genes. The focus of the project has thus been redirected to investigate the role of enhancer-associated lincRNAs (elincRNAs) in the organization of TADs.
+
+#Methods:
+
+##Definition of TAD-boundaries
+
+TAD boundaries are now only extended towards the inside of TADs at 5% of TAD length and when TAD boundaries overlap, the largest ones are removed. 
+
+#Definition of enhancer-associated genes
+
+LincRNAs and protein-coding genes whose promoter regions (or promoter region + gene body) was overlapping enhancer elements (defined by histone modification marks) were defined as elincRNAs or epc-genes. The others are considered non-enhancer-associated.
+
