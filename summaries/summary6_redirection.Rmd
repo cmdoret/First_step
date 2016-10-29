@@ -2,7 +2,7 @@
 title: 'Report 6: Redirection'
 author: "Cyril Matthey-Doret"
 date: "28 octobre 2016"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -13,13 +13,22 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The largely different gene length between protein-coding genes and lincRNAs made it more difficult than expected to find appropriate thresholds to call TAD-bound and non TAD-bound genes. The focus of the project has thus been redirected to investigate the role of enhancer-associated lincRNAs (elincRNAs) in the organization of TADs.
 
-#Methods:
+#Methods
 
-##Definition of TAD-boundaries
+   * __Definition of TAD-boundaries__: TAD boundaries are now only extended towards the inside of TADs at 5% of TAD length and when TAD boundaries overlap, the largest ones are removed. This prevent the boundaries of large encompassing TADs from masking those of smaller TADs inside.
 
-TAD boundaries are now only extended towards the inside of TADs at 5% of TAD length and when TAD boundaries overlap, the largest ones are removed. 
+   * __Definition of enhancer-associated genes__: LincRNAs and protein-coding genes whose promoter regions (or promoter region + gene body) was overlapping enhancer elements (defined by histone modification marks) were defined as elincRNAs or epc-genes. The others are considered non-enhancer-associated. Promoter regions have been defined as the region of 1kb around the TSS of each gene.
+   
+Gene type|region|Original set|Overlaps|TAD-bound genes
+---------|------|------------|--------|---
+lincRNA|pro|2510|323|274 (`r round((100*274)/2510,1)`%)
+lincRNA|pro+bod|2510|1544|611 (`r round((100*611)/2510,1)`%)
+protein-coding|pro|14846|3411|3019 (`r round((100*3019)/14846,1)`%)
+protein-coding|pro+bod|14846|34808|8486 (`r round((100*8486)/14846,1)`%)
 
-#Definition of enhancer-associated genes
-
-LincRNAs and protein-coding genes whose promoter regions (or promoter region + gene body) was overlapping enhancer elements (defined by histone modification marks) were defined as elincRNAs or epc-genes. The others are considered non-enhancer-associated.
+   * __Generation of bins__: TADs have been split into bins of 5%. This was done after removing all large TADs overlapping smaller ones. Note the difference with the definition of TAD-boundaries, where only large overlapping boundaries have been removed.
+   
+   * __Testing enrichment at TAD boundaries__: The GAT framework was used to test if enhancer-bound lincRNA and protein-coding genes were enriched at TAD boundaries. For both gene types, it was done in two ways: testing enrichment of enhancer-bound and non-enhancer bound genes in the different bins, and testing enrichment of the different bins in enhancer-bound and non-enhancer bound genes.
+   
+#Results
 
