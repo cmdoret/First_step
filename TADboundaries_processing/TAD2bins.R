@@ -140,6 +140,7 @@ inner_bins <- function(TAD,w){  # Takes a TAD as an input and the binwidth as %T
   }
   return(bins)  # Returns all inner bins for the input TAD
 }
+options(scipen=999)
 short_bins <-apply(X=TAD,MARGIN = 1,FUN=inner_bins, w=0.05)
 short_bins <- do.call("rbind",short_bins)
 write.table(short_bins,file="TAD/short/short_bins5.bed",quote = F, sep="\t",col.names = F,row.names = F)

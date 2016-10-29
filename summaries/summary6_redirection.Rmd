@@ -28,7 +28,8 @@ protein-coding|pro+bod|14846|34808|8486 (`r round((100*8486)/14846,1)`%)
 
    * __Generation of bins__: TADs have been split into bins of 5%. This was done after removing all large TADs overlapping smaller ones. Note the difference with the definition of TAD-boundaries, where only large overlapping boundaries have been removed.
    
-   * __Testing enrichment at TAD boundaries__: The GAT framework was used to test if enhancer-bound lincRNA and protein-coding genes were enriched at TAD boundaries. For both gene types, it was done in two ways: testing enrichment of enhancer-bound and non-enhancer bound genes in the different bins, and testing enrichment of the different bins in enhancer-bound and non-enhancer bound genes.
+   * __Testing enrichment at TAD boundaries__: The GAT framework is used to test if enhancer-bound lincRNA and protein-coding genes are enriched at TAD boundaries. For both gene types, it is done in two ways: testing enrichment of enhancer-bound and non-enhancer bound genes in the different bins, and testing enrichment of the different bins in enhancer-bound and non-enhancer bound genes.
    
 #Results
+
 
