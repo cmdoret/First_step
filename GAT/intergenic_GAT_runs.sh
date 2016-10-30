@@ -20,6 +20,7 @@ do
                 --workspace=$W \
                 --num-samples=1000 \
                 --qvalue-method=BH \
+                --ignore-segment-tracks \
                 --isochore-file="../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
                 >'gat_'$desc'.tsv'
     

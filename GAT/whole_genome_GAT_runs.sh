@@ -18,6 +18,7 @@ do
                 --segment-file=$S \
                 --annotation-file=$A \
                 --workspace=$W \
+                --ignore-segment-tracks \
                 --num-samples=1000 \
                 --qvalue-method=BH \
                 --isochore-file="../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
