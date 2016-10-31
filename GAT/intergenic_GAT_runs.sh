@@ -1,4 +1,7 @@
 #!/bin/bash
+
+#BSUB -J inter_gat
+#BSUB -M 16777216
 # This script tests for enrichment in enhancer-bound and non-enhancer bound lincRNAs in TAD-bins.
 # This is done by a series of GAT calls using different values for segment and annotation arguments in intergenic space of the genome.
 # Cyril Matthey-Doret

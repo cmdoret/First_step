@@ -30,6 +30,18 @@ protein-coding|pro+bod|14846|34808|8486 (`r round((100*8486)/14846,1)`%)
    
    * __Testing enrichment at TAD boundaries__: The GAT framework is used to test if enhancer-bound lincRNA and protein-coding genes are enriched at TAD boundaries. For both gene types, it is done in two ways: testing enrichment of enhancer-bound and non-enhancer bound genes in the different bins, and testing enrichment of the different bins in enhancer-bound and non-enhancer bound genes.
    
+   * __Transcription factors binding sites__: Chip-seq data for SMC1, SMC3, RAD21, SA1, SA2 and CTCF from the ENCODE website was used.
 #Results
 
 1. Enrichment at TAD boundaries
+
+Several GAT tests were performed using different combinations of segments, annotations and workspace:
+
+Workspace|Segment|Annotation
+---------|-------|----------
+Whole genome | [n]e(linc\|pc)_pr[b] | bins
+Whole genome | bins | [n]e(linc\|pc)_pr[b]
+intergenic | [n]elinc_pr[b] | bins
+intergenic | bins | [n]elinc_pr[b]
+
+
