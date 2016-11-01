@@ -18,9 +18,7 @@ condense_gat <- function(path){
   # output files in a folder. It takes a path containing all 
   # subdirectories as argument.
   filenames <- list.files(path,recursive = T)  # List all files recursively
-  print(filenames)
-  data_names <- gsub("[.]tsv", "", basename(filenames))  # Removes the extension from filenames and stores them in a vector
-  print(data_names)
+  data_names <- gsub("[.]tsv", "", basename(filenames))  # Removes the extension and path from filenames and stores them in a vector
   gat_args <- strsplit(data_names,"_")  # Each filename is split by "_" into a vector.
   final <- data.frame()  # Initiating dataframe that will contain all concatenated results
   for(i in 1:length(filenames)){  # Iterating over files
@@ -30,6 +28,7 @@ condense_gat <- function(path){
                       segment=gat_args[[i]][5],
                       annotation=gat_args[[i]][a],
                       element = gat_args[[i]][e],  # Can be either pr (promoter) or prb (promoter + body)
+                      track=as.character(tmp_df$track),
                       pval=tmp_df$pvalue,
                       qval=tmp_df$pvalue,
                       fold=tmp_df$fold)
@@ -37,7 +36,7 @@ condense_gat <- function(path){
   }
   return(final) 
 }
-condense_gat("GAT/out/gat_bins/results/all_pc/")
+
 
 gat_gat <- condense_gat("GAT/out/gat_bins/results/")
 chipseq_gat <- condense_gat("GAT/out/gat_chipseq/results/")
