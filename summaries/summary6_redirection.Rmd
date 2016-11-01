@@ -40,14 +40,19 @@ Several GAT tests were performed using different combinations of segments, annot
 
 Workspace|Segment|Annotation
 ---------|-------|----------
-Whole genome|[n]e(linc \| pc)pr[b]|bins
-Whole genome|bins|[n]e(linc \| pc)pr[b]
-intergenic|[n]elinc pr[b]|bins
-intergenic|bins|[n]elinc pr[b]
-all pc genes|[n]epc pr[b]|bins
-all pc genes|bins|[n]epc pr[b]
+Whole genome|[n]e(linc \| pc)pr[b]|(bins \| CTCF & cohesin bs)
+Whole genome|(bins \| CTCF & cohesin bs)|[n]e(linc \| pc)pr[b]
+intergenic|[n]elinc pr[b]|(bins \| CTCF & cohesin bs)
+intergenic|(bins \| CTCF & cohesin bs)|[n]elinc pr[b]
+all pc genes|[n]epc pr[b]|(bins \| CTCF & cohesin bs)
+all pc genes|(bins \| CTCF & cohesin bs)|[n]epc pr[b]
+expressed lincRNAs|elinc pr[b]|(bins \| CTCF & cohesin bs)
+expressed lincRNAs|(bins \| CTCF & cohesin bs)|elinc pr[b]
+
 
 where: 
+
+bs = binding sites
 
 e = enhancer bound 
 
