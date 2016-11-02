@@ -9,28 +9,28 @@
 
 
 g="../data/GAT/genes/*"
-b="../data/chip_seq/GM12878*"
+b="../data/GAT/bins/short_bins10.bed"
 W="../data/GAT/hg19.genome.bed.gat" 
 A=$b
 for S in $g
 do
     sS=${S##*/}
-    desc="W_wholegenome_S_"${sS%.*}"_A_short5bins"
+    desc="W_wholegenome_S_"${sS%.*}"_A_short10bins"
     gat-run.py  --verbose=5 \
                 --log='log_'$desc'.log' \
                 --segment-file=$S \
                 --annotation-file=$A \
                 --workspace=$W \
                 --ignore-segment-tracks \
-                --num-samples=1000 \
+                --num-samples=10000 \
                 --qvalue-method=BH \
                 --isochore-file="../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
                 >'gat_'$desc'.tsv'
     
-    desc="W_wholegenome_S_short5bins_A_""${sS%\.*}"
+    desc="W_wholegenome_S_short10bins_A_""${sS%\.*}"
     gat-run.py  --verbose=5 \
                 --log='log_'$desc'.log' \
-                --num-samples=1000 \
+                --num-samples=10000 \
                 --qvalue-method=BH \
                 --segment-file=$A \
                 --annotation-file=$S \

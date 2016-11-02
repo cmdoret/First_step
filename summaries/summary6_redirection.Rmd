@@ -192,3 +192,4 @@ ggplot(data=gene2bs_seg,aes(x=workspace,y=fold,fill=log10(qval)))+
 #grid.arrange(bs2g,g2bs)
 
 ```
+

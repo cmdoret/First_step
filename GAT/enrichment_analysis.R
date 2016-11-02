@@ -42,7 +42,7 @@ gat_gat <- condense_gat("GAT/out/gat_bins/segments_overlap/results/")
 chipseq_gat <- condense_gat("GAT/out/gat_chipseq/segments_overlap/results/")
 
 whole_GAT <- rbind(gat_gat,chipseq_gat)
-write.table(whole_GAT,"GAT/out/whole_gat_results.txt",quote=F,sep="\t",row.names=F)
+write.table(whole_GAT,"GAT/out/whole_seg_gat_results.txt",quote=F,sep="\t",row.names=F)
 
 # Data analysis
 whole_gat <- read.table("GAT/out/whole_gat_results.txt",header=T)
