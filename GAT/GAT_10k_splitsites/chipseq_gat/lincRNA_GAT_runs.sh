@@ -5,9 +5,9 @@
 # 29.10.2016
 
 
-g=$(find ../data/GAT/genes/elinc*)
-b="../data/chip_seq/GM12878*"
-W="../data/GAT/lincRNA.bed" 
+g=$(find ../../data/GAT/genes/elinc*)
+b="../../data/chip_seq/GM12878*"
+W="../../data/GAT/lincRNA.bed" 
 
 for A in $b
 do
@@ -24,7 +24,7 @@ do
 	                --ignore-segment-tracks \
 	                --num-samples=10000 \
 	                --qvalue-method=BH \
-	                --isochore-file="../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
+	                --isochore-file="../../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
 	                >'gat_'$desc'.tsv'
 	    
 	    desc="W_lincRNA_S_"${sA%\.*}"_A_"${sS%\.*}
@@ -35,7 +35,7 @@ do
 	                --segment-file=$A \
 	                --annotation-file=$S \
 	                --workspace=$W \
-	                --isochore-file="../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
+	                --isochore-file="../../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
 	                >'gat_'$desc'.tsv'        
 	done
 done

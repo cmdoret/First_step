@@ -5,9 +5,9 @@
 # 29.10.2016
 
 
-g=$(find ../data/GAT/genes/*pc*)
-b="../data/GAT/bins/short_bins10.bed"
-W="../data/GAT/all_pc_genes.bed" 
+g=$(find ../../data/GAT/genes/*pc*)
+b="../../data/GAT/bins/short_bins10.bed"
+W="../../data/GAT/all_pc_genes.bed" 
 A=$b
 for S in $g
 do
@@ -21,7 +21,7 @@ do
                 --ignore-segment-tracks \
                 --num-samples=10000 \
                 --qvalue-method=BH \
-                --isochore-file="../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
+                --isochore-file="../../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
                 >'gat_'$desc'.tsv'
     
     desc="W_allpc_S_short10bins_A_""${sS%\.*}"
@@ -32,7 +32,7 @@ do
                 --segment-file=$A \
                 --annotation-file=$S \
                 --workspace=$W \
-                --isochore-file="../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
+                --isochore-file="../../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
                 >'gat_'$desc'.tsv'        
 done
 
