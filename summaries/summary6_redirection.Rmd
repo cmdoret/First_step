@@ -6,10 +6,10 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-setwd("/Users/cmatthe5/Documents/First_step/data/")
+#setwd("/Users/cmatthe5/Documents/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
 whole_gat_nuc <- read.table("GAT/out/whole_nuc_gat_results.txt",header=T)
 whole_gat_seg <- read.table("GAT/out/whole_seg_gat_results.txt",header=T)
-
 bins2gene_nuc<-droplevels(whole_gat_nuc[whole_gat_nuc$segment=="short5bins",])
 bins2gene_nuc$track <- as.character(bins2gene_nuc$track)
 bins2gene_nuc$track <- factor(bins2gene_nuc$track,levels = c(1:20))
@@ -192,4 +192,7 @@ ggplot(data=gene2bs_seg,aes(x=workspace,y=fold,fill=log10(qval)))+
 #grid.arrange(bs2g,g2bs)
 
 ```
+
+#Enrichment at TAD boundaries: Second run
+
 

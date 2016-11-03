@@ -30,6 +30,7 @@ do
                 --num-samples=10000 \
                 --qvalue-method=BH \
                 --segment-file=$A \
+                --counter=segment-overlap \
                 --annotation-file=$S \
                 --workspace=$W \
                 --isochore-file="../../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \

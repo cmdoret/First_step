@@ -3,8 +3,9 @@
 # Tue Nov  1 20:07:39 2016 ------------------------------
 
 # Loading data
-#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 setwd("/Users/cmatthe5/Documents/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
 #Open all files in folder in a loop
 
 

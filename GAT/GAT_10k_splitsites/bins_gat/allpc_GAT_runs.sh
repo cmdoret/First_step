@@ -19,6 +19,7 @@ do
                 --annotation-file=$A \
                 --workspace=$W \
                 --ignore-segment-tracks \
+                --counter=segment-overlap \
                 --num-samples=10000 \
                 --qvalue-method=BH \
                 --isochore-file="../../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
@@ -31,6 +32,7 @@ do
                 --qvalue-method=BH \
                 --segment-file=$A \
                 --annotation-file=$S \
+                --counter=segment-overlap \
                 --workspace=$W \
                 --isochore-file="../../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
                 >'gat_'$desc'.tsv'        

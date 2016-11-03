@@ -22,6 +22,7 @@ do
 	                --annotation-file=$A \
 	                --workspace=$W \
 	                --ignore-segment-tracks \
+	                --counter=segment-overlap \
 	                --num-samples=10000 \
 	                --qvalue-method=BH \
 	                --isochore-file="../../data/GAT/hg19.fa.corr_term_ISOisochore.bed" \
@@ -32,6 +33,7 @@ do
 	                --log='log_'$desc'.log' \
 	                --num-samples=10000 \
 	                --qvalue-method=BH \
+	                --counter=segment-overlap \
 	                --segment-file=$A \
 	                --annotation-file=$S \
 	                --workspace=$W \
