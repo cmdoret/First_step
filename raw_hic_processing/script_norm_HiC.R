@@ -4,11 +4,11 @@
 #
 
 
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")  # Path on PC
-#setwd("/Users/cmatthe5/Documents/First_step/data/")  # Path on CHUV mac
-for(c in c(1:22,"X")){
-  chr <- paste0("/home/cyril/Documents/Master/sem_1/First_step/data/raw_hic_5kb_res/chr",c,"/MAPQGE30/chr",c)  # Path on PC
-  #chr <- paste0("/Users/cmatthe5/Documents/First_step/data/raw_hic_5kb_res/chr",c,"/MAPQGE30/chr",c)  # Path on CHUV mac
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")  # Path on PC
+setwd("/Users/cmatthe5/Documents/First_step/data/")  # Path on CHUV mac
+for(c in c("9")){
+  #chr <- paste0("/home/cyril/Documents/Master/sem_1/First_step/data/raw_hic_5kb_res/chr",c,"/MAPQGE30/chr",c)  # Path on PC
+  chr <- paste0("/Users/cmatthe5/Documents/First_step/data/raw_hic_5kb_res/GM12878/chr",c,"/MAPQGE30/chr",c)  # Path on CHUV mac
   
   ## load data ## ====================================
   
@@ -22,7 +22,7 @@ for(c in c(1:22,"X")){
   raw_hic <- as.data.frame(raw_hic)                      # NB: raw_hic is a data.table, not a data.frame, so we'll convert it
   
   # load normalisation vector data
-  gzfc <- gzfile(file.path(paste0(chr, "_5kb.KRnorm.gz")),"rt") # Loading .gz compressed vector
+  gzfc <- gzfile(file.path(paste0(chr, "_5kb.SQRTVCnorm.gz")),"rt") # Loading .gz compressed vector
   norm.vec <- read.table(gzfc)  # reading vector
   close(gzfc)  # Closing connection with .gz file
   norm.vec <- norm.vec[,1] # make into vector object
@@ -65,7 +65,7 @@ for(c in c(1:22,"X")){
   
   
 
-  writeMM(obj = raw.hic.sm,file=paste0("norm_hic_data/","chr",c,"_5kb_norm.txt"))
+  writeMM(obj = raw.hic.sm,file=paste0("norm_hic_data/GM12878","chr",c,"_5kb_norm.txt"))
   # Writing file as a matrix object (could be written as a dataframe)
   # Next step is to compute the sum of interactions for each bin.
 }

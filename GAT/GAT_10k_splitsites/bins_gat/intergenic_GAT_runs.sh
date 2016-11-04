@@ -20,6 +20,7 @@ do
                 --segment-file=$S \
                 --annotation-file=$A \
                 --workspace=$W \
+                --nbuckets=270000 \
                 --counter=segment-overlap \
                 --num-samples=10000 \
                 --qvalue-method=BH \
@@ -32,6 +33,7 @@ do
                 --log='log_'$desc'.log' \
                 --num-samples=10000 \
                 --qvalue-method=BH \
+                --nbuckets=270000 \
                 --counter=segment-overlap \
                 --segment-file=$A \
                 --annotation-file=$S \
