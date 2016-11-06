@@ -21,6 +21,7 @@ do
                 --annotation-file=$A \
                 --workspace=$W \
                 --counter=segment-overlap \
+                --nbuckets=270000 \
                 --ignore-segment-tracks \
                 --num-samples=10000 \
                 --qvalue-method=BH \
@@ -33,6 +34,7 @@ do
                 --num-samples=10000 \
                 --qvalue-method=BH \
                 --counter=segment-overlap \
+                --nbuckets=270000 \
                 --segment-file=$A \
                 --annotation-file=$S \
                 --workspace=$W \
