@@ -7,7 +7,8 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
-setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/First_step/data/")
+setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 whole_gat_nuc <- read.table("GAT/out/whole_nuc_gat_results.txt",header=T)
 whole_gat_seg <- read.table("GAT/out/whole_seg_gat_results.txt",header=T)
 bins2gene_nuc<-droplevels(whole_gat_nuc[whole_gat_nuc$segment=="short5bins",])
@@ -194,6 +195,20 @@ ggplot(data=gene2bs_seg,aes(x=workspace,y=fold,fill=log10(qval)))+
 ```
 
 
+#Conclusions
+
+__Whole genome: __
+
+epc and non-epc genes promoters are enriched at TAD borders and depleted indide TADs. When taking the gene bodies in addition of the promoters, the trend is weaker.
+
+It is hard to detect patterns with nelinc and elincRNAs promoters alone as the p-values returned are often high. When taking the gene bodies into account, the p-values get better but there seem to be an overall depletion of genes throughout TAD. elincRNAs seem to be especially depleted in the middle of the TADs. The depletion seems to be less intense on the left border of TADs. These issues may be caused by the weak number of lincRNAs compared to pc genes.
 
 
+__Intergenic space:__
+
+Same kind of pattern, the p-values are higher. Note the strong depletion on bin 10 is still present for elincRNAs promoters only while nelincRNAs seem to be enriched at this position.
+
+__Binding sites:__
+
+elincRNAs promoters are strongly (6-8 fold) enriched in CTCF/cohesin binding sites while nelincRNAs promoters are only enriched 2-3 folds. The promoters of epc genes are less enriched than those of elincRNAs (~6 folds). Note that among all "gene bodies + promoters", those of elincRNAs are those with the strongest enrichment.
 

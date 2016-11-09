@@ -1,0 +1,12 @@
+---
+title: 'Report 8: Contact and expression'
+author: "Cyril Matthey-Doret"
+date: "9 novembre 2016"
+output: pdf_document
+---
+
+#Introduction: 
+
+Checking if there are correlations between gene expression and DNA-DNA contact across 4 different cell lines (GM12878, K562, HUVEC and NHEK).
+
+NOTE: Contact matrices for chromosome 9 for all cell lines Has been normalised using SQRTVC instead of KR because the algorithm did not converge for K562 and vector was full of NA.

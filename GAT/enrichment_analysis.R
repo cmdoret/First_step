@@ -39,14 +39,14 @@ condense_gat <- function(path){
 }
 
 
-gat_gat <- condense_gat("GAT/out/gat_bins/segments_overlap/results/")
-chipseq_gat <- condense_gat("GAT/out/gat_chipseq/segments_overlap/results/")
+gat_gat <- condense_gat("GAT/out/10k_samples/gat_bins/segments_overlap/results/")
+chipseq_gat <- condense_gat("GAT/out/10k_samples/gat_chipseq/segments_overlap/results/")
 
 whole_GAT <- rbind(gat_gat,chipseq_gat)
-write.table(whole_GAT,"GAT/out/whole_seg_gat_results.txt",quote=F,sep="\t",row.names=F)
+write.table(whole_GAT,"GAT/out/whole_seg_10kgat_results.txt",quote=F,sep="\t",row.names=F)
 
 # Data analysis
-whole_gat <- read.table("GAT/out/whole_gat_results.txt",header=T)
+whole_gat <- read.table("GAT/out/whole_seg_10kgat_results.txt",header=T)
 
 bins2gene<-droplevels(whole_gat[whole_gat$segment=="short5bins",])
 bins2gene$track <- as.character(bins2gene$track)
