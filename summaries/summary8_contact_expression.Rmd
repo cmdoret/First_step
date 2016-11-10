@@ -133,4 +133,4 @@ for(c in c("GM12878")){
 In general, there is a weak, non-linear relationship between expression and DNA-DNA contact. Genes with a lot of contact have very small expression levels, while those with little contact can have both low and high expression levels.
 
 The correlation is weaker in elincRNAs than in nelincRNAs. This may simply be caused by the overall lower expression of enhancer-bound genes.
-This low expression may be due to bidirectionally transcribed RNAs that are lowly expressed. It would be interesting to differentiate between unidirectional and bidirectional transcription.
+This low expression may be due to bidirectionally transcribed RNAs that are lowly expressed. It would thus be interesting to differentiate between unidirectional and bidirectional transcription.
