@@ -8,5 +8,19 @@ output: pdf_document
 #Introduction: 
 
 Checking if there are correlations between gene expression and DNA-DNA contact across 4 different cell lines (GM12878, K562, HUVEC and NHEK).
+This analysis is performed on elincRNAs, nelincRNAs, epcRNAs and nepcRNAs.
 
 NOTE: Contact matrices for chromosome 9 for all cell lines Has been normalised using SQRTVC instead of KR because the algorithm did not converge for K562 and vector was full of NA.
+
+
+#Results: 
+
+##LincRNA:
+
+
+
+
+#Conclusions: 
+
+In general, the relationship between expression and DNA-DNA contact is negative, but not linear. Genes with a lot of contact have very small expression levels, while those with little contact can have both low and high expression levels.
+
