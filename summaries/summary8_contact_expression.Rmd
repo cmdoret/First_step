@@ -23,9 +23,9 @@ contexpr <- function(hic, expr, cell_line="", gtype=""){  # This function comput
   merged <- merge(x = hic, y = expr, by = "gene", all = F)
   results <- c(cor.test(merged$diam, merged$expression, method="spearman")$estimate, 
                cor.test(merged$diam, merged$expression, method="spearman")$p.value)
-  smoothScatter(log10(merged$diam), log10(merged$expression), 
+  plot(xlim=c(0,8),ylim=c(-3,4),log10(merged$diam), log10(merged$expression), pch=".", 
                 xlab = "Log10 DNA-DNA interactions",ylab="Log10 median expression levels", main=paste(cell_line,gtype,sep=": "))
-  text(x = c(6.5,6.5),y=c(1.5,1), labels=c(paste0("rho = ", round(results[1],3)), paste0("p-value = ", round(results[2],3))))
+  text(x = c(6.5,6.5),y=c(3,2.5), labels=c(paste0("rho = ", round(results[1],3)), paste0("p-value = ", round(results[2],3))))
   
 }
 
@@ -135,3 +135,5 @@ In general, there is a weak, non-linear relationship between expression and DNA-
 
 The correlation is weaker in elincRNAs than in nelincRNAs. This may simply be caused by the overall lower expression of enhancer-bound genes.
 This low expression may be due to bidirectionally transcribed RNAs that are lowly expressed. It would thus be interesting to differentiate between unidirectional and bidirectional transcription.
+
+The relationship observed between contact and expression can in fact not really be called a correlation, but there is still an interesting difference between the patterns observed in lincRNAs and protein-coding genes. Note the graphs has been rescaled, it appears that elinc RNAs are a subset of nelincRNAs and that these 2 groups do not present significant differences.

@@ -27,5 +27,130 @@ Here is a list of the problems and possible ways to solve them:
   
 #Results: 
 
+```{r setup, echo=F}
+setwd("/Users/cmatthe5/Documents/First_step/data/")
+control_gat <- read.table("GAT/out/whole_seg_poscontrol_gat_results.txt", header=T)
+library(ggplot2);library(gridExtra)
+elements_names <- c(
+  `pr` = "promoter",
+  `prb` = "promoter + gene body",
+  `elinc` = "elincRNA",
+  `nelinc` = "non-elincRNA",
+  `epc` = "epc gene",
+  `nepc` = "non-epc gene",
+  `GM12878CTCF` = "CTCF",
+  `GM12878RAD21`="RAD21",
+  `GM12878SMC3`="SMC3"
+)
 
+whole_gat_seg <- read.table("GAT/out/whole_seg_10kgat_results.txt",header=T)
 
+nice_workspace <- c(wholegenome= "Whole genome",intergenic="Intergenic space",allpc="Protein-coding space", lincRNA="Expressed lincRNAs space")
+
+bins2gene_seg<-droplevels(whole_gat_seg[whole_gat_seg$segment=="short10bins",])
+bins2gene_seg$track <- as.character(bins2gene_seg$track)
+bins2gene_seg$track <- factor(bins2gene_seg$track,levels = c(1:20))
+
+gene2bins_seg<-droplevels(whole_gat_seg[whole_gat_seg$annotation=="short10bins",])
+gene2bins_seg$annottrack <- as.character(gene2bins_seg$annottrack)
+gene2bins_seg$annottrack <- factor(gene2bins_seg$annottrack,levels = c(1:20))
+
+CTCF_gene_seg<-droplevels(whole_gat_seg[whole_gat_seg$segment=="GM12878CTCF",])
+gene_CTCF_seg<-droplevels(whole_gat_seg[whole_gat_seg$annotation=="GM12878CTCF",])
+
+SMC3_gene_seg<-droplevels(whole_gat_seg[whole_gat_seg$segment=="GM12878SMC3",])
+gene_SMC3_seg<-droplevels(whole_gat_seg[whole_gat_seg$annotation=="GM12878SMC3",])
+
+RAD21_gene_seg<-droplevels(whole_gat_seg[whole_gat_seg$segment=="GM12878RAD21",])
+gene_RAD21_seg<-droplevels(whole_gat_seg[whole_gat_seg$annotation=="GM12878RAD21",])
+
+# Loading bindingsites and overlaps
+RAD21 <- read.table("chip_seq/GM12878_RAD21_peaks.bed")
+CTCF <- read.table("chip_seq/GM12878_CTCF_peaks.bed")
+SMC3 <- read.table("chip_seq/GM12878_SMC3_peaks.bed")
+RAD21_CTCF <- read.table("chip_seq/inter_insulators_GM12878/inter_CTCF_RAD21.bed")
+RAD21_SMC3 <- read.table("chip_seq/inter_insulators_GM12878/inter_RAD21_SMC3.bed")
+SMC3_CTCF <- read.table("chip_seq/inter_insulators_GM12878/inter_CTCF_SMC3.bed")
+all_inter <- read.table("chip_seq/inter_insulators_GM12878/inter_CTCF_RAD21_SMC3.bed")
+
+```
+
+##Enrichment tests:
+
+All GAT enrichments tests were performed with a sample size of 10,000 using segment overlap as a measure and correcting p-values for multiple testing using FDR.
+
+###1. Insulators proteins in TAD bins:
+
+The insulator proteins CTCF, RAD21 and SMC3 are known to be enriched at TAD boundaries and are used as positive controls to compare with the other results.
+
+```{r pos_control_gat, echo=F}
+ggplot(data=control_gat,aes(x=annottrack,y=fold,fill=log10(qval)))+
+    scale_fill_continuous(low="#66bb66",high="#bb6666",guide = "colourbar",name= "Log10\nq-value")+
+    geom_bar(stat="identity")+theme_bw()+
+    facet_grid(segment~.,labeller = as_labeller(elements_names))+
+    ggtitle(paste0("Enrichment of insulator proteins in TAD bins"))+
+    xlab("TAD bins") + ylab("Fold enrichment")+
+    theme(axis.text = element_text(size = rel(0.4)))
+
+```
+
+###2. Genes in TAD bins:
+
+```{r  genes_in_bins, echo=F, results="asis", warning=F, fig.height=9,fig.width=9}
+ggplot(data=gene2bins_seg[gene2bins_seg$workspace=="intergenic",],aes(x=annottrack,y=fold,fill=log10(qval)))+
+    scale_fill_continuous(low="#66bb66",high="#bb6666",guide = "colourbar",name= "Log10\nq-value")+
+    geom_bar(stat="identity")+theme_bw()+
+    facet_grid(element~segment,labeller = as_labeller(elements_names))+
+    ggtitle("Enrichment of lincRNAs in TAD bins")+
+    xlab("TAD bins") + ylab("Fold enrichment")+
+    theme(axis.text = element_text(size = rel(0.4)))
+cat("\n\\newpage\n")
+ggplot(data=gene2bins_seg[gene2bins_seg$workspace=="allpc",],aes(x=annottrack,y=fold,fill=log10(qval)))+
+    scale_fill_continuous(low="#66bb66",high="#bb6666",guide = "colourbar",name= "Log10\nq-value")+
+    geom_bar(stat="identity")+theme_bw()+
+    facet_grid(element~segment,labeller = as_labeller(elements_names))+
+    ggtitle("Enrichment of pc genes in TAD bins")+
+    xlab("TAD bins") + ylab("Fold enrichment")+
+    theme(axis.text = element_text(size = rel(0.4)))
+
+```
+
+###3. Insulator proteins binding sites in genes:
+
+Intergenic space was used as the workspace when looking at enrichment in lincRNAs. Protein-coding genes was used as the workspace when looking for enrichment in lincRNAs.
+
+```{r insulator_bs_in_genes, echo=F, warning=F, fig.height=6,fig.width=9}
+ggplot(data=CTCF_gene_seg,aes(x=workspace,y=fold,fill=log10(qval)))+
+  scale_fill_continuous(low="#66bb66",high="#bb6666",guide = "colourbar",name= "Log10 q-value")+
+  geom_bar(stat="identity")+theme_bw()+
+  facet_grid(element~annotation,labeller = as_labeller(elements_names))+
+  ggtitle("Enrichment of CTCF binding sites in lincRNAs and pcgenes")+
+  xlab("Workspace") + ylab("Fold enrichment")+theme(axis.text.x=element_text(angle = -90, hjust = 0))
+
+ggplot(data=RAD21_gene_seg,aes(x=workspace,y=fold,fill=log10(qval)))+
+  scale_fill_continuous(low="#66bb66",high="#bb6666",guide = "colourbar",name= "Log10 q-value")+
+  geom_bar(stat="identity")+theme_bw()+
+  facet_grid(element~annotation,labeller = as_labeller(elements_names))+
+  ggtitle("Enrichment of RAD21 binding sites in lincRNAs and pcgenes")+
+  xlab("Workspace") + ylab("Fold enrichment")+theme(axis.text.x=element_text(angle = -90, hjust = 0))
+
+ggplot(data=SMC3_gene_seg,aes(x=workspace,y=fold,fill=log10(qval)))+
+  scale_fill_continuous(low="#66bb66",high="#bb6666",guide = "colourbar",name= "Log10 q-value")+
+  geom_bar(stat="identity")+theme_bw()+
+  facet_grid(element~annotation,labeller = as_labeller(elements_names))+
+  ggtitle("Enrichment of SMC3 binding sites in lincRNAs and pcgenes")+
+  xlab("Workspace") + ylab("Fold enrichment")+theme(axis.text.x=element_text(angle = -90, hjust = 0))
+
+```
+
+##Overlaps between insulators binding sites:
+
+```{r venn_bindingsites, echo=F, results="asis"}
+library(VennDiagram)
+
+grid.newpage()
+draw.triple.venn(euler.d = T,scaled = T, area1 = length(RAD21$V1), area2 = length(CTCF$V1), area3 = length(SMC3$V1), n12 = length(RAD21_CTCF$V1), 
+                 n23 = length(SMC3_CTCF$V1), n13 = length(RAD21_SMC3$V1), 
+                 n123 = length(all_inter$V1), category = c("RAD21", "CTCF", "SMC3"), lty = "blank", 
+                 fill = c("skyblue", "yellow", "mediumorchid"))
+```
