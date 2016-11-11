@@ -1,0 +1,31 @@
+---
+title: 'Report 9: Refining analyses'
+author: "Cyril Matthey-Doret"
+output: pdf_document
+
+---
+
+#Introduction:
+
+Results from previous analyses suggest there are biases that need to be accounted for and that some analyses are not relevant.
+Here is a list of the problems and possible ways to solve them:
+
+  * Comparing the results for enrichment of lincRNAs in TAD bins, it appears there may be a elincRNA-like signal in nelincRNA results. It is likely that there are many nelincRNAs that are in fact elincRNAs, but they have not just been detected by overlapping promoter region with enhancers.
+    + nelincRNAs definition should be refined by overlaps with promoters histone marks. lincRNAs whose promoter region does not overlap promoter markes should not be considered nelincRNAs as their transcription is probably driven by an enhancer.
+  
+  * TAD bins enrichment in genes is not meaningful biologically and should not be used in the report.
+  
+  * It might be interested to look at enrichment of binding sites in TAD bins, as this can be used as a positive control for comparison with other analyses.
+  
+  * RNA-seq is biased towards 3' expression. Don't remember how this could impact results. Ask Ana.
+  
+  * intergenic space should always be used as workspace for lincRNAs and protein-coding space should be used as workspace for protein-coding genes. Whole genome makes the workspace too large, everything is depleted and we know lincRNAs will never be in protein-coding genes anyway.
+  
+  * Since there is no difference across CTCF, SMC3 and RAD21. They can simply merged in the final report, including a Venn diagram of the binding sites to show they overlap most of the time, and a mention that they were also tested separately without significant difference.
+  
+  * Sudden depletion of elincRNAs at 5th TAD bin and asymmetry of lincRNAs enrichment towards 5' TAD boundaries are unexpected and worth investigating. They may also just be artifacts.
+  
+#Results: 
+
+
+

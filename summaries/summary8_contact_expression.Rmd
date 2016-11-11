@@ -8,8 +8,8 @@ output: pdf_document
 #Introduction: 
 
 ```{r setup, echo=F}
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/Users/cmatthe5/Documents/First_step/data/")
 elinc <- read.table("enhancer_bound/elinc_prb.bed")
 nelinc <- read.table("enhancer_bound/nelinc_prb.bed")
 colnames(elinc) = colnames(nelinc) <- c("chr", "start", "end", "gene", "strand")
@@ -56,7 +56,8 @@ rawviz <- function(hic, expr, cell_line="", gtype=""){  # This function computes
   text(x=max(merged$diam)/2,y=max(merged$expression)/3, labels = paste0("Median interactions: ", round(median(merged$diam),3)))
   
 }
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/Users/cmatthe5/Documents/First_step/data/")
 par(mfrow=c(2,2))
 linc_contact <- read.table(paste0("TAD_contact/all.lincRNA.GM12878.HiC.contact.txt"), header=T)
 linc_expr <- read.table("expression/LCL.lincRNA.expression.txt")
@@ -90,8 +91,8 @@ Spearman correlation was used to detect non-linear relationship between DNA cont
 
 ```{r tmp_results, echo=F, warning=F, fig.height=8, fig.width=8}
 
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/Users/cmatthe5/Documents/First_step/data/")
 par(mfrow=c(2,2))
 #for(c in c("GM12878", "HUVEC", "K562", "NHEK")){
 for(c in c("GM12878")){
