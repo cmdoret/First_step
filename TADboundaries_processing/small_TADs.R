@@ -25,7 +25,7 @@ reduce_TAD <- function(TAD){
       if(length(over[[k]])>1){  # If the number of overlaps for a TAD is gt 1 (i.e. overlaps not only with itself)
         for(t in over[[k]]){  # Iterating over items overlapping this TAD
           if(k!=names(over[t]) & size(TAD_tmp[k])<=size(TAD_tmp[t])){  # Only counting overlaps that are not the TAD itself
-            blacklist[[c]] <- append(blacklist[[c]],rownames(TAD_tmp[t]))
+            blacklist[[c]] <- append(blacklist[[c]],rownames(TAD_tmp[t])) # Contains only large TADs that need to be removed
           }
         }
       }
@@ -33,29 +33,31 @@ reduce_TAD <- function(TAD){
   }
   return(blacklist)
 }
-large <-reduce_TAD(TAD)
-short <- TAD[!(TAD$ID %in% unname(unlist(large))),]
+large <-reduce_TAD(TAD)  # Storing the IDs of all large TADs
+
+options(scipen=999)  # Preventing R from using scientific notation (other programs such as bedtools and genome browsers do not like it)
+short <- TAD[!(TAD$ID %in% unname(unlist(large))),]  # Removing all large TADs from the original list
 write.table(short,"TAD/short_TADs.bed",sep="\t",quote = F,col.names=F,row.names=F)
 #==============================================
 # other method: proceeding at the boundary level
-TADb <- data.frame(chr=rep(0,2*length(TAD$ID)),
+TADb <- data.frame(chr=rep(0,2*length(TAD$ID)),  # Generating empty dataframe for storing all boundaries (2/TAD)
                    start=rep(0,2*length(TAD$ID)),
                    end=rep(0,2*length(TAD$ID)),
-                   ID=rep(0,2*length(TAD$ID)),
-                   side=rep(0,2*length(TAD$ID)))
+                   ID=rep(0,2*length(TAD$ID)))
 
-for(i in 1:length(TAD$ID)){
+for(i in 1:length(TAD$ID)){  # Generating boundaries of 5% TAD length and storing them in the dataframe
   start <- TAD$start[i]
   end <- TAD$end[i]
-  lb <- c(as.character(TAD$chr[i]),start,start+(end-start)*0.05,paste0(TAD$ID[i],"L"))
+  lb <- c(as.character(TAD$chr[i]),start,start+(end-start)*0.05,paste0(TAD$ID[i],"L"))  # Note the ID of each boudary will be the ID of its TAD followed by the side (R or L)
   rb <- c(as.character(TAD$chr[i]),end-(end-start)*0.05,end,paste0(TAD$ID[i],"R"))
-  TADb[2*i-1,] <-lb
-  TADb[2*i,] <- rb
+  TADb[2*i-1,] <-lb  # Left boudary
+  TADb[2*i,] <- rb  # Right boundary
 }
 TADb$start <- as.numeric(TADb$start)
 TADb$end <- as.numeric(TADb$end)
 TADb$chr <- as.factor(TADb$chr)
-short_b <- reduce_TAD(TADb)
-options(scipen=999)
+large_b <- reduce_TAD(TADb) # Storing Large boundaries that need to be removed
+short_b <- TADb[!(TADb$ID %in% unname(unlist(large_b))),]  # Removing longer overlapping boundaries
+options(scipen=999) 
 write.table(short_b, file="TAD/short_in5_boundaries.bed",sep="\t",quote = F,col.names=F,row.names=F)
 
