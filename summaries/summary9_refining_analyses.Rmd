@@ -32,6 +32,10 @@ In addition, I perform supplementary analyses:
   
 NOTE: From now on, I am working with newly defined TADs (file is named "short_fullover_TAD.bed"). In this file, all TAD that fully encompass another one are removed.
 
+Some numbers:
+
+
+
 #Results: 
 
 ```{r setup, echo=F}
