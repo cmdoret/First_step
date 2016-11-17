@@ -13,21 +13,8 @@ colnames(pc) = colnames(linc) <- c("chr","start","end","gene","strand")
 # Functions defined below allow to extend all genes by 1kb on the side of the promoter
 # or to select only the promoter region.
 # pr = promoter region; prb = promoter region + body
-gene_2_pr <- function(g,b=FALSE){  # This function breaks the bed files DO NOT USE!
-  ps <- 0
-  if(g[5]=="-"){
-    ps <- g[3]
-    g[3] <- as.numeric(g[3])+1000
-    if(b==F){g[2] <- ps}
-  }else{
-    ps <- as.numeric(g[2])-1000
-    if(b==F){g[3] <- g[2]}
-    g[2] <- ps
-  }
-  return(g)
-}
 
-stupid_loop <-function(g,b=FALSE){ # This one is fine
+assoc_loop <-function(g,b=FALSE){ # This one is fine
   for(r in 1:length(g[,1])){
     if(g[r,5]=="-"){
       ps <- g[r,3]
@@ -44,20 +31,10 @@ stupid_loop <-function(g,b=FALSE){ # This one is fine
 
 #=============================
 # Defining promoter region and promoter region + body of lincRNA, pcgenes
-
-pr_linc <- t(apply(X=linc,MARGIN = 1,FUN=gene_2_pr))
-prb_linc <- t(apply(X=linc,MARGIN = 1,FUN=gene_2_pr,b=TRUE))
-pr_pc <- t(apply(X=pc,MARGIN = 1,FUN=gene_2_pr))
-prb_pc <- t(apply(X=pc,MARGIN = 1,FUN=gene_2_pr,b=TRUE))
-# This doesn't work, probably this sneaky apply that changes smth in the file...
-#============================
-# Stupid loop version
-pr_linc <- stupid_loop(linc)
-prb_linc <- stupid_loop(linc,b=TRUE)
-pr_pc <- stupid_loop(pc)
-prb_pc <- stupid_loop(pc,b=TRUE)
-
-
+pr_linc <- assoc_loop(linc)
+prb_linc <- assoc_loop(linc,b=TRUE)
+pr_pc <- assoc_loop(pc)
+prb_pc <- assoc_loop(pc,b=TRUE)
 #============================
 # Writing into files
 write.table(pr_linc,file="enhancer_bound/pro_linc.bed",quote=F,sep="\t",col.names = F,row.names = F)
@@ -65,9 +42,13 @@ write.table(prb_linc,file="enhancer_bound/probo_linc.bed",quote=F,sep="\t",col.n
 write.table(pr_pc,file="enhancer_bound/pro_pc.bed",quote=F,sep="\t",col.names = F,row.names = F)
 write.table(prb_pc,file="enhancer_bound/probo_pc.bed",quote=F,sep="\t",col.names = F,row.names = F)
 
-#============================
-# BEDtools intersect with ENCODE enhancers elements...  
 
+#============================
+# BEDtools intersect with ENCODE enhancers elements...
+# Need to format file containing promoter marks:
+allmark <- read.table("enhancer_bound/promoter_marks/wgEncodeBroadHmmGm12878HMM.bed")
+promark <- allmark[allmark$V4=="1_Active_Promoter",]
+write.table(promark[,c(1:4)], "enhancer_bound/promoter_marks/promoter_marks.bed",quote = F,sep="\t",col.names = F,row.names = F)
 #============================
 # Loading overlaps:
 
@@ -99,3 +80,10 @@ write.table(nelinc_pr,file = "enhancer_bound/nelinc_pr.bed",sep="\t",quote=F,col
 write.table(nelinc_prb,file = "enhancer_bound/nelinc_prb.bed",sep="\t",quote=F,col.names=F,row.names = F)
 write.table(nepc_pr,file = "enhancer_bound/nepc_pr.bed",sep="\t",quote=F,col.names=F,row.names = F)
 write.table(nepc_prb,file = "enhancer_bound/nepc_prb.bed",sep="\t",quote=F,col.names=F,row.names = F)
+
+#==========================
+# Additional filtering steps: non-enhancer-bound genes are redefined into promoter-associated genes.
+# They need to overlap promoter marks in addition to being non-enhancer associated. This avoids including 
+# enhancer-associated in the set, as enhancers may just not have been detected with the procedure.
+
+# BEDtools intersect with ENCODE promoter marks...
