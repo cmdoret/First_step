@@ -39,7 +39,7 @@ diam_slide<-function(m,R=5000,S , L){  # L = vector containing each gene length;
   D<-floor(pos_2_index(L))  # Transforming length of genes into number of bins.
   for(r in i){  # Iterating over genes
     print(paste0("r=",r,"; N=",N,"; D[c]=", D[c]))
-    diam[c] <-  sum(M[1:N,r:r+D[c]])/L[c]  # desired width of square (based on gene length)
+    diam[c] <-  sum(M[1:N,r:r+D[c]])*(L[c]/R)  # desired width of square (based on gene length)
     # Storing normalized diamond sums in vector
     c <- c+1
   }

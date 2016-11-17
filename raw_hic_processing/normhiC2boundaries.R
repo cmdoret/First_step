@@ -18,7 +18,7 @@ stopifnot(require(Matrix))
 # Loading all matrices in a list (takes pretty long)
 matlist <- list()
 for(c in c("22")){
-  tmp <- gzfile(paste0("norm_hic_data/chr",c,"_5kb_norm.txt.gz"),"rt")  # Files are unzipped before read
+  tmp <- gzfile(paste0("norm_hic_data/GM12878/chr",c,"_5kb_norm.txt.gz"),"rt")  # Files are unzipped before read
   matlist[[c]] <- c(readMM(tmp),c)
   close(tmp)  # Freeing connection for next matrix
 }
@@ -105,4 +105,3 @@ full <- do.call("rbind", tmp)
 full
 write(full, file="BOUNDARIES_HIC.txt", sep= "\t")
 #write.table(full, file = "TAD/merged/hic_bound.txt",quote = F,col.names = F,row.names = F,sep = "\t")
-

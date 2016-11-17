@@ -63,8 +63,7 @@ options(scipen=999)
 write.table(short_b, file="TAD/short_in5_boundaries.bed",sep="\t",quote = F,col.names=F,row.names=F)
 
 ##############################
-# DIFFERENT VERSIONS FOLLOWING DISCUSSION of 16.11.2016 
-#======================================
+
 # Different version only discarding TADs if a smaller one is entirely inside.
 inbig_TAD <- function(TAD){
   blacklist <- list()
@@ -94,5 +93,4 @@ options(scipen=999)  # Preventing R from using scientific notation (other progra
 short <- TAD[!(TAD$ID %in% unname(unlist(large))),]  # Removing all large TADs from the original list
 write.table(short,"TAD/short_TADs.bed",sep="\t",quote = F,col.names=F,row.names=F)
 
-# Boundaries extending in and out:
 
