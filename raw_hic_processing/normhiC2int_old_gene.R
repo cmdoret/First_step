@@ -71,7 +71,7 @@ for_diam_slide<-function(m,R=5000,S , L){  #Vectorized version of the slider. MU
                                          w=(100000)))  # desired width of square (based on gene length)
      tmp_int <- append(tmp_int, tmp)
     }
-    diam[c] <- 
+    diam[c] <- mean(tmp_int)
     # Storing normalized diamond sums in vector
     c <- c+1
   }

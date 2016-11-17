@@ -25,11 +25,22 @@ Here is a list of the problems and possible ways to solve them:
   
   * Sudden depletion of elincRNAs at 5th TAD bin and asymmetry of lincRNAs enrichment towards 5' TAD boundaries are unexpected and worth investigating. They may also just be artifacts.
   
+In addition, I perform supplementary analyses:
+
+  * Comparison of contacts in genes, expression levels and sequence conservation.
+  * Looking at the difference between distribution of + and - stranded genes along TAD bins.
+  
+NOTE: From now on, I am working with newly defined TADs (file is named "short_fullover_TAD.bed"). In this file, all TAD that fully encompass another one are removed.
+
 #Results: 
 
 ```{r setup, echo=F}
 setwd("/Users/cmatthe5/Documents/First_step/data/")
-control_gat <- read.table("GAT/out/whole_seg_poscontrol_gat_results.txt", header=T)
+pro_elinc <- read.table("enhancer_bound/elinc_pr.bed")
+pro_nelinc <- read.table("enhancer_bound/nelinc_pr.bed")
+probo_elinc <- read.table("enhancer_bound/elinc_prb.bed")
+probo_nelinc <- read.table("enhancer_bound/nelinc_prb.bed")
+control_gat <- read.table("out/whole_seg_poscontrol_gat_results.txt", header=T)
 library(ggplot2);library(gridExtra)
 elements_names <- c(
   `pr` = "promoter",
@@ -145,7 +156,7 @@ ggplot(data=SMC3_gene_seg,aes(x=workspace,y=fold,fill=log10(qval)))+
 
 ##Overlaps between insulators binding sites:
 
-```{r venn_bindingsites, echo=F, results="asis"}
+```{r venn_bindingsites, warning=F, echo=F, results="asis"}
 library(VennDiagram)
 
 grid.newpage()
@@ -153,4 +164,21 @@ draw.triple.venn(euler.d = T,scaled = T, area1 = length(RAD21$V1), area2 = lengt
                  n23 = length(SMC3_CTCF$V1), n13 = length(RAD21_SMC3$V1), 
                  n123 = length(all_inter$V1), category = c("RAD21", "CTCF", "SMC3"), lty = "blank", 
                  fill = c("skyblue", "yellow", "mediumorchid"))
+```
+
+##Strandedness of genes throughout TADs
+
+Since the enrichment tests showed an unexpected asymmetry for nelincRNAs, it could be interesting to check if genes are distributed differently, depending on their strand.
+
+```{r strand_dist, echo=F}
+ggplot(data=SMC3_gene_seg,aes(x=workspace,y=fold,fill=log10(qval)))+
+  scale_fill_continuous(low="#66bb66",high="#bb6666",guide = "colourbar",name= "Log10 q-value")+
+  geom_bar(stat="identity")+theme_bw()
+
+```
+
+##Sequence conservation vs contact vs expression
+
+```{r seqcons_contact_expr, echo=F}
+
 ```

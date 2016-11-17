@@ -42,7 +42,7 @@ diam_slide<-function(m,R=5000,S , L, tad){  # L = vector containing each gene le
       gTAD$start <- pos_2_index(gTAD$start)
       gTAD$end <- pos_2_index(gTAD$end)
       print(paste0("r=",r,"; N=",N,"; D[c]=", D[c]))
-      diam[c] <-  sum(M[gTAD$start:gTAD$end,r:r+D[c]])/L[c]  # desired width of square (based on gene length) 
+      diam[c] <-  sum(M[gTAD$start:gTAD$end,r:r+D[c]])*(L[c]/R)  # desired width of square (based on gene length) 
     } else{
       diam[c] <- 0
     }

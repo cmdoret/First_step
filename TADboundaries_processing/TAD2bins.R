@@ -8,7 +8,7 @@ setwd("/home/cyril/Documents/Master/sem_1/First_step/data")
 #Loading domains and boundaries.
 TADb10 <- read.table("TAD/merged/TAD_boundaries10.bed")
 #TADb10 <- TADb10[,-4]
-TAD <- read.table("TAD/short/short_TADs.bed")
+TAD <- read.table("TAD/short/short_fullover_TAD.bed")
 TAD <- cbind(paste("short",row.names(TAD),sep="_"),TAD)
 TAD <- TAD[,-5]
 colnames(TADb10) <-c("chr", "start","end")
@@ -143,7 +143,7 @@ inner_bins <- function(TAD,w){  # Takes a TAD as an input and the binwidth as %T
 options(scipen=999)
 short_bins <-apply(X=TAD,MARGIN = 1,FUN=inner_bins, w=0.1)
 short_bins <- do.call("rbind",short_bins)
-write.table(short_bins,file="TAD/short/short_bins10.bed",quote = F, sep="\t",col.names = F,row.names = F)
+write.table(short_bins,file="TAD/short/short_fullover_bins10.bed",quote = F, sep="\t",col.names = F,row.names = F)
 #========================================================================
 
 #Concatenation of all lists into a single humongus dataframe
