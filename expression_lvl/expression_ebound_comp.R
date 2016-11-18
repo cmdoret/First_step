@@ -14,6 +14,7 @@ setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 bedcol <- c("chr", "start", "end", "gene", "strand")
 exp_lincRNA <- read.table("expression/LCL.lincRNA.expression.txt", header = F)
 exp_pcgene <- read.table("expression/LCL.pcgene.expression.txt", header = F)
+test <- read.table("pc_genes/LCL.expressed.pcgene.bed")
 
 #loading enhancer-bound and promoter bound lincRNAs and protein-coding genes
 elinc_prb <- read.table("enhancer_bound/elinc_prb.bed")
