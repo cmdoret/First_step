@@ -1,0 +1,154 @@
+---
+title: "Report 1C: Expression levels,subcellular localization and tissue-specificity of elincRNAs and plincnRNAs."
+author: "Cyril Matthey-Doret"
+date: "October 25, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#Loading data:
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+#setwd("/home/cyril/Documents/First_step/data/")
+setwd("/Users/cmatthe5/Documents/First_step/data/")
+whole_loc <- read.table("../data/subcell_loc/enhancer_bound/whole_loc.txt", header=T)
+whole_exp <- read.table("../data/expression/enhancer_bound/whole_exp.txt", header=T)
+whole_tau <- read.table("../data/tissue_specificity/enhancer_bound/whole_tau.txt", header=T)
+library(ggplot2)
+library(gridExtra)
+library(plyr)
+```
+#Introduction
+In this new version of report 1, I use enhancer-associated lincRNAs (elincRNA) and promoter-associated lincRNAs( plincRNAs) rather than TAD-bound and non TAD-bound. In order for a gene to be defined as enhancer-associated, its promoter region (defined as the area of 1kb around the TSS) or its body needs to overlap promoter marks. For a gene to be considered promoter-associated, its promoter region and gene body must not overlap enhancer marks, and they must overlap promoter marks.
+
+
+#Data
+
+##lincRNA
+
+Original set|element|Overlaps|associated genes
+------------|-------|---------|--------
+2510|enhancer|1644|611 (`r round((100*611)/2510,1)`%)
+1899|promoter|516|456 (`r round((100*456)/2510,1)`%)
+
+__Note:__ the original set for promoter associated is the set of non-enhancer associated (2510 - 611 = 1899).
+The proportion of promoter-associated genes is based on this set.
+
+##Protein-coding genes
+
+Original set|element|Overlaps|associated genes
+------------|-------|---------|--------
+14846|enhancer|1644|8486 (`r round((100*8486)/14846,1)`%)
+6360|promoter|5874|4574 (`r round((100*4574)/6360,1)`%)
+
+__Note:__ the original set for promoter associated is the set of non-enhancer associated (14846 - 6360 = 8486).
+The proportion of promoter-associated genes is based on this set.
+
+#Results
+
+All p-values displayed on plots were obtained by performing Mann-Whitney tests.
+
+##Expression levels
+
+Promoter-associated genes are more expressed.
+
+
+```{r exp_lvl, echo=FALSE,fig.height=8,fig.width=8}
+short_med<-function(x){return(round(median(log10(x)),3))}
+short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
+
+med.fac = ddply(whole_exp, .(gentype,assoc), function(.d)
+  data.frame(x=median(round(log10(.d$expression),3))))
+pl<-c()
+gl<-c()
+
+
+for(g in levels(whole_exp$gentype)){
+  p <- short_wilcox(whole_exp[whole_exp$gentype==g &  whole_exp$assoc=="e","expression"],
+                    whole_exp[whole_exp$gentype==g & whole_exp$assoc=="p","expression"])
+  pl<-append(pl,p)
+  gl<-append(gl,g)
+}
+
+wilcox_p <- data.frame(pval=pl,gentype=gl)
+
+ggplot(data=whole_exp)+
+  facet_grid(.~gentype)+
+  geom_boxplot(aes(x=assoc, y=log10(expression),fill=assoc),notch=T)+
+  geom_text(data=med.fac, aes(x=assoc, y=-1, label=x), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  geom_text(data=wilcox_p, aes(x=1.5, y=1, label=paste0("p=",pval)), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  theme_bw()
+```
+
+##Subcellular localization
+
+The ratios depicted below represent the abundance of RNA in the cytoplasm relative to the nucleus. There is no significant difference between the localization of elincRNAs and plincRNAs, whereas the ppc-genes have a higher relative abundance in the cytoplasm than epc-genes
+
+
+```{r local, echo=FALSE,fig.height=8,fig.width=8}
+
+short_med<-function(x){return(round(median(log10(x)),3))}
+short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
+
+med.fac = ddply(whole_loc, .(gentype,assoc), function(.d)
+  data.frame(x=median(round(log10(.d$ratio),3))))
+pl<-c()
+gl<-c()
+
+
+for(g in levels(whole_loc$gentype)){
+  p <- short_wilcox(whole_loc[whole_loc$gentype==g &  whole_loc$assoc=="e","ratio"],
+                    whole_loc[whole_loc$gentype==g & whole_loc$assoc=="p","ratio"])
+  pl<-append(pl,p)
+  gl<-append(gl,g)
+}
+
+wilcox_p <- data.frame(pval=pl,gentype=gl)
+
+ggplot(data=whole_loc)+
+  facet_grid(.~gentype)+
+  geom_boxplot(aes(x=assoc, y=log10(ratio),fill=assoc),notch=T)+
+  geom_text(data=med.fac, aes(x=assoc, y=-1, label=x), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  geom_text(data=wilcox_p, aes(x=1.5, y=1, label=paste0("p=",pval)), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  theme_bw()
+
+```
+
+##Tissue specificity
+
+$\tau$ was calculated from a set of tissue-wise expression level for all transcripts. elincRNAs are more tissue specific than plincRNAs. epc-genes are also more tissue specific than ppc-genes. Overall, lincRNAs are more tissue specific than protein-coding genes.
+
+```{r tissue, echo=FALSE,fig.height=8,fig.width=8}
+short_med<-function(x){return(round(median(x),3))}
+short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
+
+med.fac = ddply(whole_tau, .(gentype,assoc), function(.d)
+  data.frame(x=median(round(.d$tau,3))))
+pl<-c()
+gl<-c()
+
+
+for(g in levels(whole_tau$gentype)){
+  p <- short_wilcox(whole_tau[whole_tau$gentype==g &  whole_tau$assoc=="e","tau"],
+                    whole_tau[whole_tau$gentype==g & whole_tau$assoc=="p","tau"])
+  pl<-append(pl,p)
+  gl<-append(gl,g)
+}
+
+wilcox_p <- data.frame(pval=pl,gentype=gl)
+
+ggplot(data=whole_tau)+
+  facet_grid(.~gentype)+
+  geom_boxplot(aes(x=assoc, y=tau,fill=assoc),notch=T)+
+  geom_text(data=med.fac, aes(x=assoc, y=-1, label=x), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  geom_text(data=wilcox_p, aes(x=1.5, y=1, label=paste0("p=",pval)), 
+            colour="black", inherit.aes=FALSE, parse=FALSE)+
+  theme_bw()
+```
+
