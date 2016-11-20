@@ -4,7 +4,11 @@
 # 20.10.2016
 
 ############################
-
+testmat <- list(matrix(rep(0,100),nrow=10),"1")
+for(i in 1:10){testmat[[1]][i,i] <- 1}
+for(i in 5:7){testmat[[1]][4,i]<-1}
+for(i in 6:7){testmat[[1]][5,i]<-1}
+testmat[[1]][6,7]<-1
 # Loading data
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
 #setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
@@ -32,6 +36,10 @@ on.exit( stopCluster(clus) )
 
 #Defining functions
 
+D2toD1 <- function(I,J,N){
+  return(((I-1)*N)+J)
+}
+
 vec_sub_square <- function(v,s,e,n,w){  
   # this function allows to get the values inside a square sub matrix in a 1D vector representing a larger square matrix
   # v=vector,s=upper left corner of square, e=bottom right, n= number of cols in matrix,w=width of subsquare
@@ -50,7 +58,7 @@ vec_diam_slide<-function(m,R=5000, D=100000){  #Vectorized version of the slider
   L <- length(m[1,])
   M <- as.vector(t(m))
   diam <- rep(0,L) # preallocating space for diamond-summed data.
-  diam[(D/R+1):(L-(D/R))] <- sapply(X = seq(from=(D/R+L*D/R+1),to=(L*L-(D/R+L*D/R)),by=(L+1)),
+  diam[(D/R):(L-(D/R-1))] <- sapply(X = seq(from=D2toD1(D/R,D/R,L),to=D2toD1((L-(D/R-1)),(L-(D/R-1)),L),by=(L+1)),
                                     simplify = T, FUN= function(d){
                                       sum(vec_sub_square(v=M,s=(d-L*(D/R-1)),e=(d+(D/R-1)),n=L,w=(D/R)))})
   return(diam)

@@ -26,13 +26,18 @@ colnames(TAD) <- c("chr","start","end")
 
 #Defining functions
 
+D2toD1 <- function(I,J,N){
+  return(((I-1)*N)+J)
+}
+
 vec_sub_square <- function(v,s,e,n,w){  
   # this function allows to get the values inside a square sub matrix in a 1D vector representing a larger square matrix
   # v=vector,s=upper left corner of square, e=bottom right, n= number of cols in matrix,w=width of subsquare
-  sub_sq <- rep(0,times=w)
+  sub_sq <- rep(0,times=w*w)
   cs <- 1
   while(s<=e){
     for(i in s:(s+(w-1))){
+      print(i)
       sub_sq[cs] <-v[i]
       cs <- cs+1
     }
@@ -41,28 +46,13 @@ vec_sub_square <- function(v,s,e,n,w){
   return(sub_sq)
 }
 
-for_diam_slide<-function(m,R=5000, D=100000){  #Vectorized version of the slider. MUCH FASTER! uses for loop instead of apply. Less greedy ?
-  L <- length(m[1,])
-  M <- as.vector(t(m))
-  diam <- rep(0,L) # preallocating space for diamond-summed data.
-  c <- 1
-  i = seq(from=(D/R+L*D/R+1),to=(L*L-(D/R+L*D/R+1)),by=(L+1))
-  for(r in (D/R+1):(L-(D/R+1))){
-    diam[r] <- sum(vec_sub_square(v=M,s=(i[c]-L*(D/R)),e=(i[c]+D/R-1),n=L,w=(D/R)))
-    c <- c+1
-  }
-  return(diam)
-}
-
-
-
 vec_diam_slide<-function(m,R=5000, D=100000){  #Vectorized version of the slider. MUCH FASTER!
   L <- length(m[1,])
   M <- as.vector(t(m))
   diam <- rep(0,L) # preallocating space for diamond-summed data.
-  diam[(D/R+1):(L-(D/R))] <- sapply(X = seq(from=(D/R+L*D/R+1),to=(L*L-(D/R+L*D/R+1)),by=(L+1)),
+  diam[(D/R):(L-(D/R-1))] <- sapply(X = seq(from=D2toD1(D/R,D/R,L),to=D2toD1((L-(D/R-1)),(L-(D/R-1)),L),by=(L+1)),
                                     simplify = T, FUN= function(d){
-                                      sum(vec_sub_square(v=M,s=(d-L*(D/R)),e=(d+(D/R-1)),n=L,w=(D/R)))})
+                                      sum(vec_sub_square(v=M,s=(d-L*(D/R-1)),e=(d+(D/R-1)),n=L,w=(D/R)))})
   return(diam)
 }
 
