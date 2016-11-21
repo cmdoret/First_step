@@ -45,8 +45,8 @@ vec_sub_square <- function(v,s,e,n,w){
 diam_slide<-function(m,R=5000, D=100000){
   M <- m
   diam <- rep(0,length(M[1,])) # preallocating space for diamond-summed data.
-  diam[(D/R+1):(length(M[1,])-(D/R))] <- sapply(X = seq(D/R+1,(length(M[1,])-(D/R))),
-                                                simplify = T, FUN= function(d){
+  diam[(D/R):(length(M[1,])-(D/R-1))] <- sapply(X = seq(D/R,(length(M[1,])-(D/R-1))),
+                                                simplify = T, FUN= function(d){print(d);
                                                   sum(M[d:(d-(D/R-1)),d:(d+(D/R-1))])})
   return(diam)
 }
@@ -117,3 +117,9 @@ a <- vec_diam_slide(matlist[[22]][[1]][4000:(4000+i),4000:(4000+i)])
 b <- diam_slide(matlist[[22]][[1]][4000:(4000+i),4000:(4000+i)])
   
 plot(a,b)
+
+testmat <- list(matrix(rep(0,100),nrow=10),"1")
+for(i in 1:10){testmat[[1]][i,i] <- 1}
+for(i in 5:7){testmat[[1]][4,i]<-1}
+for(i in 6:7){testmat[[1]][5,i]<-1}
+testmat[[1]][6,7]<-1
