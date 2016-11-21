@@ -48,6 +48,7 @@ vec_sub_square <- function(v,s,e,n,w){
   return(sub_sq)
 }
 
+
 vec_diam_slide<-function(m,R=5000, D=100000){  #Vectorized version of the slider. MUCH FASTER!
   L <- length(m[1,])
   M <- as.vector(t(m))

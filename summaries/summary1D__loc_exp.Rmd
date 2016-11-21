@@ -9,9 +9,9 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 
 #Loading data:
-setwd("/Users/cmatthe5/Documents/First_step/data/")
+#setwd("/Users/cmatthe5/Documents/First_step/data/")
 #setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/home/cyril/Documents/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
 
 # Loading lincRNAs sets
 ne_linc <- read.table("enhancer_bound/all_combinations/ne_linc_prb.bed")  # Overlap no enhancer marks, does not take promoters into account
