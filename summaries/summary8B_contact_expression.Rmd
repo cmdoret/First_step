@@ -8,8 +8,9 @@ output: pdf_document
 #Introduction: 
 
 ```{r setup, echo=F}
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
 
 # Loading lincRNAs sets
 ne_linc <- read.table("enhancer_bound/all_combinations/ne_linc_prb.bed")  # Overlap no enhancer marks, does not take promoters into account
@@ -88,8 +89,9 @@ A quick overview of the data shows that enhancer-associated genes have a lower e
 
 ```{r raw_visu_chrom_linc, echo=F,fig.height=7}
 
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
 par(mfrow=c(2,3))
 
 
@@ -111,8 +113,8 @@ for(c in c("GM12878")){
 
 ```{r raw_visu_chrom_pc, echo=F,fig.height=7}
 
-
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
 par(mfrow=c(2,3))
 
@@ -137,7 +139,8 @@ for(c in c("GM12878")){
 
 ```{r raw_visu_TAD_linc, echo=F,fig.height=7}
 
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
 par(mfrow=c(2,3))
 
@@ -159,7 +162,8 @@ for(c in c("GM12878")){
 
 ```{r raw_visu_TAD_pc, echo=F,fig.height=7}
 
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
 par(mfrow=c(2,3))
 
@@ -184,9 +188,10 @@ Spearman correlation was used to detect non-linear relationship between DNA cont
 
 ###Gene versus chromosome:
 
-```{r correlation_chrom_linc, echo=F,fig.height=7}
+```{r correlation_chrom_linc, echo=F,fig.height=7, warning=F}
 
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
 par(mfrow=c(2,3))
 
@@ -205,10 +210,10 @@ for(c in c("GM12878")){
 
 ```
 
-```{r correlation_chrom_pc, echo=F,fig.height=7}
+```{r correlation_chrom_pc, echo=F,fig.height=7, warning=F}
 
-
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
 par(mfrow=c(2,3))
 
@@ -231,9 +236,10 @@ for(c in c("GM12878")){
 
 ###Gene versus TAD:
 
-```{r correlation_TAD_linc, echo=F,fig.height=7}
+```{r correlation_TAD_linc, echo=F,fig.height=7, warning=F}
 
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
 par(mfrow=c(2,3))
 
@@ -252,10 +258,10 @@ for(c in c("GM12878")){
 
 ```
 
-```{r correlation_TAD_pc, echo=F,fig.height=7}
+```{r correlation_TAD_pc, echo=F,fig.height=7, warning=F}
 
-
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 #setwd("/Users/cmatthe5/Documents/First_step/data/")
 par(mfrow=c(2,3))
 
