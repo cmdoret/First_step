@@ -1,5 +1,4 @@
-# This script computes the interaction in each genes given a list of genes and an interaction matrix
-# Here, all interactions between genes and TAD are computed.
+# This script computes the mean interaction in each TAD, given a matrix of contact and a list of TADs.
 # Cyril Matthey-Doret
 # 20.10.2016
 
@@ -29,27 +28,19 @@ diam_slide<-function(m,R=5000,tad){  # L = vector containing each gene length; R
   M <- m[[1]]  # Transforming matrix into vector
   diam <- rep(0,times=length(tad[,1])) # preallocating space for diamond-summed data.
   c <- 1
-  for(r in i){  # Iterating over genes
-    over <-interval_overlap(int_tad,int_linc[c])
-    gTAD <- tad[tad$ID==names(unlist(over[over!=0])),]
-    if(length(gTAD[,1])>0){
-      gTAD$start <- pos_2_index(gTAD$start,R)
-      gTAD$end <- pos_2_index(gTAD$end,R)
-      print(paste0("r=",r,"; N=",N,"; E[c]=", E[c]))
-      submat <- M[gTAD$start:gTAD$end,r:E[c]]
-      diam[c] <-  mean(submat)  # desired width of square (based on gene length) 
-    } else{
-      diam[c] <- 0
-    }
+  for(r in 1:length(tad$ID)){  # Iterating over TADs
+    start <- pos_2_index(tad$start[r],R)
+    end <- pos_2_index(tad$end[r],R)
+    print(paste0("r=",r,"; N=",N,"; start=",start,"; end=",end))
+    submat <- M[start:end,start:end]
+    diam[c] <-  mean(submat)  # desired width of square (based on gene length) 
     # Storing normalized diamond sums in vector
     c <- c+1
   }
-  return(cbind(linc,diam))
+  return(cbind(tad,diam))
 }
 
 # Loading all matrices in a list (takes pretty long)
-linc_full <- read.table("jendata/eqtl.lincRNA.bed")  #your set of genes
-colnames(linc_full)<-c("chr","start","end","gene","strand") #more convenient
 TAD_full <- read.table("TAD/short/short_TADs.bed")
 colnames(TAD_full)<-c("chr","start","end","ID") #more convenient
 matlist <- list()
@@ -62,18 +53,15 @@ for(c in c(chrom)){  # Loading matrices
 for(c in c(chrom)){  # Calling function and storing results for all chromosomes
   TAD <- TAD_full[TAD_full$chr==paste0("chr",c),]
   #linc <- linc_full[linc_full$chr==paste0("chr",c),] #only on the same chromosome as your matrix
-  if(length(linc$gene)>0){
-    tmp_results <- diam_slide(matlist[[c]],tad=TAD) 
-    print(tmp_results)
-    results <- rbind(results,tmp_results)
-  }
+  tmp_results <- diam_slide(matlist[[c]],tad=TAD) 
+  print(tmp_results)
+  results <- rbind(results,tmp_results)
 }
 rownames(results) <- NULL
 
-
 #=========================
 # Example call
-# Exporting the list of TADs and the required functions to each node in the cluster.
+
 
 setwd("/scratch/beegfs/monthly/mls_2016/cmatthey/first_step/staging_area/")
 write.table(results, file = "TAD_contact/contact_linc_TAD_GM12878.txt",quote = F,col.names = T,row.names = F,sep = "\t")

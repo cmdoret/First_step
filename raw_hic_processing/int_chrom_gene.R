@@ -1,8 +1,4 @@
-# This script computes the interaction in each genes given a list of genes and an interaction matrix
-# Hi Jennifer, note you will need to adjust the paths and the code, depending on what chromosome you want.
-# the variable containing the genes is called linc, but you can just use pc genes as well.
-# Note that you need to only include genes in the chromosome of the matrix (I did that on line 27, you can change the chromosome from there)
-# I hope I did not make any mistake ! Have fun :)
+# This script computes the mean interactions between each gene and the whole chromosome, given a list of genes and an interaction matrix.
 # Cyril Matthey-Doret
 # 20.10.2016
 

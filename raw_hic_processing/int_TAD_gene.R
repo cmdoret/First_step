@@ -1,5 +1,4 @@
-# This script computes the interaction in each genes given a list of genes and an interaction matrix
-# Here, all interactions between genes and TAD are computed.
+# This script computes the mean interaction per base in each genes given a list of genes, a list of TADs and an interaction matrix
 # Cyril Matthey-Doret
 # 20.10.2016
 
