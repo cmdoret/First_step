@@ -35,13 +35,14 @@ diam_slide<-function(m,R=5000,tad){  # L = vector containing each gene length; R
     submat <- M[start:end,start:end]
     diam[c] <-  mean(submat)  # desired width of square (based on gene length) 
     # Storing normalized diamond sums in vector
+    if(c>30){break}
     c <- c+1
   }
   return(cbind(tad,diam))
 }
 
 # Loading all matrices in a list (takes pretty long)
-TAD_full <- read.table("TAD/short/short_TADs.bed")
+TAD_full <- read.table("TAD/short/short_fullover_TAD.bed")
 colnames(TAD_full)<-c("chr","start","end","ID") #more convenient
 matlist <- list()
 results <- data.frame()

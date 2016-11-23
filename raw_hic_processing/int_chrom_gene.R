@@ -34,7 +34,7 @@ diam_slide<-function(m,R=5000,S , L){  # L = vector containing each gene length;
   for(d in 1:length(L)){i[d]<-floor(pos_2_index(S[d],R))}  #transforming start position into rounded vector indexes
   E <- floor(pos_2_index(S+L,R))  # storing indexes of end positions
   for(r in i){  # Iterating over genes
-    print(paste0("r=",r,"; N=",N,"; E[c]=", E[c]))
+    print(paste0("r=",r,"; N=",N,"; E[c]=", E[c], "; diam=",mean(M[1:N,r:E[c]])))
     diam[c] <-  mean(M[1:N,r:E[c]]) # desired width of square (based on gene length)
     # Storing normalized diamond sums in vector
     c <- c+1
@@ -43,7 +43,7 @@ diam_slide<-function(m,R=5000,S , L){  # L = vector containing each gene length;
 }
 
 # Loading all matrices in a list (takes pretty long)
-linc_full <- read.table("jendata/eqtl.lincRNA.bed")  #your set of genes
+linc_full <- read.table("linc_RNA/LCL.expressed.lincRNA.bed")  #your set of genes
 colnames(linc_full)<-c("chr","start","end","gene","strand") #more convenient
 matlist <- list()
 results <- data.frame()
