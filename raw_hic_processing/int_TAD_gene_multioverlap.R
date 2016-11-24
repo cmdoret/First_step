@@ -1,4 +1,5 @@
-# This script computes the mean interaction per base in each genes given a list of genes, a list of TADs and an interaction matrix
+# This script computes the mean interaction per base in each genes given a list of genes, a list of TADs and an interaction matrix.
+# If a gene overlaps 2 different TADs, the interactions will be computed independently for each TAD and the gene will appear twice in the list.
 # Cyril Matthey-Doret
 # 20.10.2016
 
@@ -41,14 +42,14 @@ diam_slide<-function(m,R=5000,S , L, tad){  # L = vector containing each gene le
     if(length(gTAD[,1])>0){
       gTAD$start <- pos_2_index(gTAD$start,R)
       gTAD$end <- pos_2_index(gTAD$end,R)
-      print(paste0("r=",r,"; N=",N,"; E[c]=", E[c]))
-      print(paste0("gTAD$start=", gTAD$start, ": gTAD$end=", gTAD$end))
+      print(paste0("gene.start=",r,"; gene.end=", E[c],"; Matrix dimensions=",N))
+      print(paste0("gTADstart=", gTAD$start[1], ": gTAD$end=", gTAD$end[1]))
       submat <- M[gTAD$start[1]:gTAD$end[1],r:E[c]]
+      #print(submat)
       diam[c] <-  mean(submat)  # desired width of square (based on gene length) 
       if(length(gTAD[,1])>1){
-        print(gTAD)
+        print(paste("DOUBLE Overlap", gTAD, SEP=": "))
         for(t in 2:length(gTAD$start)){
-          print(paste0("Here is a gene overlapping multiple TADs",t))
           print(paste0("r=",r,"; N=",N,"; E[c]=", E[c]))
           print(paste0("gTAD$start=", gTAD$start[t], ": gTAD$end=", gTAD$end[t]))
           submat <- M[gTAD$start[t]:gTAD$end[t],r:E[c]]
@@ -60,7 +61,6 @@ diam_slide<-function(m,R=5000,S , L, tad){  # L = vector containing each gene le
       diam[c] <- 0
     }
     # Storing normalized diamond sums in vector
-    if(c>35){break}
     c <- c+1
   }
   return(cbind(linc,diam))
@@ -81,6 +81,7 @@ for(c in c(chrom)){  # Loading matrices
 for(c in c(chrom)){  # Calling function and storing results for all chromosomes
   TAD <- TAD_full[TAD_full$chr==paste0("chr",c),]
   linc <- linc_full[linc_full$chr==paste0("chr",c),] #only on the same chromosome as your matrix
+  rownames(linc) <- NULL
   if(length(linc$gene)>0){
     tmp_results <- diam_slide(matlist[[c]], S=linc$start, L=as.vector(linc$end-linc$start),tad=TAD) 
     print(tmp_results)
