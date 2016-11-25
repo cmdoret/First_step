@@ -8,8 +8,8 @@ output: pdf_document
 #Introduction: 
 
 ```{r setup, echo=F}
-setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
+setwd("/Users/cmatthe5/Documents/First_step/data/")
 elinc <- read.table("enhancer_bound/elinc_prb.bed")
 nelinc <- read.table("enhancer_bound/nelinc_prb.bed")
 colnames(elinc) = colnames(nelinc) <- c("chr", "start", "end", "gene", "strand")

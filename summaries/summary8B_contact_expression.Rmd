@@ -8,10 +8,15 @@ output: pdf_document
 #Introduction: 
 
 ```{r setup, echo=F}
-#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
-setwd("/home/cyril/Documents/First_step/data/")
+path <- "/Users/cmatthe5/Documents/First_step/data/"
+setwd(path)
+cell_lines <- c("GM12878","HUVEC","K562","NHEK")
+test_lines <- c("GM12878","HUVEC","K562","NHEK")
+whole_expr <- read.table("expression/enhancer_promoter/whole_exp.txt",header=T)
+colnames(whole_expr) <- c("gene_id","GM12878","HUVEC","K562","NHEK","promoter","enhancer","gentype")
 
+library(knitr)
+opts_chunk$set(results='asis')
 # Loading lincRNAs sets
 ne_linc <- read.table("enhancer_bound/all_combinations/ne_linc_prb.bed")  # Overlap no enhancer marks, does not take promoters into account
 e_linc <- read.table("enhancer_bound/all_combinations/e_linc_prb.bed")  # Overlap enhancer marks, does not take promoters into account
@@ -37,13 +42,13 @@ colnames(ne_linc)= colnames(e_linc)=colnames(ne.p_linc)=colnames(e.np_linc)=coln
 rawviz <- function(hic, expr, cell_line="", gtype=""){  # This function computes the correlation between expression and DNA contacts for a set of genes.
 # Both arguments need to be a list of genes containing the gene ID and its median expression level/amount of DNA-DNA contact.
   merged <- merge(x = hic, y = expr, by = "gene", all = F)
+  #print(length(merged$gene[as.character(merged$gene)==as.character(hic$gene) & merged$diam!=expr$diam]))
   merged$expression <- as.numeric(merged$expression)
   merged$diam <- as.numeric(merged$diam)
-  plot(merged$diam, merged$expression, xlim = c(0,200000), ylim = c(0,1000),
+  plot(merged$diam, merged$expression,xlim=c(0,max(merged$diam)),ylim=c(0,max(merged$expression)),
                 xlab = "DNA-DNA interactions",ylab="Median expression levels", main=paste(cell_line,gtype,sep=": "),pch=1)
-  text(x=100000,y=800, labels = paste0("Med exp: ", round(median(merged$expression),3)))
-  text(x=100000,y=600, labels = paste0("Med int: ", round(median(merged$diam),3)))
-  
+  text(x=2.5*max(merged$diam)/4,y=3*max(merged$expression)/4, labels = paste0("Med exp: ", round(median(merged$expression),3)))
+  text(x=2.5*max(merged$diam)/4,y=2*max(merged$expression)/3, labels = paste0("Med int: ", round(median(merged$diam),3)))
 }
 
 contexpr <- function(hic, expr, cell_line="", gtype=""){  # This function computes the correlation between expression and DNA contacts for a set of genes.
@@ -53,10 +58,11 @@ contexpr <- function(hic, expr, cell_line="", gtype=""){  # This function comput
   merged$diam <- as.numeric(merged$diam)
   results <- c(cor.test(merged$diam, merged$expression, method="spearman")$estimate, 
                cor.test(merged$diam, merged$expression, method="spearman")$p.value)
-  plot(xlim=c(0,8),ylim=c(-3,4),log10(merged$diam), log10(merged$expression), pch=".", 
+  plot(xlim=c(0,200),ylim=c(-3,4),merged$diam, log10(merged$expression), pch=".", 
                 xlab = "Log10 DNA-DNA interactions",ylab="Log10 median expression levels", main=paste(cell_line,gtype,sep=": "))
-  text(x = c(6.5,6.5,6.5),y=c(3,2.5,2), labels=c(paste0("rho = ", round(results[1],3)), paste0("p-value = ", round(results[2],3)),
+  text(x = c(rep(max(merged$diam),3)),y=c(3,2.5,2), labels=c(paste0("rho = ", round(results[1],3)), paste0("p-value = ", round(results[2],3)),
                                                  paste0("n = ", length(merged$diam))))
+  abline(lm(log10(merged$expression)~merged$diam))
 }
 
 extract_int <- function(cset, gset){
@@ -69,6 +75,16 @@ linclist <- list(e_linc,e.p_linc,e.np_linc,ne_linc,ne.p_linc,ne.np_linc)
 pclist <- list(e_pc,e.p_pc,e.np_pc,ne_pc,ne.p_pc,ne.np_pc)
 lincnames <- c("elincRNA","eplincRNA","enplincRNA","nelincRNA","neplincRNA","nenplincRNA")
 pcnames <- c("ePCG","epPCG","enpPCG","nePCG","nepPCG","nenpPCG")
+
+corr_expr <- function(hic, expr, cell_line="", gtype=""){  # This function computes the correlation between expression and DNA contacts for a set of genes.
+# Both arguments need to be a list of genes containing the gene ID and its median expression level/amount of DNA-DNA contact.
+  merged <- merge(x = hic, y = expr, by = "gene", all = F)
+  merged$expression <- as.numeric(merged$expression)
+  merged$diam <- as.numeric(merged$diam)
+  results <- c(cor.test(merged$diam, merged$expression, method="spearman")$estimate, 
+               cor.test(merged$diam, merged$expression, method="spearman")$p.value)
+ return(results)
+}
 
 ```
 
@@ -85,27 +101,29 @@ NOTE 2: Contact matrices for chromosome 9 for all cell lines have been normalise
 
 A quick overview of the data shows that enhancer-associated genes have a lower expression and higher amounts of DNA contacts on average. Patterns in the data would be easier to detect after log transforming both variables.
 
-###Gene versus chromosome:
+###Mean TAD contacts:
+
+Here, the contact value of each gene is the mean contacts observed for the TAD it is in.
 
 ```{r raw_visu_chrom_linc, echo=F,fig.height=7}
 
-#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
-setwd("/home/cyril/Documents/First_step/data/")
+
+setwd(path)
+
 par(mfrow=c(2,3))
 
 
-for(c in c("GM12878")){
-  linc_contact <- read.table(paste0("TAD_contact/byChrom/all.lincRNA.",c,".HiC.contact.txt"), header=T)
-  linc_expr <- read.table("expression/LCL.lincRNA.expression.txt")
-  colnames(linc_expr) <- c("gene", "expression")
+for(c in cell_lines){
+  linc_contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
   count <- 1
   for(var in linclist){
-    expr <- linc_expr[linc_expr$gene %in% var$gene,]
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
     contact <- extract_int(linc_contact,var)
     rawviz(contact, expr,cell_line=c,gtype=lincnames[count])
     count <- count+1
   }
+  cat("\n\n\\pagebreak\n")
 }
 
 
@@ -113,23 +131,23 @@ for(c in c("GM12878")){
 
 ```{r raw_visu_chrom_pc, echo=F,fig.height=7}
 
-setwd("/home/cyril/Documents/First_step/data/")
-#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
+
+
+setwd(path)
 par(mfrow=c(2,3))
 
 
-for(c in c("GM12878")){
-  pc_contact <- read.table(paste0("TAD_contact/byChrom/all.pcgene.",c,".HiC.contact.txt"), header=T)
-  pc_expr <- read.table("expression/LCL.pcgene.expression.txt")
-  colnames(pc_expr) <- c("gene", "expression")
+for(c in cell_lines){
+  pc_contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.pcgene.",c,".HiC.contact.txt"), header=T)
   count <- 1
   for(var in pclist){
-    expr <- pc_expr[pc_expr$gene %in% var$gene,]
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
     contact <- extract_int(pc_contact,var)
     rawviz(contact, expr,cell_line=c,gtype=pcnames[count])
     count <- count+1
   }
+  cat("\n\n\\pagebreak\n")
 }
 
 ```
@@ -137,24 +155,26 @@ for(c in c("GM12878")){
 
 ###Gene versus TAD:
 
+Here, I contacts are calculated between the gene and every position in its TAD.
+
 ```{r raw_visu_TAD_linc, echo=F,fig.height=7}
 
-setwd("/home/cyril/Documents/First_step/data/")
-#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
+
+
+setwd(path)
 par(mfrow=c(2,3))
 
-for(c in c("GM12878")){
-  linc_contact <- read.table(paste0("TAD_contact/byTAD/all.lincRNA.",c,".HiC.contact.txt"), header=T)
-  linc_expr <- read.table("expression/LCL.lincRNA.expression.txt")
-  colnames(linc_expr) <- c("gene", "expression")
+for(c in cell_lines){
+  linc_contact <- read.table(paste0("TAD_contact/gene_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
   count <- 1
   for(var in linclist){
-    expr <- linc_expr[linc_expr$gene %in% var$gene,]
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
     contact <- extract_int(linc_contact,var)
     rawviz(contact, expr,cell_line=c,gtype=lincnames[count])
     count <- count+1
   }
+  cat("\n\n\\pagebreak\n")
 }
 
 
@@ -162,23 +182,24 @@ for(c in c("GM12878")){
 
 ```{r raw_visu_TAD_pc, echo=F,fig.height=7}
 
-setwd("/home/cyril/Documents/First_step/data/")
-#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
+
+
+setwd(path)
 par(mfrow=c(2,3))
 
-for(c in c("GM12878")){
-  pc_contact <- read.table(paste0("TAD_contact/byTAD/all.pcgene.",c,".HiC.contact.txt"), header=T)
-  pc_expr <- read.table("expression/LCL.pcgene.expression.txt")
-  colnames(pc_expr) <- c("gene", "expression")
+for(c in cell_lines){
+  pc_contact <- read.table(paste0("TAD_contact/gene_TAD_contact/all.pcgene.",c,".HiC.contact.txt"), header=T)
   count <- 1
   for(var in pclist){
-    expr <- pc_expr[pc_expr$gene %in% var$gene,]
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
     contact <- extract_int(pc_contact,var)
     rawviz(contact, expr,cell_line=c,gtype=pcnames[count])
     count <- count+1
   }
+  cat("\n\n\\pagebreak\n")
 }
+
 
 ```
 
@@ -186,48 +207,45 @@ for(c in c("GM12878")){
 
 Spearman correlation was used to detect non-linear relationship between DNA contact and expression. The data was log-transformed for visualization.
 
-###Gene versus chromosome:
+###Mean TAD contacts:
 
 ```{r correlation_chrom_linc, echo=F,fig.height=7, warning=F}
 
-setwd("/home/cyril/Documents/First_step/data/")
-#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
+setwd(path)
 par(mfrow=c(2,3))
 
-for(c in c("GM12878")){
-  linc_contact <- read.table(paste0("TAD_contact/byChrom/all.lincRNA.",c,".HiC.contact.txt"), header=T)
-  linc_expr <- read.table("expression/LCL.lincRNA.expression.txt")
-  colnames(linc_expr) <- c("gene", "expression")
+for(c in cell_lines){
+  linc_contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
   count <- 1
   for(var in linclist){
-    expr <- linc_expr[linc_expr$gene %in% var$gene,]
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
     contact <- extract_int(linc_contact,var)
     contexpr(contact, expr,cell_line=c,gtype=lincnames[count])
     count <- count+1
   }
+  cat("\n\n\\pagebreak\n")
 }
+
 
 ```
 
 ```{r correlation_chrom_pc, echo=F,fig.height=7, warning=F}
 
-setwd("/home/cyril/Documents/First_step/data/")
-#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
+setwd(path)
 par(mfrow=c(2,3))
 
-for(c in c("GM12878")){
-  pc_contact <- read.table(paste0("TAD_contact/byChrom/all.pcgene.",c,".HiC.contact.txt"), header=T)
-  pc_expr <- read.table("expression/LCL.pcgene.expression.txt")
-  colnames(pc_expr) <- c("gene", "expression")
+for(c in cell_lines){
+  pc_contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.pcgene.",c,".HiC.contact.txt"), header=T)
   count <- 1
   for(var in pclist){
-    expr <- pc_expr[pc_expr$gene %in% var$gene,]
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
     contact <- extract_int(pc_contact,var)
     contexpr(contact, expr,cell_line=c,gtype=pcnames[count])
     count <- count+1
   }
+  cat("\n\n\\pagebreak\n")
 }
 
 ```
@@ -238,53 +256,75 @@ for(c in c("GM12878")){
 
 ```{r correlation_TAD_linc, echo=F,fig.height=7, warning=F}
 
-setwd("/home/cyril/Documents/First_step/data/")
-#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
+
+
+setwd(path)
 par(mfrow=c(2,3))
 
-for(c in c("GM12878")){
-  linc_contact <- read.table(paste0("TAD_contact/byTAD/all.lincRNA.",c,".HiC.contact.txt"), header=T)
-  linc_expr <- read.table("expression/LCL.lincRNA.expression.txt")
-  colnames(linc_expr) <- c("gene", "expression")
+for(c in cell_lines[1]){
+  linc_contact <- read.table(paste0("TAD_contact/gene_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
   count <- 1
   for(var in linclist){
-    expr <- linc_expr[linc_expr$gene %in% var$gene,]
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
     contact <- extract_int(linc_contact,var)
     contexpr(contact, expr,cell_line=c,gtype=lincnames[count])
     count <- count+1
   }
+  cat("\n\n\\pagebreak\n")
 }
 
 ```
 
 ```{r correlation_TAD_pc, echo=F,fig.height=7, warning=F}
 
-setwd("/home/cyril/Documents/First_step/data/")
-#setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
+
+
+setwd(path)
 par(mfrow=c(2,3))
 
-for(c in c("GM12878")){
-  pc_contact <- read.table(paste0("TAD_contact/byTAD/all.pcgene.",c,".HiC.contact.txt"), header=T)
-  pc_expr <- read.table("expression/LCL.pcgene.expression.txt")
-  colnames(pc_expr) <- c("gene", "expression")
+for(c in cell_lines){
+  pc_contact <- read.table(paste0("TAD_contact/gene_TAD_contact/all.pcgene.",c,".HiC.contact.txt"), header=T)
   count <- 1
   for(var in pclist){
-    expr <- pc_expr[pc_expr$gene %in% var$gene,]
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
     contact <- extract_int(pc_contact,var)
     contexpr(contact, expr,cell_line=c,gtype=pcnames[count])
     count <- count+1
   }
+  cat("\n\n\\pagebreak\n")
+}
+```
+
+#Stats for all cell lines
+
+```{r echo=T}
+setwd("/Users/cmatthe5/Documents/First_step/data/")
+store_corr <-data.frame()
+for (c in test_lines){
+  linc_contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
+  count <- 1
+  for(var in linclist){
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
+    contact <- extract_int(linc_contact,var)
+    tmp <-append(c(c,lincnames[count]),corr_expr(contact, expr,cell_line=c,gtype=lincnames[count]))
+    store_corr <- rbind(store_corr,tmp)
+    count <- count+1
+  }
 }
 
+colnames(store_corr) <- c("cell line","rho","p-value")
+kable()
 ```
+
+#Comparisons sacross cell lines.
+
+
 
 #Conclusions: 
 
-In general, there is a weak, non-linear relationship between expression and DNA-DNA contact. Genes with a lot of contact have very small expression levels, while those with little contact can have both low and high expression levels.
+Pearson: We obtain weak correlations with all elincRNAs, but not for nelincRNAs. Protein-coding genes hardly have any correlation, except a very weak one for enpPCG when looking at gene vs TAD.
 
-The correlation is weaker in elincRNAs than in nelincRNAs. This may simply be caused by the overall lower expression of enhancer-bound genes.
-This low expression may be due to bidirectionally transcribed RNAs that are lowly expressed. It would thus be interesting to differentiate between unidirectional and bidirectional transcription.
-
-The relationship observed between contact and expression can in fact not really be called a correlation, but there is still an interesting difference between the patterns observed in lincRNAs and protein-coding genes. Note the graphs has been rescaled, it appears that elinc RNAs are a subset of nelincRNAs and that these 2 groups do not present significant differences.
+Spearman: 

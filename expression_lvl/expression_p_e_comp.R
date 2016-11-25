@@ -12,8 +12,8 @@ setwd("/Users/cmatthe5/Documents/First_step/data/")
 #setwd("/home/cyril/Documents/First_step/data/")
 setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 bedcol <- c("chr", "start", "end", "gene", "strand")
-exp_lincRNA <- read.table("expression/LCL.lincRNA.expression.txt", header = F)
-exp_pcgene <- read.table("expression/LCL.pcgene.expression.txt", header = F)
+exp_lincRNA <- read.table("expression/HTseq.count.encode.matrix.RPKM.avg.txt", header = T)
+exp_pcgene <- read.table("expression/HTseq.count.encode.matrix.RPKM.avg.txt", header = T)
 # Loading lincRNAs sets
 ne_linc <- read.table("enhancer_bound/all_combinations/ne_linc_prb.bed")  # Overlap no enhancer marks, does not take promoters into account
 e_linc <- read.table("enhancer_bound/all_combinations/e_linc_prb.bed")  # Overlap enhancer marks, does not take promoters into account
