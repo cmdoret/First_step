@@ -8,10 +8,11 @@ output: pdf_document
 #Introduction: 
 
 ```{r setup, echo=F}
-path <- "/Users/cmatthe5/Documents/First_step/data/"
+#path <- "/Users/cmatthe5/Documents/First_step/data/"
+path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
 setwd(path)
-cell_lines <- c("GM12878","HUVEC","K562","NHEK")
-test_lines <- c("GM12878","HUVEC","K562","NHEK")
+cell_lines <- c("GM12878")  # Cell lines to plot
+test_lines <- c("GM12878","HUVEC","K562","NHEK")  # Cell lines to include in the table with corr statistics
 whole_expr <- read.table("expression/enhancer_promoter/whole_exp.txt",header=T)
 colnames(whole_expr) <- c("gene_id","GM12878","HUVEC","K562","NHEK","promoter","enhancer","gentype")
 
@@ -81,8 +82,8 @@ corr_expr <- function(hic, expr, cell_line="", gtype=""){  # This function compu
   merged <- merge(x = hic, y = expr, by = "gene", all = F)
   merged$expression <- as.numeric(merged$expression)
   merged$diam <- as.numeric(merged$diam)
-  results <- c(cor.test(merged$diam, merged$expression, method="spearman")$estimate, 
-               cor.test(merged$diam, merged$expression, method="spearman")$p.value)
+  results <- c(round(cor.test(merged$diam, merged$expression, method="spearman")$estimate,4), 
+               round(cor.test(merged$diam, merged$expression, method="spearman")$p.value,4))
  return(results)
 }
 
@@ -299,9 +300,11 @@ for(c in cell_lines){
 
 #Stats for all cell lines
 
-```{r echo=T}
-setwd("/Users/cmatthe5/Documents/First_step/data/")
-store_corr <-data.frame()
+```{r comp_corr_lines, echo=F,warning=F}
+setwd(path)
+init.store <- rep(0,length(lincnames)*length(test_lines))
+store_corr <-data.frame(cell_line=init.store ,gentype=init.store ,rho=init.store ,p.value=init.store )
+row.count<-1
 for (c in test_lines){
   linc_contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
   count <- 1
@@ -309,19 +312,32 @@ for (c in test_lines){
     expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
     colnames(expr) <- c("gene", "expression")
     contact <- extract_int(linc_contact,var)
-    tmp <-append(c(c,lincnames[count]),corr_expr(contact, expr,cell_line=c,gtype=lincnames[count]))
-    store_corr <- rbind(store_corr,tmp)
+    store_corr[row.count,] <- unname(append(c(c,lincnames[count]),corr_expr(contact, expr,cell_line=c,gtype=lincnames[count])))
     count <- count+1
+    row.count <- row.count + 1
   }
 }
-
-colnames(store_corr) <- c("cell line","rho","p-value")
-kable()
+store_corr <- store_corr[order(store_corr$p.value),]
+kable(store_corr)
 ```
 
 #Comparisons sacross cell lines.
 
+```{r comp_lines_contact}
+library(ggplot2)
+ref_set <- read.table("linc_RNA/LCL.expressed.lincRNA.bed")
+com.gen <- rep(NA,length(ref_set[,1]))
+comp_lines <- 
+for(c in test_lines){
+  tmp.contact <- read.table(paste0("TAD_contact/gene_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
+  print(c)
+  print(length(tmp.contact[,1]))
+  print(length(levels(tmp.contact[,4])))
+}
 
+ggplot(data=)+
+  geom_boxplot()
+```
 
 #Conclusions: 
 
