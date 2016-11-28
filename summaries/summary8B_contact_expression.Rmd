@@ -9,8 +9,8 @@ output: pdf_document
 
 ```{r setup, echo=F}
 #path <- "/Users/cmatthe5/Documents/First_step/data/"
-#path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
-path <- "/home/cyril/Documents/First_step/data/"
+path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
+#path <- "/home/cyril/Documents/First_step/data/"
 setwd(path)
 cell_lines <- c("GM12878")  # Cell lines to plot
 test_lines <- c("GM12878","HUVEC","K562","NHEK")  # Cell lines to include in the table with corr statistics
@@ -322,7 +322,9 @@ kable(store_corr)
 
 #Comparisons sacross cell lines.
 
-```{r comp_lines_contact}
+Comparing gene-TAD contact across all cell lines.
+
+```{r comp_lines_contact,echo=F}
 library(ggplot2)
 setwd(path)
 ref_set <- read.table("../data/linc_RNA/LCL.expressed.lincRNA.bed")
@@ -340,8 +342,32 @@ for(n in linclist){
   count <- count+1
 }
 
-ggplot(data=comp_lines)+
-  geom_boxplot()
+ggplot(data=comp_lines[comp_lines$diam!=0 & comp_lines$gentype!="eplincRNA",],aes(x=gentype,y=diam,fill=gentype))+
+  facet_grid(~cell.line)+
+  scale_fill_manual(values=c("darkblue","darkred","darkred"))+
+  geom_boxplot()+
+  theme_bw()
+
+ref_set <- read.table("../data/linc_RNA/LCL.expressed.lincRNA.bed")
+com.gen <- rep(NA,length(ref_set[,1]))
+comp_lines <- data.frame()
+for(c in test_lines){
+  tmp.contact <- read.table(paste0("TAD_contact/gene_TAD_contact/all.pcgene.",c,".HiC.contact.txt"), header=T)
+  tmp.contact$cell.line <- c
+  comp_lines <- rbind(comp_lines,tmp.contact)
+}
+comp_lines$gentype <- NA
+count <- 1
+for(n in pclist){
+  comp_lines[which(comp_lines$gene %in% n$gene),"gentype"] <- pcnames[count]
+  count <- count+1
+}
+ggplot(data=comp_lines[comp_lines$diam!=0 & comp_lines$gentype!="epPCG",],aes(x=gentype,y=diam))+
+  facet_grid(~cell.line)+
+  scale_fill_manual(values=c("darkblue","darkred","darkred"))+
+  geom_boxplot()+
+  theme_bw()
+
 ```
 
 #Conclusions: 
