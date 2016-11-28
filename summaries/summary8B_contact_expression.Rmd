@@ -9,7 +9,8 @@ output: pdf_document
 
 ```{r setup, echo=F}
 #path <- "/Users/cmatthe5/Documents/First_step/data/"
-path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
+#path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
+path <- "/home/cyril/Documents/First_step/data/"
 setwd(path)
 cell_lines <- c("GM12878")  # Cell lines to plot
 test_lines <- c("GM12878","HUVEC","K562","NHEK")  # Cell lines to include in the table with corr statistics
@@ -159,8 +160,6 @@ for(c in cell_lines){
 Here, I contacts are calculated between the gene and every position in its TAD.
 
 ```{r raw_visu_TAD_linc, echo=F,fig.height=7}
-
-
 
 setwd(path)
 par(mfrow=c(2,3))
@@ -325,17 +324,23 @@ kable(store_corr)
 
 ```{r comp_lines_contact}
 library(ggplot2)
-ref_set <- read.table("linc_RNA/LCL.expressed.lincRNA.bed")
+setwd(path)
+ref_set <- read.table("../data/linc_RNA/LCL.expressed.lincRNA.bed")
 com.gen <- rep(NA,length(ref_set[,1]))
-comp_lines <- 
+comp_lines <- data.frame()
 for(c in test_lines){
   tmp.contact <- read.table(paste0("TAD_contact/gene_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
-  print(c)
-  print(length(tmp.contact[,1]))
-  print(length(levels(tmp.contact[,4])))
+  tmp.contact$cell.line <- c
+  comp_lines <- rbind(comp_lines,tmp.contact)
+}
+comp_lines$gentype <- NA
+count <- 1
+for(n in linclist){
+  comp_lines[which(comp_lines$gene %in% n$gene),"gentype"] <- lincnames[count]
+  count <- count+1
 }
 
-ggplot(data=)+
+ggplot(data=comp_lines)+
   geom_boxplot()
 ```
 
