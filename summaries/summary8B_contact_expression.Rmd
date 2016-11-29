@@ -9,8 +9,8 @@ output: pdf_document
 
 ```{r setup, echo=F}
 #path <- "/Users/cmatthe5/Documents/First_step/data/"
-path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
-#path <- "/home/cyril/Documents/First_step/data/"
+#path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
+path <- "/home/cyril/Documents/First_step/data/"
 setwd(path)
 cell_lines <- c("GM12878")  # Cell lines to plot
 test_lines <- c("GM12878","HUVEC","K562","NHEK")  # Cell lines to include in the table with corr statistics
@@ -299,13 +299,15 @@ for(c in cell_lines){
 
 #Stats for all cell lines
 
+Correlations between gene_TAD contact and expression. All values are obtained with Spearman correlation tests.
+
 ```{r comp_corr_lines, echo=F,warning=F}
 setwd(path)
 init.store <- rep(0,length(lincnames)*length(test_lines))
 store_corr <-data.frame(cell_line=init.store ,gentype=init.store ,rho=init.store ,p.value=init.store )
 row.count<-1
 for (c in test_lines){
-  linc_contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
+  linc_contact <- read.table(paste0("TAD_contact/gene_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
   count <- 1
   for(var in linclist){
     expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
@@ -316,13 +318,13 @@ for (c in test_lines){
     row.count <- row.count + 1
   }
 }
-store_corr <- store_corr[order(store_corr$p.value),]
+store_corr <- store_corr[order(store_corr$rho),]
 kable(store_corr)
 ```
 
 #Comparisons sacross cell lines.
 
-Comparing gene-TAD contact across all cell lines.
+Comparing gene-TAD contact across all cell lines. Metrics is gene_TAD contacts.
 
 ```{r comp_lines_contact,echo=F}
 library(ggplot2)
@@ -341,14 +343,38 @@ for(n in linclist){
   comp_lines[which(comp_lines$gene %in% n$gene),"gentype"] <- lincnames[count]
   count <- count+1
 }
+library(plyr)
+mean_set <-ddply(comp_lines[comp_lines$diam!=0,c("cell.line","gentype","diam")], .(gentype,cell.line), function(.d) mean(.d$diam))
+
+short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
+pl<-c()
+gl<-c()
+tl<-c()
+for(t in levels(as.factor(comp_lines$cell.line))){
+    p1 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="enplincRNA","diam"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="nenplincRNA","diam"])
+    p2 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="enplincRNA","diam"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="neplincRNA","diam"])
+    p3 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="neplincRNA","diam"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="nenplincRNA","diam"])
+    
+    pl<-append(pl,c(p1,p2,p3))
+    tl<-append(tl,rep(t,3))
+    gl<-append(gl,c("comp1","comp2","comp3"))
+}
+wilcox_p <- data.frame(pval=pl,cell.line=tl,gentype=gl)
 
 ggplot(data=comp_lines[comp_lines$diam!=0 & comp_lines$gentype!="eplincRNA",],aes(x=gentype,y=diam,fill=gentype))+
   facet_grid(~cell.line)+
-  scale_fill_manual(values=c("darkblue","darkred","darkred"))+
+  scale_fill_manual(values=c("darkblue","darkred","red"))+
   geom_boxplot()+
-  theme_bw()
+  geom_text(data = wilcox_p, x=c(1.5,2,2.5),y=c(100,100,100),label=wilcox_p$pval)+
+  theme_bw()+theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
+  ylab("Gene vs TAD contacts")
 
-ref_set <- read.table("../data/linc_RNA/LCL.expressed.lincRNA.bed")
+ref_set <- read.table("../data/pc_genes//LCL.expressed.pcgene.bed")
 com.gen <- rep(NA,length(ref_set[,1]))
 comp_lines <- data.frame()
 for(c in test_lines){
@@ -362,11 +388,14 @@ for(n in pclist){
   comp_lines[which(comp_lines$gene %in% n$gene),"gentype"] <- pcnames[count]
   count <- count+1
 }
-ggplot(data=comp_lines[comp_lines$diam!=0 & comp_lines$gentype!="epPCG",],aes(x=gentype,y=diam))+
+ggplot(data=comp_lines[comp_lines$diam!=0 & comp_lines$gentype!="epPCG",],aes(x=gentype,y=diam,fill=gentype))+
   facet_grid(~cell.line)+
-  scale_fill_manual(values=c("darkblue","darkred","darkred"))+
+  scale_fill_manual(values=c("darkblue","darkred","red"))+
   geom_boxplot()+
-  theme_bw()
+  theme_bw()+theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
+  ylab("Gene vs TAD contacts")
 
 ```
 
