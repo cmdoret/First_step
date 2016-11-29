@@ -9,8 +9,8 @@ output: pdf_document
 
 ```{r setup, echo=F}
 #path <- "/Users/cmatthe5/Documents/First_step/data/"
-#path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
-path <- "/home/cyril/Documents/First_step/data/"
+path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
+#path <- "/home/cyril/Documents/First_step/data/"
 setwd(path)
 cell_lines <- c("GM12878")  # Cell lines to plot
 test_lines <- c("GM12878","HUVEC","K562","NHEK")  # Cell lines to include in the table with corr statistics
@@ -328,6 +328,7 @@ Comparing gene-TAD contact across all cell lines. Metrics is gene_TAD contacts.
 
 ```{r comp_lines_contact,echo=F}
 library(ggplot2)
+
 setwd(path)
 ref_set <- read.table("../data/linc_RNA/LCL.expressed.lincRNA.bed")
 com.gen <- rep(NA,length(ref_set[,1]))
@@ -350,6 +351,7 @@ short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))
 pl<-c()
 gl<-c()
 tl<-c()
+comp_lines <- comp_lines[comp_lines$diam!=0,]
 for(t in levels(as.factor(comp_lines$cell.line))){
     p1 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="enplincRNA","diam"],
                       comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="nenplincRNA","diam"])
@@ -360,15 +362,15 @@ for(t in levels(as.factor(comp_lines$cell.line))){
     
     pl<-append(pl,c(p1,p2,p3))
     tl<-append(tl,rep(t,3))
-    gl<-append(gl,c("comp1","comp2","comp3"))
+    gl<-append(gl,c("enplincRNA ~ nenplincRNA","enplincRNA ~ neplincRNA","neplincRNA ~ nenplincRNA"))
 }
-wilcox_p <- data.frame(pval=pl,cell.line=tl,gentype=gl)
+wilcox_p <- data.frame(pval=pl,cell.line=tl,comp=gl)
 
+comp_lines$cell.line <- as.factor(comp_lines$cell.line)
 ggplot(data=comp_lines[comp_lines$diam!=0 & comp_lines$gentype!="eplincRNA",],aes(x=gentype,y=diam,fill=gentype))+
-  facet_grid(~cell.line)+
   scale_fill_manual(values=c("darkblue","darkred","red"))+
   geom_boxplot()+
-  geom_text(data = wilcox_p, x=c(1.5,2,2.5),y=c(100,100,100),label=wilcox_p$pval)+
+  facet_grid(~cell.line)+
   theme_bw()+theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())+
@@ -397,10 +399,58 @@ ggplot(data=comp_lines[comp_lines$diam!=0 & comp_lines$gentype!="epPCG",],aes(x=
         axis.ticks.x=element_blank())+
   ylab("Gene vs TAD contacts")
 
+kable(wilcox_p)
+
+```
+
+In HUVEC and K562, for lincRNAs, the contacts only differ when looking at comparisons between nep and nenp, indicating there is no difference between enhancer bound and non-enhancer bound. In GM12878 however, we also observe a significant difference between enp and nenp. In NHEK, there is also a significant difference between enp and nep, but not between enp and nenp.
+
+#Random sampling comparisons
+
+Here, I compare the contact-expression correlation coefficient of lincRNAs with randomly sampled PCG from the same category. I used 1000 simulations for each comparison and the number of sampled PCG in each simulation is equal to the number of lincRNAs comprised in the matching category. The red line corresponds to the rho observed in lincRNAs, while the densities are the rhos from sampled PCG. All correlation estimates are calculated using Spearman method.
+
+```{r corr_sample, echo=F, warning=F}
+
+setwd(path)
+corr_sim <- function(hic, reflen,expr, cell_line="", gtype=""){  # This function computes the correlation between expression and DNA contacts for a set of genes.
+# Both arguments need to be a list of genes containing the gene ID and its median expression level/amount of DNA-DNA contact.
+  merged <- merge(x = hic, y = expr, by = "gene", all = F)
+  merged$expression <- as.numeric(merged$expression)
+  merged$diam <- as.numeric(merged$diam)
+  merged <- merged[sample(1:length(merged[,1]),size = reflen),]
+  results <- round(cor.test(merged$diam, merged$expression, method="spearman")$estimate,4)
+ return(results)
+}
+
+sim_PCG <- list()
+nsim <- 100
+row.count<-1
+for (c in cell_lines){
+  pc_contact <- read.table(paste0("TAD_contact/gene_TAD_contact/all.pcgene.",c,".HiC.contact.txt"), header=T)
+  count <- 1
+  for(var in pclist){
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
+    contact <- extract_int(pc_contact,var)
+    store_sim <- replicate(corr_sim(contact, expr,cell_line=c,gtype=pcnames[count],reflen=length(linclist[[count]][,1])),n = nsim)
+    sim_PCG[[lincnames[count]]] <- store_sim
+    count <- count+1
+  }
+}
+
+par(mfrow=c(2,3))
+for(i in lincnames){
+  plot(density(sim_PCG[[i]]),xlim=c(-0.25,0.25),main=i,xlab = "rho (sampled PCG)")
+  abline(v = store_corr[store_corr$cell_line=="GM12878" & store_corr$gentype==i,"rho"],col="red")
+}
+
+
 ```
 
 #Conclusions: 
 
-Pearson: We obtain weak correlations with all elincRNAs, but not for nelincRNAs. Protein-coding genes hardly have any correlation, except a very weak one for enpPCG when looking at gene vs TAD.
+Correlations between contact and expression seem to be very weak and should be interpreted carefully. The striking differences in contact across cell lines is surprising. Due to experimental reasons ? normalization problem ?
 
-Spearman: 
+The effect of promoter/enhancer overlap on contact in lincRNAs is also cell line dependant. Maybe linked to the nature of the cell line ? (GM12878=transformed lymphoblast, K562=cancer mesoderm, NHEK=normal skin, HUVEC=umbilical cells)
+
+According to the random sampling comparison, the correlation between expression and contact is higher than would be expected in protein-coding genes for all categories of non-enhancer associated lincRNAs, but never for enhancer-associated lincRNAs.
