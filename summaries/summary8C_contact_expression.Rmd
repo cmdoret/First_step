@@ -1,0 +1,566 @@
+---
+title: 'Report 8C: Contact and expression'
+author: "Cyril Matthey-Doret"
+date: "29 novembre 2016"
+output: pdf_document
+---
+
+#Introduction: 
+
+```{r setup, echo=F}
+#path <- "/Users/cmatthe5/Documents/First_step/data/"
+path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
+#path <- "/home/cyril/Documents/First_step/data/"
+setwd(path)
+cell_lines <- c("GM12878")  # Cell lines to plot
+test_lines <- c("GM12878","HUVEC","K562","NHEK")  # Cell lines to include in the table with corr statistics
+whole_expr <- read.table("expression/enhancer_promoter/whole_exp.txt",header=T)
+colnames(whole_expr) <- c("gene_id","GM12878","HUVEC","K562","NHEK","promoter","enhancer","gentype")
+
+library(knitr)
+opts_chunk$set(results='asis')
+# Loading lincRNAs sets
+ne_linc <- read.table("enhancer_bound/all_combinations/ne_linc_prb.bed")  # Overlap no enhancer marks, does not take promoters into account
+e_linc <- read.table("enhancer_bound/all_combinations/e_linc_prb.bed")  # Overlap enhancer marks, does not take promoters into account
+ne.p_linc <- read.table("enhancer_bound/all_combinations/ne.p_linc_prb.bed")  # Overlap promoter marks, but no enhancer marks
+e.np_linc <- read.table("enhancer_bound/all_combinations/e.np_linc_prb.bed")  # Overlap enhancer marks, but no promoter marks
+e.p_linc <- read.table("enhancer_bound/all_combinations/e.p_linc_prb.bed")  # Overlap promoter marks, and enhancer marks
+ne.np_linc <- read.table("enhancer_bound/all_combinations/ne.np_linc_prb.bed")  # Overlap neither promoter marks, nor enhancer marks
+
+# Loading pcgenes sets
+ne_pc <- read.table("enhancer_bound/all_combinations/ne_pc_prb.bed")  # Overlap no enhancer marks, does not take promoters into account
+e_pc <- read.table("enhancer_bound/all_combinations/e_pc_prb.bed")  # Overlap enhancer marks, does not take promoters into account
+ne.p_pc <- read.table("enhancer_bound/all_combinations/ne.p_pc_prb.bed")  # Overlap promoter marks, but no enhancer marks
+e.np_pc <- read.table("enhancer_bound/all_combinations/e.np_pc_prb.bed")  # Overlap enhancer marks, but no promoter marks
+e.p_pc <- read.table("enhancer_bound/all_combinations/e.p_pc_prb.bed")  # Overlap promoter marks, and enhancer marks
+ne.np_pc <- read.table("enhancer_bound/all_combinations/ne.np_pc_prb.bed")  # Overlap neither promoter marks, nor enhancer marks
+
+#adding colnames
+colnames(ne_linc)= colnames(e_linc)=colnames(ne.p_linc)=colnames(e.np_linc)=colnames(e.p_linc)=
+  colnames(ne.np_linc)=colnames(ne_pc)=colnames(e_pc)=colnames(ne.p_pc)=colnames(e.np_pc)=colnames(e.p_pc)=
+  colnames(ne.np_pc) <-c("chr", "start", "end", "gene", "strand")
+
+
+rawviz <- function(hic, expr, cell_line="", gtype=""){  # This function computes the correlation between expression and DNA contacts for a set of genes.
+# Both arguments need to be a list of genes containing the gene ID and its median expression level/amount of DNA-DNA contact.
+  merged <- merge(x = hic, y = expr, by = "gene", all = F)
+  #print(length(merged$gene[as.character(merged$gene)==as.character(hic$gene) & merged$diam!=expr$diam]))
+  merged$expression <- as.numeric(merged$expression)
+  merged$diam <- as.numeric(merged$diam)
+  plot(merged$diam, merged$expression,xlim=c(0,max(merged$diam)),ylim=c(0,max(merged$expression)),
+                xlab = "DNA-DNA interactions",ylab="Median expression levels", main=paste(cell_line,gtype,sep=": "),pch=1)
+  text(x=2.5*max(merged$diam)/4,y=3*max(merged$expression)/4, labels = paste0("Med exp: ", round(median(merged$expression),3)))
+  text(x=2.5*max(merged$diam)/4,y=2*max(merged$expression)/3, labels = paste0("Med int: ", round(median(merged$diam),3)))
+}
+
+contexpr <- function(hic, expr, cell_line="", gtype=""){  # This function computes the correlation between expression and DNA contacts for a set of genes.
+# Both arguments need to be a list of genes containing the gene ID and its median expression level/amount of DNA-DNA contact.
+  merged <- merge(x = hic, y = expr, by = "gene", all = F)
+  merged$expression <- as.numeric(merged$expression)
+  merged$diam <- as.numeric(merged$diam)
+  results <- c(cor.test(merged$diam, merged$expression, method="spearman")$estimate, 
+               cor.test(merged$diam, merged$expression, method="spearman")$p.value)
+  plot(xlim=c(0,200),ylim=c(-3,4),merged$diam, log10(merged$expression), pch=".", 
+                xlab = "Log10 DNA-DNA interactions",ylab="Log10 median expression levels", main=paste(cell_line,gtype,sep=": "))
+  text(x = c(rep(max(merged$diam),3)),y=c(3,2.5,2), labels=c(paste0("rho = ", round(results[1],3)), paste0("p-value = ", round(results[2],3)),
+                                                 paste0("n = ", length(merged$diam))))
+  abline(lm(log10(merged$expression)~merged$diam))
+}
+
+extract_int <- function(cset, gset){
+  csubset <- cset[cset$gene %in% gset$gene,]
+  csubset <- csubset[csubset$diam!=0,]
+  return(csubset)
+}
+
+#linclist <- list(e_linc,e.p_linc,e.np_linc,ne_linc,ne.p_linc,ne.np_linc)
+#pclist <- list(e_pc,e.p_pc,e.np_pc,ne_pc,ne.p_pc,ne.np_pc)
+#lincnames <- c("elincRNA","eplincRNA","enplincRNA","nelincRNA","neplincRNA","nenplincRNA")
+#pcnames <- c("ePCG","epPCG","enpPCG","nePCG","nepPCG","nenpPCG")
+
+linclist <- list(e.np_linc,ne.p_linc,ne.np_linc)
+pclist <- list(e.np_pc,ne.p_pc,ne.np_pc)
+lincnames <- c("enplincRNA","neplincRNA","nenplincRNA")
+pcnames <- c("enpPCG","nepPCG","nenpPCG")
+
+
+corr_expr <- function(hic, expr, cell_line="", gtype=""){  # This function computes the correlation between expression and DNA contacts for a set of genes.
+# Both arguments need to be a list of genes containing the gene ID and its median expression level/amount of DNA-DNA contact.
+  merged <- merge(x = hic, y = expr, by = "gene", all = F)
+  merged$expression <- as.numeric(merged$expression)
+  merged$diam <- as.numeric(merged$diam)
+  results <- c(round(cor.test(merged$diam, merged$expression, method="spearman")$estimate,4), 
+               round(cor.test(merged$diam, merged$expression, method="spearman")$p.value,4))
+ return(results)
+}
+
+```
+
+This is a shortened, improved version of report 8B.
+patch note:
+  * Only using TAD-TAD contacts
+  * Only using 3 sets of genes for both lincRNAs and PCG: enp, nep and nenp
+  * Improved some plots
+
+Here, I investigate the relationship between gene expression and DNA-DNA contact across 4 different cell lines (GM12878, K562, HUVEC and NHEK). This analysis is performed across all LCL expressed lincRNAs and protein-coding genes, categorized by according to their overlap with enhancers and promoters. Contact per gene was calculated in 2 ways: Gene versus chromosome conmputes all interactions between the gene and the chromosome, while gene versus TAD only takes interactions between the gene and the TAD it belongs to.
+
+NOTE 1: At the moment I only have expression data for GM12878, but I will add the other cell lines later.
+NOTE 2: Contact matrices for chromosome 9 for all cell lines have been normalised using SQRTVC instead of KR because the algorithm did not converge for chromosome 9 in K562 and vector was full of NAs.
+
+
+#Results: 
+
+## Overview of data:
+
+
+A quick overview of the data shows that enhancer-associated genes have a lower expression and higher amounts of DNA contacts on average. Patterns in the data would be easier to detect after log transforming both variables.
+
+###Mean TAD contacts:
+
+Here, the contact value of each gene is the mean contacts observed for the TAD it is in.
+
+```{r raw_visu_chrom_linc, echo=F,fig.height=7}
+
+
+setwd(path)
+
+par(mfrow=c(2,3))
+
+
+for(c in cell_lines){
+  linc_contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
+  count <- 1
+  for(var in linclist){
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
+    contact <- extract_int(linc_contact,var)
+    rawviz(contact, expr,cell_line=c,gtype=lincnames[count])
+    count <- count+1
+  }
+}
+
+for(c in cell_lines){
+  pc_contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.pcgene.",c,".HiC.contact.txt"), header=T)
+  count <- 1
+  for(var in pclist){
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
+    contact <- extract_int(pc_contact,var)
+    rawviz(contact, expr,cell_line=c,gtype=pcnames[count])
+    count <- count+1
+  }
+}
+
+
+```
+
+
+##Correlations:
+
+Spearman correlation was used to detect non-linear relationship between DNA contact and expression. The data was log-transformed for visualization.
+
+###Mean TAD contacts:
+
+```{r correlation_chrom_linc, echo=F,fig.height=7, warning=F}
+
+setwd(path)
+par(mfrow=c(2,3))
+
+for(c in cell_lines){
+  linc_contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
+  count <- 1
+  for(var in linclist){
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
+    contact <- extract_int(linc_contact,var)
+    contexpr(contact, expr,cell_line=c,gtype=lincnames[count])
+    count <- count+1
+  }
+}
+
+for(c in cell_lines){
+  pc_contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.pcgene.",c,".HiC.contact.txt"), header=T)
+  count <- 1
+  for(var in pclist){
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
+    contact <- extract_int(pc_contact,var)
+    contexpr(contact, expr,cell_line=c,gtype=pcnames[count])
+    count <- count+1
+  }
+}
+
+
+```
+
+\pagebreak
+
+#Stats for all cell lines
+
+Correlations between TAD_TAD contact and expression. All values are obtained with Spearman correlation tests.
+
+```{r comp_corr_lines, echo=F,warning=F}
+setwd(path)
+init.store <- rep(0,length(lincnames)*length(test_lines))
+store_corr <-data.frame(cell_line=init.store ,gentype=init.store ,rho=init.store ,p.value=init.store )
+row.count<-1
+for (c in test_lines){
+  linc_contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
+  count <- 1
+  for(var in linclist){
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
+    contact <- extract_int(linc_contact,var)
+    store_corr[row.count,] <- unname(append(c(c,lincnames[count]),corr_expr(contact, expr,cell_line=c,gtype=lincnames[count])))
+    count <- count+1
+    row.count <- row.count + 1
+  }
+}
+store_corr <- store_corr[order(store_corr$rho),]
+kable(store_corr)
+```
+
+#Comparisons across cell lines.
+
+##Contact
+
+Comparing gene-TAD contact across all cell lines. Metrics is gene_TAD contacts.
+
+```{r comp_lines_contact,echo=F}
+library(ggplot2)
+setwd(path)
+
+ref_set <- read.table("../data/linc_RNA/LCL.expressed.lincRNA.bed")
+com.gen <- rep(NA,length(ref_set[,1]))
+comp_lines <- data.frame()
+# Building a concatenated dataframe containing each gene as many time as there are cell line. More convenient for graphics
+for(c in test_lines){
+  tmp.contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.lincRNA.",c,".HiC.contact.txt"), header=T)
+  tmp.contact$cell.line <- c
+  comp_lines <- rbind(comp_lines,tmp.contact)
+}
+comp_lines$gentype <- NA  # Preallocating rows for gentypes
+count <- 1
+for(n in linclist){
+  comp_lines[which(comp_lines$gene %in% n$gene),"gentype"] <- lincnames[count]
+  count <- count+1
+}
+comp_lines <- na.omit(comp_lines)
+# removing rows with empty entries, in case not all gentypes are used (here 3 of 6 are used)
+rownames(comp_lines) <- NULL
+# resetting row numbers for convenience
+
+# Computing p-values for pairwise comparisons
+short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
+pl<-c()
+gl<-c()
+tl<-c()
+comp_lines <- comp_lines[comp_lines$diam!=0,]
+for(t in levels(as.factor(comp_lines$cell.line))){
+    p1 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="enplincRNA","diam"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="nenplincRNA","diam"])
+    p2 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="enplincRNA","diam"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="neplincRNA","diam"])
+    p3 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="neplincRNA","diam"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="nenplincRNA","diam"])
+    
+    pl<-append(pl,c(p1,p2,p3))
+    tl<-append(tl,rep(t,3))
+    gl<-append(gl,c("enplincRNA ~ nenplincRNA","enplincRNA ~ neplincRNA","neplincRNA ~ nenplincRNA"))
+}
+wilcox_p <- data.frame(pval=pl,cell.line=tl,comp=gl)  # Dataframe containing p-values for all pairwise comparisons
+
+# Building dataframes for displaying bars indicating which boxes correspond to the p-values
+bar_pp <- c()
+for(i in seq(0,11,3)){bar_pp <- append(bar_pp,rep(i,5))}
+df1 <- data.frame(a = rep(c(1.1, 1.1,2,2.9,2.9),4)+bar_pp, b = c(73, 75, 75, 75, 73))
+bar_p <- c()
+for(i in seq(0,11,3)){bar_p <- append(bar_p,rep(i,4))}
+df2 <- data.frame(a = rep(c(1.1, 1.1,1.9, 1.9),4)+bar_p, b = c(63, 65, 65, 63))
+df3 <- data.frame(a = rep(c(2.1, 2.1, 2.9, 2.9),4)+bar_p, b = c(53, 55, 55, 53))
+
+increm <- c()
+for(i in seq(1,12,3)){increm <- append(increm,rep(i,3))}  # building vector for positioning p-values between boxes
+ggplot(comp_lines)+geom_boxplot(aes(x=paste(cell.line,gentype,sep="_"),y=diam,fill=cell.line))+
+  scale_x_discrete(labels=rep(lincnames[c(1,3,2)],4)) +
+  theme_bw()+xlab("Gene class")+ylab("TAD vs TAD contacts")+theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  annotate(geom = 'text',x=rep(c(0.5,1,1.5),4)+increm, y=rep(c(67,77,57),4),label=wilcox_p$pval,size=2)+
+  geom_line(data = df1[1:5,], aes(x = a, y = b)) +
+  geom_line(data = df2[1:4,], aes(x = a, y = b)) +
+  geom_line(data = df3[1:4,], aes(x = a, y = b)) +
+  geom_line(data = df1[6:10,], aes(x = a, y = b)) +
+  geom_line(data = df2[5:8,], aes(x = a, y = b)) +
+  geom_line(data = df3[5:8,], aes(x = a, y = b)) +
+  geom_line(data = df1[11:15,], aes(x = a, y = b)) +
+  geom_line(data = df2[9:12,], aes(x = a, y = b)) +
+  geom_line(data = df3[9:12,], aes(x = a, y = b)) +
+  geom_line(data = df1[16:20,], aes(x = a, y = b)) +
+  geom_line(data = df2[13:16,], aes(x = a, y = b)) +
+  geom_line(data = df3[13:16,], aes(x = a, y = b))
+# That's a mess, but it works
+
+# SAME FOR PCG
+
+ref_set <- read.table("../data/pc_genes/LCL.expressed.pcgene.bed")
+com.gen <- rep(NA,length(ref_set[,1]))
+comp_lines <- data.frame()
+for(c in test_lines){
+  tmp.contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.pcgene.",c,".HiC.contact.txt"), header=T)
+  tmp.contact$cell.line <- c
+  comp_lines <- rbind(comp_lines,tmp.contact)
+}
+comp_lines$gentype <- NA
+count <- 1
+for(n in pclist){
+  comp_lines[which(comp_lines$gene %in% n$gene),"gentype"] <- pcnames[count]
+  count <- count+1
+}
+comp_lines <- na.omit(comp_lines)
+rownames(comp_lines) <- NULL
+
+pl<-c()
+gl<-c()
+tl<-c()
+comp_lines <- comp_lines[comp_lines$diam!=0,]
+for(t in levels(as.factor(comp_lines$cell.line))){
+    p1 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="enpPCG","diam"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="nenpPCG","diam"])
+    p2 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="enpPCG","diam"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="nepPCG","diam"])
+    p3 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="nepPCG","diam"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="nenpPCG","diam"])
+    
+    pl<-append(pl,c(p1,p2,p3))
+    tl<-append(tl,rep(t,3))
+    gl<-append(gl,c("enpPCG ~ nenpPCG","enpPCG ~ nepPCG","nepPCG ~ nenpPCG"))
+}
+wilcox_p <- data.frame(pval=pl,cell.line=tl,comp=gl)
+
+bar_pp <- c()
+for(i in seq(0,11,3)){bar_pp <- append(bar_pp,rep(i,5))}
+df1 <- data.frame(a = rep(c(1.1, 1.1,2,2.9,2.9),4)+bar_pp, b = c(73, 75, 75, 75, 73))
+bar_p <- c()
+for(i in seq(0,11,3)){bar_p <- append(bar_p,rep(i,4))}
+df2 <- data.frame(a = rep(c(1.1, 1.1,1.9, 1.9),4)+bar_p, b = c(63, 65, 65, 63))
+df3 <- data.frame(a = rep(c(2.1, 2.1, 2.9, 2.9),4)+bar_p, b = c(53, 55, 55, 53))
+
+increm <- c()
+for(i in seq(1,12,3)){increm <- append(increm,rep(i,3))}
+ggplot(comp_lines)+geom_boxplot(aes(x=paste(cell.line,gentype,sep="_"),y=diam,fill=cell.line))+
+  scale_x_discrete(labels=rep(pcnames[c(1,3,2)],4)) +
+  theme_bw()+xlab("Gene class")+ylab("TAD vs TAD contacts")+theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  annotate(geom = 'text',x=rep(c(0.5,1,1.5),4)+increm, y=rep(c(67,77,57),4),label=wilcox_p$pval,size=2)+
+  geom_line(data = df1[1:5,], aes(x = a, y = b)) +
+  geom_line(data = df2[1:4,], aes(x = a, y = b)) +
+  geom_line(data = df3[1:4,], aes(x = a, y = b)) +
+  geom_line(data = df1[6:10,], aes(x = a, y = b)) +
+  geom_line(data = df2[5:8,], aes(x = a, y = b)) +
+  geom_line(data = df3[5:8,], aes(x = a, y = b)) +
+  geom_line(data = df1[11:15,], aes(x = a, y = b)) +
+  geom_line(data = df2[9:12,], aes(x = a, y = b)) +
+  geom_line(data = df3[9:12,], aes(x = a, y = b)) +
+  geom_line(data = df1[16:20,], aes(x = a, y = b)) +
+  geom_line(data = df2[13:16,], aes(x = a, y = b)) +
+  geom_line(data = df3[13:16,], aes(x = a, y = b))
+
+```
+
+In HUVEC and K562, for lincRNAs, the contacts only differ when looking at comparisons between nep and nenp, indicating there is no difference between enhancer bound and non-enhancer bound. In GM12878 however, we also observe a significant difference between enp and nenp. In NHEK, there is also a significant difference between enp and nep, but not between enp and nenp.
+
+##Expression
+
+Same plots for expression across cell lines.
+
+```{r expression_comp_lines, echo=F, warning=F}
+
+ref_set <- read.table("../data/linc_RNA/LCL.expressed.lincRNA.bed")
+com.gen <- rep(NA,length(ref_set[,1]))
+comp_lines <- data.frame()
+# Building a concatenated dataframe containing each gene as many time as there are cell line. More convenient for graphics
+for(c in test_lines){
+  tmp.expr <- whole_expr[whole_expr$gentype=="linc",c("gene_id",c)]
+  colnames(tmp.expr) <- c("gene","expression")
+  tmp.expr$cell.line <- c
+  comp_lines <- rbind(comp_lines,tmp.expr)
+}
+comp_lines$gentype <- NA  # Preallocating rows for gentypes
+count <- 1
+for(n in linclist){
+  comp_lines[which(comp_lines$gene %in% n$gene),"gentype"] <- lincnames[count]
+  count <- count+1
+}
+comp_lines <- na.omit(comp_lines)
+# removing rows with empty entries, in case not all gentypes are used (here 3 of 6 are used)
+rownames(comp_lines) <- NULL
+# resetting row numbers for convenience
+
+# Computing p-values for pairwise comparisons
+short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
+pl<-c()
+gl<-c()
+tl<-c()
+comp_lines <- comp_lines[comp_lines$expression!=0,]
+for(t in levels(as.factor(comp_lines$cell.line))){
+    p1 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="enplincRNA","expression"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="nenplincRNA","expression"])
+    p2 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="enplincRNA","expression"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="neplincRNA","expression"])
+    p3 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="neplincRNA","expression"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="nenplincRNA","expression"])
+    
+    pl<-append(pl,c(p1,p2,p3))
+    tl<-append(tl,rep(t,3))
+    gl<-append(gl,c("enplincRNA ~ nenplincRNA","enplincRNA ~ neplincRNA","neplincRNA ~ nenplincRNA"))
+}
+wilcox_p <- data.frame(pval=pl,cell.line=tl,comp=gl)  # Dataframe containing p-values for all pairwise comparisons
+
+# Building dataframes for displaying bars indicating which boxes correspond to the p-values
+bar_pp <- c()
+for(i in seq(0,11,3)){bar_pp <- append(bar_pp,rep(i,5))}
+df1 <- data.frame(a = rep(c(1.1, 1.1,2,2.9,2.9),4)+bar_pp, b = c(7.3, 7.5, 7.5, 7.5, 7.3))
+bar_p <- c()
+for(i in seq(0,11,3)){bar_p <- append(bar_p,rep(i,4))}
+df2 <- data.frame(a = rep(c(1.1, 1.1,1.9, 1.9),4)+bar_p, b = c(6.3, 6.5, 6.5, 6.3))
+df3 <- data.frame(a = rep(c(2.1, 2.1, 2.9, 2.9),4)+bar_p, b = c(5.3, 5.5, 5.5, 5.3))
+
+increm <- c()
+for(i in seq(1,12,3)){increm <- append(increm,rep(i,3))}  # building vector for positioning p-values between boxes
+ggplot(comp_lines)+geom_boxplot(aes(x=paste(cell.line,gentype,sep="_"),y=log10(expression),fill=cell.line))+
+  scale_x_discrete(labels=rep(lincnames[c(1,3,2)],4)) +
+  theme_bw()+xlab("Gene class")+ylab("Log10 expression")+theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  annotate(geom = 'text',x=rep(c(0.5,1,1.5),4)+increm, y=rep(c(6.7,7.7,5.7),4),label=wilcox_p$pval,size=2)+
+  geom_line(data = df1[1:5,], aes(x = a, y = b)) +
+  geom_line(data = df2[1:4,], aes(x = a, y = b)) +
+  geom_line(data = df3[1:4,], aes(x = a, y = b)) +
+  geom_line(data = df1[6:10,], aes(x = a, y = b)) +
+  geom_line(data = df2[5:8,], aes(x = a, y = b)) +
+  geom_line(data = df3[5:8,], aes(x = a, y = b)) +
+  geom_line(data = df1[11:15,], aes(x = a, y = b)) +
+  geom_line(data = df2[9:12,], aes(x = a, y = b)) +
+  geom_line(data = df3[9:12,], aes(x = a, y = b)) +
+  geom_line(data = df1[16:20,], aes(x = a, y = b)) +
+  geom_line(data = df2[13:16,], aes(x = a, y = b)) +
+  geom_line(data = df3[13:16,], aes(x = a, y = b))
+# That's a mess, but it works
+
+# SAME FOR PCG
+
+ref_set <- read.table("../data/pc_genes/LCL.expressed.pcgene.bed")
+com.gen <- rep(NA,length(ref_set[,1]))
+comp_lines <- data.frame()
+# Building a concatenated dataframe containing each gene as many time as there are cell line. More convenient for graphics
+for(c in test_lines){
+  tmp.expr <- whole_expr[whole_expr$gentype=="pc",c("gene_id",c)]
+  colnames(tmp.expr) <- c("gene","expression")
+  tmp.expr$cell.line <- c
+  comp_lines <- rbind(comp_lines,tmp.expr)
+}
+comp_lines$gentype <- NA  # Preallocating rows for gentypes
+count <- 1
+for(n in pclist){
+  comp_lines[which(comp_lines$gene %in% n$gene),"gentype"] <- pcnames[count]
+  count <- count+1
+}
+comp_lines <- na.omit(comp_lines)
+# removing rows with empty entries, in case not all gentypes are used (here 3 of 6 are used)
+rownames(comp_lines) <- NULL
+# resetting row numbers for convenience
+
+# Computing p-values for pairwise comparisons
+short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
+pl<-c()
+gl<-c()
+tl<-c()
+comp_lines <- comp_lines[comp_lines$expression!=0,]
+for(t in levels(as.factor(comp_lines$cell.line))){
+    p1 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="enpPCG","expression"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="nenpPCG","expression"])
+    p2 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="enpPCG","expression"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="nepPCG","expression"])
+    p3 <- short_wilcox(comp_lines[comp_lines$cell.line==t & comp_lines$gentype=="nepPCG","expression"],
+                      comp_lines[comp_lines$cell.line==t &  comp_lines$gentype=="nenpPCG","expression"])
+    
+    pl<-append(pl,c(p1,p2,p3))
+    tl<-append(tl,rep(t,3))
+    gl<-append(gl,c("enpPCG ~ nenpPCG","enpPCG ~ nepPCG","nepPCG ~ nenpPCG"))
+}
+wilcox_p <- data.frame(pval=pl,cell.line=tl,comp=gl)  # Dataframe containing p-values for all pairwise comparisons
+
+bar_pp <- c()
+for(i in seq(0,11,3)){bar_pp <- append(bar_pp,rep(i,5))}
+df1 <- data.frame(a = rep(c(1.1, 1.1,2,2.9,2.9),4)+bar_pp, b = c(7.3, 7.5, 7.5, 7.5, 7.3))
+bar_p <- c()
+for(i in seq(0,11,3)){bar_p <- append(bar_p,rep(i,4))}
+df2 <- data.frame(a = rep(c(1.1, 1.1,1.9, 1.9),4)+bar_p, b = c(6.3, 6.5, 6.5, 6.3))
+df3 <- data.frame(a = rep(c(2.1, 2.1, 2.9, 2.9),4)+bar_p, b = c(5.3, 5.5, 5.5, 5.3))
+
+increm <- c()
+for(i in seq(1,12,3)){increm <- append(increm,rep(i,3))}
+ggplot(comp_lines)+geom_boxplot(aes(x=paste(cell.line,gentype,sep="_"),y=log10(expression),fill=cell.line))+
+  scale_x_discrete(labels=rep(lincnames[c(1,3,2)],4)) +
+  theme_bw()+xlab("Gene class")+ylab("Log10 expression")+theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  annotate(geom = 'text',x=rep(c(0.5,1,1.5),4)+increm, y=rep(c(6.7,7.7,5.7),4),label=wilcox_p$pval, size=2)+
+  geom_line(data = df1[1:5,], aes(x = a, y = b)) +
+  geom_line(data = df2[1:4,], aes(x = a, y = b)) +
+  geom_line(data = df3[1:4,], aes(x = a, y = b)) +
+  geom_line(data = df1[6:10,], aes(x = a, y = b)) +
+  geom_line(data = df2[5:8,], aes(x = a, y = b)) +
+  geom_line(data = df3[5:8,], aes(x = a, y = b)) +
+  geom_line(data = df1[11:15,], aes(x = a, y = b)) +
+  geom_line(data = df2[9:12,], aes(x = a, y = b)) +
+  geom_line(data = df3[9:12,], aes(x = a, y = b)) +
+  geom_line(data = df1[16:20,], aes(x = a, y = b)) +
+  geom_line(data = df2[13:16,], aes(x = a, y = b)) +
+  geom_line(data = df3[13:16,], aes(x = a, y = b))
+
+```
+
+#Random sampling comparisons
+
+Here, I compare the contact-expression correlation coefficient of lincRNAs with randomly sampled PCG from the same category. I used 1000 simulations for each comparison and the number of sampled PCG in each simulation is equal to the number of lincRNAs comprised in the matching category. The red line corresponds to the rho observed in lincRNAs, while the densities are the rhos from sampled PCG. All correlation estimates are calculated using Spearman method.
+
+```{r corr_sample, echo=F, warning=F}
+
+setwd(path)
+corr_sim <- function(hic, reflen,expr, cell_line="", gtype=""){  # This function computes the correlation between expression and DNA contacts for a set of genes.
+# Both arguments need to be a list of genes containing the gene ID and its median expression level/amount of DNA-DNA contact.
+  merged <- merge(x = hic, y = expr, by = "gene", all = F)
+  merged$expression <- as.numeric(merged$expression)
+  merged$diam <- as.numeric(merged$diam)
+  merged <- merged[sample(1:length(merged[,1]),size = reflen),]
+  results <- round(cor.test(merged$diam, merged$expression, method="spearman")$estimate,4)
+ return(results)
+}
+
+sim_PCG <- list()
+nsim <- 1000
+row.count<-1
+for (c in cell_lines){
+  pc_contact <- read.table(paste0("TAD_contact/TAD_TAD_contact/all.pcgene.",c,".HiC.contact.txt"), header=T)
+  count <- 1
+  for(var in pclist){
+    expr <- whole_expr[whole_expr$gene %in% var$gene & whole_expr[,c] !=0, c("gene_id",c)]
+    colnames(expr) <- c("gene", "expression")
+    contact <- extract_int(pc_contact,var)
+    store_sim <- replicate(corr_sim(contact, expr,cell_line=c,gtype=pcnames[count],reflen=length(linclist[[count]][,1])),n = nsim)
+    sim_PCG[[lincnames[count]]] <- store_sim
+    count <- count+1
+  }
+}
+
+par(mfrow=c(1,3))
+for(i in lincnames){
+  plot(density(sim_PCG[[i]]),xlim=c(-0.25,0.25),main=i,xlab = "rho (sampled PCG)",ylim=c(0,40))
+  abline(v = store_corr[store_corr$cell_line=="GM12878" & store_corr$gentype==i,"rho"],col="red")
+  text(paste0("p-value = ",length(sim_PCG[[i]][sim_PCG[[i]]>store_corr[store_corr$cell_line=="GM12878" & store_corr$gentype==i,"rho"]])/nsim),x=-0.1,y=20)
+}
+
+```
+
+#Conclusions: 
+
+Correlations between contact and expression seem to be very weak and should be interpreted carefully. The striking differences in contact across cell lines is surprising. Due to experimental reasons ? normalization problem ?
+
+The effect of promoter/enhancer overlap on contact in lincRNAs is also cell line dependant. Maybe linked to the nature of the cell line ? (GM12878=transformed lymphoblast, K562=cancer mesoderm, NHEK=normal skin, HUVEC=umbilical cells)
+
+According to the random sampling comparison, the correlation between expression and contact is higher than would be expected in protein-coding genes for all categories of non-enhancer associated lincRNAs, but never for enhancer-associated lincRNAs.
