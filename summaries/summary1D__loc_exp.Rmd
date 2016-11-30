@@ -9,9 +9,9 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 
 #Loading data:
-#setwd("/Users/cmatthe5/Documents/First_step/data/")
+setwd("/Users/cmatthe5/Documents/First_step/data/")
 #setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-setwd("/home/cyril/Documents/First_step/data/")
+#setwd("/home/cyril/Documents/First_step/data/")
 
 # Loading lincRNAs sets
 ne_linc <- read.table("enhancer_bound/all_combinations/ne_linc_prb.bed")  # Overlap no enhancer marks, does not take promoters into account
@@ -37,6 +37,9 @@ colnames(ne_linc)= colnames(e_linc)=colnames(ne.p_linc)=colnames(e.np_linc)=coln
 # Loading genes characteristics
 whole_loc <- read.table("../data/subcell_loc/enhancer_promoter/whole_loc.txt", header=T)
 whole_exp <- read.table("../data/expression/enhancer_promoter/whole_exp.txt", header=T)
+whole_exp <- whole_exp[,c(1,2,6,7,8)]
+colnames(whole_exp)[2] <- "expression"
+whole_exp <- whole_exp[whole_exp$expression!=0,]
 whole_tau <- read.table("../data/tissue_specificity/enhancer_promoter/whole_tau.txt", header=T)
 library(ggplot2)
 library(gridExtra)
@@ -83,26 +86,27 @@ All p-values displayed on plots were obtained by performing Mann-Whitney tests.
 
 
 
-```{r exp_lvl, echo=FALSE,fig.height=8,fig.width=8}
+```{r exp_lvl, echo=FALSE,fig.height=8,fig.width=8,results='asis'}
+
 short_med<-function(x){return(round(median(log10(x)),3))}
 whole_exp$promoter <- as.factor(whole_exp$promoter)
 whole_exp$enhancer <- as.factor(whole_exp$enhancer)
 med.fac = ddply(whole_exp, .(gentype, promoter, enhancer), function(.d)
-  data.frame(x=median(round(log10(.d$expression),3))))
+  data.frame(x=median(round(log10(as.numeric(.d$expression)),3))))
 
 ggplot(data=whole_exp[whole_exp$gentype=="linc",])+
   facet_grid(enhancer~promoter)+
   geom_boxplot(aes(x=1, y=log10(expression),fill=enhancer),notch=T)+
-  geom_text(data=med.fac, aes(x=1, y=-1, label=x), 
+  geom_text(data=med.fac[med.fac$gentype=="linc",], aes(x=0.8, y=2, label=paste0("Mdn: ",x)), 
             colour="black", inherit.aes=FALSE, parse=FALSE)+
-  theme_bw()
-
+  theme_bw()+ggtitle("Expression levels of lincRNAs")
+cat("\n\n\\pagebreak\n")
 ggplot(data=whole_exp[whole_exp$gentype=="pc",])+
   facet_grid(enhancer~promoter)+
   geom_boxplot(aes(x=1, y=log10(expression),fill=enhancer),notch=T)+
-  geom_text(data=med.fac, aes(x=1, y=-1, label=x), 
+  geom_text(data=med.fac[med.fac$gentype=="pc",], aes(x=0.8, y=2, label=paste0("Mdn: ",x)), 
             colour="black", inherit.aes=FALSE, parse=FALSE)+
-  theme_bw()
+  theme_bw()+ggtitle("Expression levels of PCGs")
 ```
 
 ##Subcellular localization
@@ -110,78 +114,55 @@ ggplot(data=whole_exp[whole_exp$gentype=="pc",])+
 The ratios depicted below represent the abundance of RNA in the cytoplasm relative to the nucleus. There is no significant difference between the localization of TAD-bound and non-TAD-bound lincRNAs, while the TAD-bound protein-coding genes are more abundant in the cytoplasm than in the nucleus.
 
 
-```{r local, echo=FALSE,fig.height=8,fig.width=8}
+```{r local, echo=FALSE,fig.height=8,fig.width=8,results='asis'}
 
-short_med<-function(x){return(round(median(log10(x)),3))}
-short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
-whole_loc$threshold <- as.factor(whole_loc$threshold)
 
-med.fac = ddply(whole_loc, .(gentype, threshold,TAD), function(.d)
-  data.frame(x=round(median(log10(.d$ratio)),3)))
-#data frame for annotation of p-value
-pl<-c()
-gl<-c()
-tl<-c()
-for(t in levels(whole_loc$threshold)){
-  for(g in levels(whole_loc$gentype)){
-    p <- short_wilcox(whole_loc[whole_loc$threshold==t & whole_loc$gentype==g &  whole_loc$TAD=="Tb","ratio"],
-                      whole_loc[whole_loc$threshold==t &  whole_loc$gentype==g & whole_loc$TAD=="nTb","ratio"])
-    pl<-append(pl,p)
-    tl<-append(tl,t)
-    gl<-append(gl,g)
-  }
-}
-wilcox_p <- data.frame(pval=pl,threshold=tl,gentype=gl)
-library(ggplot2)
-ggplot(data=whole_loc)+
-  facet_grid(gentype~threshold)+
-  geom_boxplot(aes(x=TAD, y=log10(ratio),fill=TAD),notch=T)+
-  geom_text(data=med.fac, aes(x=TAD, y=-1, label=x), 
+med.fac = ddply(whole_loc, .(gentype, promoter, enhancer), function(.d)
+  data.frame(x=median(round(log10(as.numeric(.d$ratio)),3))))
+
+ggplot(data=whole_loc[whole_loc$gentype=="linc",])+
+  facet_grid(enhancer~promoter)+
+  geom_boxplot(aes(x=1, y=log10(ratio),fill=enhancer),notch=T)+
+  geom_text(data=med.fac[med.fac$gentype=="linc",], aes(x=0.8, y=2, label=paste0("Mdn: ",x)), 
             colour="black", inherit.aes=FALSE, parse=FALSE)+
-  geom_text(data=wilcox_p, aes(x=1.5, y=0.5, label=paste0("p=",pval)), 
+  ylab("Log10 Cyt/Nuc")+
+  theme_bw()+ggtitle("Subcellular localization of lincRNAs")
+cat("\n\n\\pagebreak\n")
+ggplot(data=whole_loc[whole_loc$gentype=="pc",])+
+  facet_grid(enhancer~promoter)+
+  geom_boxplot(aes(x=1, y=log10(ratio),fill=enhancer),notch=T)+
+  geom_text(data=med.fac[med.fac$gentype=="pc",], aes(x=0.8, y=2, label=paste0("Mdn: ",x)), 
             colour="black", inherit.aes=FALSE, parse=FALSE)+
-  theme_bw()
-
+  ylab("Log10 Cyt/Nuc")+
+  theme_bw()+ggtitle("Subcellular localization of PCGs")
 ```
 
 ##Tissue specificity
 
 $\tau$ was calculated from a set of tissue-wise expression level for all transcripts. Again, there seem to be no difference in tissue specificity between TAD-bound and nonTAD-bound lincRNAs or protein coding genes. Overall the lincRNAs are more tissue specific than protein coding genes.
 
-```{r tissue, echo=FALSE,fig.height=8,fig.width=8}
+```{r tissue, echo=FALSE,fig.height=8,fig.width=8,results='asis'}
 
-library(plyr)
-short_med<-function(x){return(round(median(log10(x)),3))}
-short_wilcox <- function(x,y){return(format(wilcox.test(x, y)$p.value,digits=3))}
-whole_tau$threshold <- as.factor(whole_tau$threshold)
-#dataf frame for annotation of median
-med.fac = ddply(whole_tau, .(gentype, threshold,TAD), function(.d)
-  data.frame(x=median(round(.d$tau,3))))
-#data frame for annotation of p-value
-pl<-c()
-gl<-c()
-tl<-c()
-for(t in levels(whole_tau$threshold)){
-  for(g in levels(whole_tau$gentype)){
-    p <- short_wilcox(whole_tau[whole_tau$threshold==t & whole_tau$gentype==g &  whole_tau$TAD=="Tb","tau"],
-                      whole_tau[whole_tau$threshold==t &  whole_tau$gentype==g & whole_tau$TAD=="nTb","tau"])
-    pl<-append(pl,p)
-    tl<-append(tl,t)
-    gl<-append(gl,g)
-  }
-}
-wilcox_p <- data.frame(pval=pl,threshold=tl,gentype=gl)
-library(ggplot2)
-ggplot(data=whole_tau)+
-  facet_grid(gentype~threshold)+
-  geom_boxplot(aes(x=TAD, y=tau,fill=TAD),notch=T)+
-  geom_text(data=med.fac, aes(x=TAD, y=0, label=x), 
+
+med.fac = ddply(whole_tau, .(gentype, promoter, enhancer), function(.d)
+  data.frame(x=median(round(as.numeric(.d$tau),3))))
+
+ggplot(data=whole_tau[whole_tau$gentype=="linc",])+
+  facet_grid(enhancer~promoter)+
+  geom_boxplot(aes(x=1, y=tau,fill=enhancer),notch=T)+
+  geom_text(data=med.fac[med.fac$gentype=="linc",], aes(x=0.8, y=1.1, label=paste0("Mdn: ",x)), 
             colour="black", inherit.aes=FALSE, parse=FALSE)+
-  geom_text(data=wilcox_p, aes(x=1.5, y=0.25, label=paste0("p=",pval)), 
+  ylab("Tau")+
+  theme_bw()+ggtitle("Tissue specificity of lincRNAs")
+cat("\n\n\\pagebreak\n")
+ggplot(data=whole_tau[whole_tau$gentype=="pc",])+
+  facet_grid(enhancer~promoter)+
+  geom_boxplot(aes(x=1, y=tau,fill=enhancer),notch=T)+
+  geom_text(data=med.fac[med.fac$gentype=="pc",], aes(x=0.8, y=1.1, label=paste0("Mdn: ",x)), 
             colour="black", inherit.aes=FALSE, parse=FALSE)+
-  theme_bw()
+  ylab("Tau")+
+  theme_bw()+ggtitle("Tissue specificity of PCGs")
+
 ```
 
-#Conclusion
 
-The TAD definition is still not appropriate. Giving up this track to define TAD boundaries. A more meaningful way would be to use raw-hic data and define boundaries based on the number of interactions observed.
