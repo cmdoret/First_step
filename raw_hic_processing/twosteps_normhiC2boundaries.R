@@ -64,7 +64,7 @@ find_bound<-function(n,R=5000, D=100000){ # D is diamond size, R is resolution
   print(n)
   sub_TAD$Lbound.start = sub_TAD$Lbound.end = sub_TAD$Rbound.start =
     sub_TAD$Rbound.end = sub_TAD$maxint <- rep(0,length(sub_TAD$start))  # allocating space for max interaction observed in each TAD.
-  diam <- scan(file = paste0("diam_sums/GM12878/chr",n),what = numeric())
+  diam <- scan(file = paste0("diam_sums/GM12878/chr",n,".txt"),what = numeric())
   for(i in 1:length(sub_TAD$start)){  # Iterating over TADs
     start.ind <- pos_2_index(sub_TAD$start[i])  # transforming TAD start position to row in matrix. (TADs are already at 5kb res, so no need to approximate)
     end.ind <- pos_2_index(sub_TAD$end[i])  # Same for end position
@@ -99,29 +99,36 @@ pos_2_index <- function(pos, resolution=5000) { return(1 + (pos / resolution))  
 for(n in c("9")){
   i <- matlist[[n]][[1]]
   diam<- vec_diam_slide(i)
-  write.table(diam, file=paste0("diam_sums/GM12878/chr",matlist[[n]][[2]]),sep = "\t",quote=F,row.names = F,col.names = F)
+  #write.table(diam, file=paste0("diam_sums/GM12878/chr",matlist[[n]][[2]]),sep = "\t",quote=F,row.names = F,col.names = F)
 }
 
 # STEP 2: loading summed interactions and defining boundaries from the vectors.
-for(n in c(seq(21,22))){
+whole_bound <- data.frame()
+for(n in c(seq(1,22),"X")){
   bound<- find_bound(n)
-  #write.table(diam, file=paste0("diam_sums/GM12878/chr",matlist[[n]][[2]]),sep = "\t",quote=F,row.names = F,col.names = F)
-  print(bound)
+  Lb <- bound[,c(1,9,8,4)]
+  Rb <- bound[,c(1,7,6,4)]
+  colnames(Lb)=colnames(Rb) <- c("chr","start","end","ID")
+  whole_bound <- rbind(whole_bound,Lb)
+  whole_bound <- rbind(whole_bound,Rb)
 }
+write.table(whole_bound,"TAD/hicboundaries/short_fullover/GM12878_HIC_boundaries.bed",col.names=F,row.names=F,quote=F,sep="\t")
 
 
 ##################################################
 # Alternative STEP 1 in case the matrix is too large and needs to be splitted into overlapping parts:
 # NOT TESTED!
+# Used for chromosome 2, as its contact matrix was too heavy.
+# Tested on chromosome 3, results were exactly identical to what is obtained with the regular method.
 
 D <- 100000; R <- 5000; P <- D/R # The size of the sliding diamond and the resolution will determine how the 2 matrices should overlap.
 
 for(n in c("3")){
-  k <- dim(matlist[["3"]][[1]])[1]
+  k <- dim(matlist[[n]][[1]])[1]
   i <- matlist[[n]][[1]][1:(k/2 + P),1:(k/2 + P)]
   diam.i<- vec_diam_slide(i)
   j <- matlist[[n]][[1]][(k/2 - P):k,(k/2 - P):k]
   diam.j<- vec_diam_slide(j)
   diam <- append(diam.i[-((length(diam.i)-(P-1)):length(diam.i))],diam.j[-(1:(P+1))])
-  write.table(diam, file=paste0("diam_sums/GM12878/chr",matlist[[n]][[2]]),sep = "\t",quote=F,row.names = F,col.names = F)
+  write.table(diam, file=paste0("diam_sums/GM12878/comp_chr",matlist[[n]][[2]]),sep = "\t",quote=F,row.names = F,col.names = F)
 }
