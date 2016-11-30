@@ -23,7 +23,7 @@ condense_gat <- function(path){
   final <- data.frame()  # Initiating dataframe that will contain all concatenated results
   for(i in 1:length(filenames)){  # Iterating over files
     tmp_df <- read.table(file.path(path, filenames[i]),header=T)  # Generating temporary dataframe (raw gat output table)
-    if(gat_args[[i]][7]=="A"){a=8;e=6} else{a=7;e=8}  # Accounting for different filename structures
+    if(gat_args[[i]][8]=="A"){a=9;e=7} else{a=7;e=9}  # Accounting for different filename structures
     out <- data.frame(workspace=gat_args[[i]][3],  # Cenerating temporary dataframe to be concatenated.
                       segment=gat_args[[i]][5],
                       annotation=gat_args[[i]][a],
@@ -43,7 +43,7 @@ gat_gat <- condense_gat("GAT/out/10k_samples/bingat_fullover/segments_overlap/re
 chipseq_gat <- condense_gat("GAT/out/10k_samples/chipgat_fullover/segments_overlap/results/")
 control_gat <- condense_gat("GAT/out/pos_control_gat/")
 whole_GAT <- rbind(gat_gat,chipseq_gat)
-write.table(whole_GAT,"GAT/out/whole_seg_10kgat_results.txt",quote=F,sep="\t",row.names=F)
+write.table(whole_GAT,"GAT/out/whole_seg_10kgat_test_results.txt",quote=F,sep="\t",row.names=F)
 
 # Data analysis
 whole_gat <- read.table("GAT/out/whole_seg_10kgat_results.txt",header=T)

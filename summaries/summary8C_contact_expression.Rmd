@@ -8,8 +8,8 @@ output: pdf_document
 #Introduction: 
 
 ```{r setup, echo=F}
-#path <- "/Users/cmatthe5/Documents/First_step/data/"
-path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
+path <- "/Users/cmatthe5/Documents/First_step/data/"
+#path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
 #path <- "/home/cyril/Documents/First_step/data/"
 setwd(path)
 cell_lines <- c("GM12878")  # Cell lines to plot
