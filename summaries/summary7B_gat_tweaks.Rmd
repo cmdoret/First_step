@@ -7,9 +7,9 @@ date: "4 November 2016"
 
 ```{r setup, echo=F}
 
-#setwd("/home/cyril/Documents/First_step/data/")
+setwd("/home/cyril/Documents/First_step/data/")
 #setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
-setwd("/Users/cmatthe5/Documents/First_step/data/")
+#setwd("/Users/cmatthe5/Documents/First_step/data/")
 whole_gat_seg <- read.table("GAT/out/whole_seg_10kgat_fullover_results.txt",header=T)
 sets <- c("e.np","ne.p","ne.np")
 nice_workspace <- c(wholegenome= "Whole genome",intergenic="Intergenic space",allpc="Protein-coding space", lincRNA="Expressed lincRNAs space")
