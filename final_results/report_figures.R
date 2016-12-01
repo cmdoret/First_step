@@ -108,7 +108,8 @@ increm <- c()
 for(i in seq(1,3*length(test_lines),3)){increm <- append(increm,rep(i,2))}  # building vector for positioning p-values between boxes
 ggplot(comp_lines)+geom_boxplot(aes(x=paste(cell.line,gentype,sep="_"),y=log10(expression),fill=cell.line))+
   scale_x_discrete(labels=rep(gennames,length(test_lines))) +
-  theme_bw()+xlab("Gene class")+ylab("Log10 expression (FPKM)")+theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  guides(fill=FALSE)+
+  theme_bw()+xlab("")+ylab("Log10 expression (FPKM)")+theme(axis.text.x = element_text(angle = 90, hjust = 1))+
   annotate(geom = 'text',x=rep(c(0.5,1),length(test_lines))+increm, y=rep(c(5.7,6.7),length(test_lines)),label=wilcox_p$starcode,size=5)+
   geom_line(data = df1[1:5,], aes(x = a, y = b)) +
   geom_line(data = df2[1:4,], aes(x = a, y = b)) +
