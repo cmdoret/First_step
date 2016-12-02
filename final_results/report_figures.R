@@ -109,7 +109,7 @@ for(i in seq(1,3*length(test_lines),3)){increm <- append(increm,rep(i,2))}  # bu
 ggplot(comp_lines)+geom_boxplot(aes(x=paste(cell.line,gentype,sep="_"),y=log10(expression),fill=cell.line))+
   scale_x_discrete(labels=rep(gennames,length(test_lines))) +
   guides(fill=FALSE)+
-  theme_bw()+xlab("")+ylab("Log10 expression (FPKM)")+theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  theme_bw()+xlab("")+ylab("Log10 expression (RPKM)")+theme(axis.text.x = element_text(angle = 90, hjust = 1))+
   annotate(geom = 'text',x=rep(c(0.5,1),length(test_lines))+increm, y=rep(c(5.7,6.7),length(test_lines)),label=wilcox_p$starcode,size=5)+
   geom_line(data = df1[1:5,], aes(x = a, y = b)) +
   geom_line(data = df2[1:4,], aes(x = a, y = b)) +
@@ -119,4 +119,72 @@ ggplot(comp_lines)+geom_boxplot(aes(x=paste(cell.line,gentype,sep="_"),y=log10(e
   geom_line(data = df2[9:12,], aes(x = a, y = b)) +
   geom_line(data = df1[16:20,], aes(x = a, y = b)) +
   geom_line(data = df2[13:16,], aes(x = a, y = b))
-# That's a mess, but it works
+
+
+# Figure 2: sequence conservation
+
+library(ggplot2);library(gridExtra);library(plyr)
+
+whole_cons <- read.table("../data/seq_conserv/enhancer_promoter/whole_cons.txt", header=T)
+whole_cons <- whole_cons[whole_cons$promoter=="-",]
+ez_class <- c()
+rownames(whole_cons) <- NULL
+for(r in rownames(whole_cons)){
+  r <- as.numeric(r)
+  if(whole_cons$gentype[r]=="pc"){
+    ez_class <- append(ez_class,"PCG")
+  }else{
+      ez_class <- append(ez_class,ifelse(whole_cons$enhancer[r]=="+","elincRNA","other lincRNA"))
+    }
+}
+whole_cons$gentype <- ez_class
+options(digits=3,scipen=0)
+
+#dataf frame for annotation of median
+med.fac <- ddply(whole_cons, .(gentype, gr), function(.d)
+  data.frame(x=median(na.rm = T,round(.d$avg_score,3))))
+#data frame for annotation of p-value
+pl<-c()
+gl<-c()
+tl<-c()
+for(t in levels(whole_cons$gr)){
+  p1 <- short_wilcox(whole_cons[whole_cons$gr==t & whole_cons$gentype=="elincRNA","avg_score"],
+                    whole_cons[whole_cons$gr==t &  whole_cons$gentype=="other lincRNA","avg_score"])
+  p1 <- as.numeric(p1)
+  
+  p2 <- short_wilcox(whole_cons[whole_cons$gr==t & whole_cons$gentype=="elincRNA","avg_score"],
+                     whole_cons[whole_cons$gr==t &  whole_cons$gentype=="PCG","avg_score"])
+  p2 <- as.numeric(p2)
+  if(nchar(p1)>4){p1 <-format(p1,scientific=T)}
+  if(nchar(p2)>4){p2 <-format(p2,scientific=T)}
+  pl<-append(pl,c(p1,p2))
+  tl<-append(tl,rep(t,2))
+  gl<-append(gl,c("elincRNA ~ other lincRNA","elincRNA ~ PCG"))
+}
+wilcox_p <- data.frame(pval=pl,gr=tl,gentype=gl)
+
+
+arcons <- read.table("seq_conserv/enhancer_bound/whole_cons.txt",header=T)
+arcons <- arcons[arcons$gentype=="AR",]
+group_names <- c(`mam` = "Mammals",`pri` = "Primates")
+gentype_names <- c(`lincRNA` = "lincRNAs",`pc` = "protein-coding")
+AR_medcons <- data.frame(val=c(median(arcons$avg_score[arcons$gentype=="AR" & arcons$gr=="mam"],na.rm = T),
+                               median(arcons$avg_score[arcons$gentype=="AR" & arcons$gr=="pri"],na.rm = T)),
+                         gr=c("mam","pri"))
+
+ggplot(data=whole_cons)+
+  facet_grid(~gr,labeller = labeller(gr = as_labeller(group_names)))+
+  geom_boxplot(aes(x=gentype,y=avg_score,fill=gentype),notch=T)+
+  geom_hline(data= AR_medcons,aes(yintercept = AR_medcons$val),size=1,col="#66bb66",show.legend= T)+
+  scale_fill_manual(values = c("#bbbb66","#bb6666","#6666bb"))+
+  scale_linetype_manual("Title", values = 2) +
+  guides(fill = guide_legend(title = element_blank(),override.aes=list(linetype=0)))+
+  #geom_text(data=wilcox_p, aes(x=c(1.5, 2), y=1, label=paste0("p=",pval)), 
+  #          colour="black", inherit.aes=T, parse=T)+
+  geom_label(data=med.fac, aes(x=gentype, y=x+0.01, label=x), 
+             colour="black", inherit.aes=FALSE, parse=FALSE,size=3)+
+  theme_bw()+ ylab("averaged phastCons")+xlab("")+guides(fill=F)
+
+grid.arrange(layout_matrix=matrix(c(1,4,4,2,4,4,3,4,4),nrow = 3,byrow = T),grobs = list(dl,dp,dr,c))
+
+
