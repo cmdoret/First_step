@@ -234,4 +234,68 @@ ggplot(data=whole_cons)+
 
 #grid.arrange(layout_matrix=matrix(c(1,4,4,2,4,4,3,4,4),nrow = 3,byrow = T),grobs = list(dl,dp,dr,c))
 
+# Figure 3+4: Enrichment at TAD boundaries and loop anchor
+library(ggplot2)
+whole_hicbound <- read.table("GAT/out/whole_seg_10kgat_hic_boundaries.txt",header=T)
+whole_hicbound <- whole_hicbound[whole_hicbound$segment %in% c("e.np", "ne.np"),]
+whole_anchors <- read.table("GAT/out/whole_seg_10kgat_anchors.txt",header=T)
+whole_anchors <- whole_anchors[whole_anchors$segment %in% c("e.np", "ne.np"),]
+nicenames <- c("elincRNA \nprom","elincRNA \nprom+body","other lincRNA \nprom", "other lincRNA \nprom+body")
+barplot(whole_hicbound$fold,names.arg = nicenames,main=" Enrichment at Hi-C boundaries")
+abline(h = whole_hicbound$fold[1])
+abline(h = whole_hicbound$fold[2])
+text(x = c(0.5,2,3,4.5),y=whole_hicbound$fold-0.1,labels = whole_hicbound$fold)
 
+
+ggplot(data=whole_hicbound,aes(x=nicenames[c(1,3,2,4)],y=fold,fill=segment))+
+  geom_bar(stat = 'identity')+
+  #scale_fill_continuous(high="#DD5555",low = "#55DD55")+
+  theme_bw()+guides(fill=F)+ylab("Fold enrichment")+
+  #geom_hline(data=whole_hicbound[1:2,],aes(yintercept=fold[c(1,2)]))+
+  xlab("")+ggtitle("Enrichment at TAD boundaries")+
+  geom_text(aes(x=c(1,3,2,4),y=fold-0.1,label=fold))+
+  geom_text(aes(x=c(1,3,2,4),y=fold-0.2,label=paste0("q=",qval)))+
+  scale_x_discrete(labels=nicenames[c(1,3,2,4)])
+
+ggplot(data=whole_anchors,aes(x=nicenames[c(1,3,2,4)],y=fold,fill=segment))+
+  geom_bar(stat = 'identity')+
+  #scale_fill_continuous(high="#DD5555",low = "#55DD55")+
+  theme_bw()+ylab("Fold enrichment")+guides(fill=F)+
+  #geom_hline(data=whole_anchors[1:2,],aes(yintercept=fold[c(1,2)]))+
+  xlab("")+ggtitle("Enrichment at loops anchors")+
+  geom_text(aes(x=c(1,3,2,4),y=fold-0.1,label=fold))+
+  geom_text(aes(x=c(1,3,2,4),y=fold-0.2,label=paste0("q=",qval)))+
+  scale_x_discrete(labels=nicenames[c(1,3,2,4)])
+
+whole_bins <- read.table("GAT/out/whole_seg_10kgat_results.txt",header=T)
+
+
+
+# Figure 4: Enrichment in architect. prots.
+
+whole_exclu <- read.table("GAT/out/whole_seg_10kgat_exclu_insul_bs.txt",header=T)
+whole_exclu <- whole_exclu[whole_exclu$track!="merged",]
+whole_exclu <- whole_exclu[whole_exclu$annotation %in% c("e.np", "ne.np"),]
+
+ggplot(data=whole_exclu[whole_exclu$segment=="exclu.CTCF",],aes(x=nicenames[c(1,3,2,4)],y=fold,fill=annotation))+
+  geom_bar(stat = 'identity')+
+  #scale_fill_continuous(high="#DD5555",low = "#55DD55")+
+  theme_bw()+ylab("Fold enrichment")+guides(fill=F)+
+  #geom_hline(data=whole_anchors[1:2,],aes(yintercept=fold[c(1,2)]))+
+  xlab("")+ggtitle("Enrichment of CTCF exclusive binding sites")+
+  geom_text(aes(x=c(1,3,2,4),y=fold-0.1,label=fold))+
+  geom_text(aes(x=c(1,3,2,4),y=fold-0.2,label=paste0("q=",qval)))+
+  scale_x_discrete(labels=nicenames[c(1,3,2,4)])
+
+ggplot(data=whole_exclu[whole_exclu$segment=="exclu.cohesin",],aes(x=nicenames[c(1,3,2,4)],y=fold,fill=annotation))+
+  geom_bar(stat = 'identity')+
+  #scale_fill_continuous(high="#DD5555",low = "#55DD55")+
+  theme_bw()+ylab("Fold enrichment")+guides(fill=F)+
+  #geom_hline(data=whole_anchors[1:2,],aes(yintercept=fold[c(1,2)]))+
+  xlab("")+ggtitle("Enrichment of cohesin exclusive binding sites")+
+  geom_text(aes(x=c(1,3,2,4),y=fold-0.1,label=fold))+
+  geom_text(aes(x=c(1,3,2,4),y=fold-0.2,label=paste0("q=",qval)))+
+  scale_x_discrete(labels=nicenames[c(1,3,2,4)])
+
+
+# Figure 6: High contact
