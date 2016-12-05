@@ -14,20 +14,20 @@ setwd("/Users/cmatthe5/Documents/First_step/data/")
 setwd("/home/cyril/Documents/Master/sem_1/First_step/data/")
 
 # Loading lincRNAs sets
-ne_linc <- read.table("enhancer_bound/all_combinations/ne_linc_prb.bed")  # Overlap no enhancer marks, does not take promoters into account
-e_linc <- read.table("enhancer_bound/all_combinations/e_linc_prb.bed")  # Overlap enhancer marks, does not take promoters into account
-ne.p_linc <- read.table("enhancer_bound/all_combinations/ne.p_linc_prb.bed")  # Overlap promoter marks, but no enhancer marks
-e.np_linc <- read.table("enhancer_bound/all_combinations/e.np_linc_prb.bed")  # Overlap enhancer marks, but no promoter marks
-e.p_linc <- read.table("enhancer_bound/all_combinations/e.p_linc_prb.bed")  # Overlap promoter marks, and enhancer marks
-ne.np_linc <- read.table("enhancer_bound/all_combinations/ne.np_linc_prb.bed")  # Overlap neither promoter marks, nor enhancer marks
+ne_linc <- read.table("enhancer_bound/all_combinations/ne_linc_pr.bed")  # Overlap no enhancer marks, does not take promoters into account
+e_linc <- read.table("enhancer_bound/all_combinations/e_linc_pr.bed")  # Overlap enhancer marks, does not take promoters into account
+ne.p_linc <- read.table("enhancer_bound/all_combinations/ne.p_linc_pr.bed")  # Overlap promoter marks, but no enhancer marks
+e.np_linc <- read.table("enhancer_bound/all_combinations/e.np_linc_pr.bed")  # Overlap enhancer marks, but no promoter marks
+e.p_linc <- read.table("enhancer_bound/all_combinations/e.p_linc_pr.bed")  # Overlap promoter marks, and enhancer marks
+ne.np_linc <- read.table("enhancer_bound/all_combinations/ne.np_linc_pr.bed")  # Overlap neither promoter marks, nor enhancer marks
 
 # Loading pcgenes sets
-ne_pc <- read.table("enhancer_bound/all_combinations/ne_pc_prb.bed")  # Overlap no enhancer marks, does not take promoters into account
-e_pc <- read.table("enhancer_bound/all_combinations/e_pc_prb.bed")  # Overlap enhancer marks, does not take promoters into account
-ne.p_pc <- read.table("enhancer_bound/all_combinations/ne.p_pc_prb.bed")  # Overlap promoter marks, but no enhancer marks
-e.np_pc <- read.table("enhancer_bound/all_combinations/e.np_pc_prb.bed")  # Overlap enhancer marks, but no promoter marks
-e.p_pc <- read.table("enhancer_bound/all_combinations/e.p_pc_prb.bed")  # Overlap promoter marks, and enhancer marks
-ne.np_pc <- read.table("enhancer_bound/all_combinations/ne.np_pc_prb.bed")  # Overlap neither promoter marks, nor enhancer marks
+ne_pc <- read.table("enhancer_bound/all_combinations/ne_pc_pr.bed")  # Overlap no enhancer marks, does not take promoters into account
+e_pc <- read.table("enhancer_bound/all_combinations/e_pc_pr.bed")  # Overlap enhancer marks, does not take promoters into account
+ne.p_pc <- read.table("enhancer_bound/all_combinations/ne.p_pc_pr.bed")  # Overlap promoter marks, but no enhancer marks
+e.np_pc <- read.table("enhancer_bound/all_combinations/e.np_pc_pr.bed")  # Overlap enhancer marks, but no promoter marks
+e.p_pc <- read.table("enhancer_bound/all_combinations/e.p_pc_pr.bed")  # Overlap promoter marks, and enhancer marks
+ne.np_pc <- read.table("enhancer_bound/all_combinations/ne.np_pc_pr.bed")  # Overlap neither promoter marks, nor enhancer marks
 
 pri.cons_lincRNA <- read.table("seq_conserv/all.lincRNA.primates.phascons.exons.txt", header = T)
 pri.cons_pcgene <- read.table("seq_conserv/all.pcgene.primates.phascons.exons.txt", header = T)

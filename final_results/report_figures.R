@@ -12,13 +12,15 @@ path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
 #path <- "/home/cyril/Documents/First_step/data/"
 setwd(path)
 cell_lines <- c("GM12878")  # Cell lines to plot
+#test_lines <- c("GM12878","HUVEC","K562","NHEK")  # Cell lines to include in the table with corr statistics
 test_lines <- c("GM12878")  # Cell lines to include in the table with corr statistics
 whole_expr <- read.table("expression/enhancer_promoter/whole_exp.txt",header=T)
+whole_expr <- whole_expr[whole_expr$promoter!="both",]
 colnames(whole_expr) <- c("gene_id","GM12878","HUVEC","K562","NHEK","promoter","enhancer","gentype")
 
 # Loading lincRNAs sets
-e.np_linc <- read.table("enhancer_bound/all_combinations/e.np_linc_prb.bed")  # Overlap enhancer marks, but no promoter marks
-ne.np_linc <- read.table("enhancer_bound/all_combinations/ne.np_linc_prb.bed")  # Overlap neither promoter marks, nor enhancer marks
+e.np_linc <- read.table("enhancer_bound/all_combinations/e.np_linc_pr.bed")  # Overlap enhancer marks, but no promoter marks
+ne.np_linc <- read.table("enhancer_bound/all_combinations/ne.np_linc_pr.bed")  # Overlap neither promoter marks, nor enhancer marks
 
 # Loading pcgenes sets
 PCG <- read.table("pc_genes/LCL.expressed.pcgene.bed")  # All protein coding genes
@@ -87,12 +89,14 @@ starcode <- c()
 wilcox_p$pval <- as.character(wilcox_p$pval)
 wilcox_p$pval <- as.numeric(wilcox_p$pval)
 for(i in wilcox_p$pval){
+  print(i)
   if(i<0.1){p <- "."}
   if(i<0.05){p <- "*"}
   if(i<0.01){p <- "**"}
   if(i<0.001){p <- "***"}
   else{p <- "-"}
-  starcode <-append(p,starcode)}
+  print(p)
+  starcode <-append(starcode,p)}
 wilcox_p$starcode <- starcode
 # Building dataframes for displaying bars indicating which boxes correspond to the p-values
 bar_pp <- c() # Large bar for elinc_PCG comparison
@@ -141,18 +145,19 @@ ggplot(comp_lines)+geom_boxplot(aes(x=paste(cell.line,gentype,sep="_"),y=log10(e
 library(ggplot2);library(gridExtra);library(plyr)
 
 whole_cons <- read.table("../data/seq_conserv/enhancer_promoter/whole_cons.txt", header=T)
-whole_cons <- whole_cons[whole_cons$promoter=="-",]
+whole_cons <- whole_cons[whole_cons$promoter!="both",]
+whole_cons2 <- whole_cons[whole_cons$gentype=="pc",]
+whole_cons2$gentype <- "PCG"
+
+whole_cons <- whole_cons[whole_cons$promoter=="-" & whole_cons$gentype=="linc",]
 ez_class <- c()
 rownames(whole_cons) <- NULL
 for(r in rownames(whole_cons)){
   r <- as.numeric(r)
-  if(whole_cons$gentype[r]=="pc"){
-    ez_class <- append(ez_class,"PCG")
-  }else{
-      ez_class <- append(ez_class,ifelse(whole_cons$enhancer[r]=="+","elincRNA","other lincRNA"))
-    }
+  ez_class <- append(ez_class,ifelse(whole_cons$enhancer[r]=="+","elincRNA","other lincRNA"))
 }
 whole_cons$gentype <- ez_class
+whole_cons <- rbind(whole_cons,whole_cons2)
 options(digits=3,scipen=0)
 
 #dataf frame for annotation of median
@@ -187,7 +192,7 @@ for(i in wilcox_p$pval){
   if(i<0.01){p <- "**"}
   if(i<0.001){p <- "***"}
   else{p <- "-"}
-  starcode <-append(p,starcode)}
+  starcode <-append(starcode,p)}
 wilcox_p$starcode <- starcode
 # Building dataframes for displaying bars indicating which boxes correspond to the p-values
 bar_pp <- c() # Large bar for elinc_PCG comparison
@@ -232,9 +237,26 @@ ggplot(data=whole_cons)+
   geom_line(data = df1[16:20,], aes(x = a, y = b)) +
   geom_line(data = df2[13:16,], aes(x = a, y = b))
 
-#grid.arrange(layout_matrix=matrix(c(1,4,4,2,4,4,3,4,4),nrow = 3,byrow = T),grobs = list(dl,dp,dr,c))
+# Figure 3: Tissue specificity
 
-# Figure 3+4: Enrichment at TAD boundaries and loop anchor
+whole_tau <- read.table("../data/tissue_specificity/enhancer_promoter/whole_tau.txt", header=T)
+whole_tau <- whole_tau[whole_tau$promoter!="both",]
+whole_tau2 <- whole_tau[whole_tau$gentype=="pc",]
+whole_tau2$gentype <- "PCG"
+
+whole_tau <- whole_tau[whole_tau$promoter=="-" & whole_tau$gentype=="linc",]
+ez_class <- c()
+rownames(whole_tau) <- NULL
+for(r in rownames(whole_tau)){
+  r <- as.numeric(r)
+  ez_class <- append(ez_class,ifelse(whole_tau$enhancer[r]=="+","elincRNA","other lincRNA"))
+}
+whole_tau$gentype <- ez_class
+whole_tau <- rbind(whole_tau,whole_tau2)
+
+
+
+# Figure 4+5: Enrichment at TAD boundaries and loop anchor
 library(ggplot2)
 whole_hicbound <- read.table("GAT/out/whole_seg_10kgat_hic_boundaries.txt",header=T)
 whole_hicbound <- whole_hicbound[whole_hicbound$segment %in% c("e.np", "ne.np"),]
@@ -271,7 +293,7 @@ whole_bins <- read.table("GAT/out/whole_seg_10kgat_results.txt",header=T)
 
 
 
-# Figure 4: Enrichment in architect. prots.
+# Figure 6: Enrichment in architect. prots.
 
 whole_exclu <- read.table("GAT/out/whole_seg_10kgat_exclu_insul_bs.txt",header=T)
 whole_exclu <- whole_exclu[whole_exclu$track!="merged",]
@@ -298,4 +320,4 @@ ggplot(data=whole_exclu[whole_exclu$segment=="exclu.cohesin",],aes(x=nicenames[c
   scale_x_discrete(labels=nicenames[c(1,3,2,4)])
 
 
-# Figure 6: High contact
+# Figure 7: High contact
