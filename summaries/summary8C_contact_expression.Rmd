@@ -224,7 +224,7 @@ kable(store_corr)
 
 ##Contact
 
-Comparing gene-TAD contact across all cell lines. Metrics is gene_TAD contacts.
+Comparing TAD-TAD contact across all cell lines. Metrics is TAD_TAD contacts.
 
 ```{r comp_lines_contact,echo=F}
 library(ggplot2)
