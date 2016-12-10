@@ -36,7 +36,7 @@ The normalization algorithm did not converge for all entries, so there are missi
 
 I computed interactions in a similar manner that Rao and al (2014) computed the insulation score. A diamond of width _w_ is slid over the diagonal of matrix _M_ of _n_ dimensions. Interactions are summed inside the diamond at each position _d_ along the diagonal. I used a 100kb diamond in the algorithm, as recommanded by Rao and al.
 
-$\left\{\begin{matrix}1\leq w\leq \frac{n}{2}+1 \\ \forall d\in\left \{ w , ... , n-\left ( w-1 \right ) \right \}\end{matrix}\right. V_{d}=\sum_{i=d-(w-1)}^{d}\sum_{j=d}^{d+w}M_{i,j}$
+$\left\{\begin{matrix}1\leq w\leq \frac{n}{2}+1 \\ \forall d\in\left \{ w , ... , n-\left ( w-1 \right ) \right \}\end{matrix}\right. V_{d}=\sum_{i=d-(w-1)}^{d}\sum_{j=d}^{d+(w-1)}M_{i,j}$
 
 
 #2. TAD boundaries
