@@ -1,4 +1,4 @@
-# In this script I reuse customized snippets from other scripts to build figures for the final report
+# In this script was used to build figures for the final report
 # Cyril Matthey-Doret
 # Thu Dec  1 19:14:34 2016 ------------------------------
 

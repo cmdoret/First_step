@@ -1,4 +1,8 @@
-# This script splits lincRNAs and pcgenes into enhancer associating and non-enhancer associated.
+# This script is used to generate promoter regions and filter bedtools intersect outputs (i.e. removing duplicate overlaps).
+# It splits lincRNAs and pcgenes in two independant ways: enhancer associated/non-enhancer associated or 
+# promoter associated/non-promoter associated.
+# The output gene sets need to be process with bedtools again to categorize based on promoter AND enhancer overlap. The results can
+# then be processed using all combinations.R
 # Cyril Matthey-Doret
 # Thu Oct 27 15:40:10 2016 ------------------------------
 
@@ -14,6 +18,7 @@ colnames(pc) = colnames(linc) <- c("chr","start","end","gene","strand")
 # Functions defined below allow to extend all genes by 1kb on the side of the promoter
 # or to select only the promoter region.
 # pr = promoter region; prb = promoter region + body
+# in the report, promoter region only is used.
 
 assoc_loop <-function(g,b=FALSE){ # This one is fine
   for(r in 1:length(g[,1])){
@@ -84,8 +89,7 @@ write.table(nepc_prb,file = "enhancer_bound/nepc_prb.bed",sep="\t",quote=F,col.n
 
 #==========================
 # Additional filtering steps: non-enhancer-bound genes are redefined into promoter-associated genes.
-# They need to overlap promoter marks in addition to being non-enhancer associated. This avoids including 
-# enhancer-associated in the set, as enhancers may just not have been detected with the procedure.
+# They need to overlap promoter marks in addition to being non-enhancer associated. 
 
 # BEDtools intersect with ENCODE promoter marks...
 plinc_prb_over <- read.table("enhancer_bound/promoter_marks/nelinc_prb_over_prommark.bed")
@@ -95,7 +99,7 @@ ppc_pr_over <- read.table("enhancer_bound/promoter_marks/nepc_pr_over_prommark.b
 colnames(plinc_prb_over)=colnames(plinc_pr_over)=colnames(ppc_prb_over)=
   colnames(ppc_pr_over) <- c("chr","start","end","gene","strand")
 
-# Removing duplicates (2 promoter marks in a single gene)
+# Removing duplicates (2 or more promoter marks in a single gene)
 plinc_prb <- plinc_prb_over[!duplicated(plinc_prb_over$gene),]
 plinc_pr <- plinc_pr_over[!duplicated(plinc_pr_over$gene),]
 ppc_prb <- ppc_prb_over[!duplicated(ppc_prb_over$gene),]
@@ -105,3 +109,7 @@ write.table(plinc_prb[,c(1:5)], "enhancer_bound/plinc_prb.bed",sep="\t",quote=F,
 write.table(plinc_pr[,c(1:5)], "enhancer_bound/plinc_pr.bed",sep="\t",quote=F,col.names=F,row.names = F)
 write.table(ppc_prb[,c(1:5)], "enhancer_bound/ppc_prb.bed",sep="\t",quote=F,col.names=F,row.names = F)
 write.table(ppc_pr[,c(1:5)], "enhancer_bound/ppc_pr.bed",sep="\t",quote=F,col.names=F,row.names = F)
+
+# The outputs of this script are classified based on promoter OR enhancer overlap. To get the sets as defined in the report, one should 
+# call bedtools intersect on these sets to get categories based on promoter AND enhancer overlap. The output of these bedtools runs can
+# be processed using all_combinations.R
