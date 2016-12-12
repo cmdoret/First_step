@@ -13,8 +13,8 @@ path <- "/home/cyril/Documents/Master/sem_1/First_step/data/"
 #path <- "/home/cyril/Documents/First_step/data/"
 setwd(path)
 cell_lines <- c("GM12878")  # Cell lines to plot
-#test_lines <- c("GM12878","HUVEC","K562","NHEK")  # Cell lines to include in the table with corr statistics
-test_lines <- c("GM12878")  # Cell lines to include in the table with corr statistics
+test_lines <- c("GM12878","HUVEC","K562","NHEK")  # Cell lines to include in the table with corr statistics
+#test_lines <- c("GM12878")  # Cell lines to include in the table with corr statistics
 whole_expr <- read.table("expression/enhancer_promoter/whole_exp.txt",header=T)
 whole_expr <- whole_expr[whole_expr$promoter!="both",]
 colnames(whole_expr) <- c("gene_id","GM12878","HUVEC","K562","NHEK","promoter","enhancer","gentype")
