@@ -1,10 +1,81 @@
-\documentclass[10pt,a4paper]{report}
-\usepackage[utf8]{inputenc}
+\documentclass[11pt,a4paper]{report}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{url}
+%\usepackage{cite}
+\usepackage{fancyhdr}
+% interligne
+\usepackage{pdflscape}
+\usepackage{cite}
+\usepackage[left=2cm,
+			right=2cm,
+			top=3cm,
+			bottom=3cm]{geometry}
 \author{Cyril Matthey-Doret}
-\title{Do enhancer-associated lincRNAs contribute to chromosomal organization ?}
+\usepackage{outline} \usepackage{pmgraph} \usepackage[normalem]{ulem}
+\usepackage{verbatim}
+\pagestyle{fancy}
+
+% chargement des figures
+\usepackage{graphicx}					
+\usepackage{wrapfig}
+\usepackage[export]{adjustbox}
+\usepackage{caption}
+
+\title{
+\includegraphics[width=1.75in]{lo_unil06_bleu.pdf} \\
+\vspace*{1in}
+\textbf{Do enhancer-associated lincRNAs contribute to chromosomal organization ?}}
+
+\author{\Large{First Step Project}\\
+		Molecular Life Sciences, Bioinformatics\\
+				\vspace*{0.5in} \\
+		Cyril Matthey-Doret\\
+        Supervised by: Jennifer Yihong Tan\\
+        Directed by: Ana Claudia Marques\\
+		\vspace*{0.5in} \\
+		Department of Computational Biology\\
+		Department of Physiology\\
+        \textbf{University of Lausanne - Switzerland}\\
+       } \date{\today}
+%--------------------Make usable space all of page
+\setlength{\oddsidemargin}{0in} \setlength{\evensidemargin}{0in}
+\setlength{\topmargin}{0in}     \setlength{\headsep}{+0.5in}
+\setlength{\textwidth}{6.5in}   \setlength{\textheight}{8.5in}
+%--------------------Indention
+\setlength{\parindent}{1cm}
+
 \begin{document}
 
+%--------------------Title Page
+\renewcommand{\headrulewidth}{1pt}
+\fancyhead[R]{First Step Project, University of Lausanne - Switzerland, December 2016}
+\maketitle
+%--------------------Begin Outline
+
+\section*{Abstract}
+\section*{Introduction}
+It was only recently discovered that a surprisingly large proportion of the mammalian transcriptome does not code for proteins. To date, the number of annotated noncoding genes longer than 200 nucleotides (long noncoding RNA, lncRNA) excess by at least 3 times that of protein-coding genes \cite{Iyer2015}⁠. Among lncRNAs, those that do not overlap with protein-coding genes are the most abundant (long intergenic noncoding RNAs, lincRNAs). Functional and evolutionary analyses, together with extensive characterization of a handful of lincRNAs, demonstrate that these transcripts are involved in gene regulation processes transcriptionally and post-transcriptionally, and that they can contribute to organismal traits and diseases \cite{Kornienko2013}⁠. However, the mechanisms and functions, if any, for the majority of lincRNAs remain unknown \cite{Rinn2012}⁠.
+
+LincRNAs associated with human traits have been shown to have enhancer-associated cis-regulatory roles and their loci are correlated with more compact chromatin relative to other lincRNAs in a human lymphoblastoid cell line (LCL) (Tan et al, under revision). Most active enhancers are transcribed, generating noncoding products, including lincRNAs \cite{Guil2012}⁠. This raises the question whether lincRNAs with enhancer-like activities (elincRNAs) contribute to gene regulation and the organization of  chromosomal contacts. Unlike most enhancer-associated noncoding RNAs, which are often transcribed bidirectionally and then rapidly degraded \cite{Darrow2013}⁠, elincRNAs are transcribed preferentially in one direction and are more stable \cite{Marques2013}⁠. These distinct features make them less likely to be a product of pervasive transcription and thereby, good candidates to study the involvement of lincRNAs in the regulation of gene-enhancer interactions within chromatin domains. Those elincRNAs will therefore be the focus of my analysis.
+
+Recently, there have been reports of elincRNAs involved in the spatial organization of the genome, such as Haunt \cite{Yin2015}⁠⁠, which can regulate intrachromosomal interactions by mediating promoter-enhancer looping.
+It is thought that the architecture of the genome is an major factor in gene regulation \cite{Engreitz2016}⁠. Indeed, genomic DNA is folded into variably compact chromosomal structures that likely impact expression of the embedded genes \cite{Gorkin2014}⁠. On a global scale, regions with a high degree of compaction are classified as heterochromatin while relatively uncondensed regions are called euchromatin \cite{Passarge1979}. These are respectively associated with lower and higher levels of active transcription \cite{Tamaru2010}⁠. Chromosomes are further compartmentalized into smaller domains, called topologically associated domains (TADs). The amount of DNA-DNA interactions is high within TADs as a result of their close spatial proximity, and low across different TADs. TAD boundaries are the regions lying at the borders of TADs (Figure 9) and are essential for gene regulation. They are often gene-dense and are enriched in  highly transcribed genes \cite{Ong2014}⁠. 
+
+
+Chromosomal contacts within TADs, often seen as looping structures, occur  particularly at TAD boundaries and are crucial for establishing correct  interactions between regulatory elements, such as enhancers and promoters \cite{Gorkin2014}⁠. Deletion of TAD boundaries often disrupts those interactions, resulting in gene misexpression and disease phenotypes \cite{Lupianez2016}⁠. TAD boundaries are also enriched in architectural proteins, including CTCF \cite{Pope2014}⁠, which functions to delimit TAD borders by acting as genomic insulators that prevent DNA-DNA interactions across multiple TADs. Cohesin, another architectural protein, is also enriched at TAD boundaries. It is a multi-protein complex that is thought to be involved in establishing enhancer-promoter interactions \cite{Ji2016}⁠. While most CTCF sites are shared between different cell types and species \cite{Ji2016}⁠, cohesin binding at gene regulatory elements is often cell-type specific \cite{Hadjur2009}⁠.
+
+Using various bioinformatics tools to analyze publicly available multi-omics data from the ENCODE project \cite{ENCODEProject2012}⁠ and data from whole-genome chromosome conformation capture (Hi-C) experiments \cite{Rao2014}⁠, I investigated the molecular properties of elincRNAs, their enrichment in different regulatory regions and their association with the amount of DNA-DNA interactions to gain insight into their roles in gene regulation within topological domains in human LCLs. My analysis shows that elincRNAs are associated with high density of chromosomal contacts within TADs and are significantly enriched in loop anchors where promoter-enhancer interactions occur. I also find that they are strongly enriched in cohesin binding, supporting the idea that they may contribute to gene regulation by establishing contacts between regulatory elements and modulating chromosomal organization.
+\section*{Results}
+\section*{Figures, tables and legends}
+
+
+\section*{Discussion}
+\section*{Materials and methods}
+%\bibliography{First_step}{}
+\bibliographystyle{apalike}
+\fancyhead[L]{\slshape }
+\bibliography{First_step}
 \end{document}
