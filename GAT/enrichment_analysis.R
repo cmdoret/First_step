@@ -40,7 +40,7 @@ condense_gat <- function(path){
 
 
 gat_gat <- condense_gat("GAT/out/10k_samples/gat_hic_boundaries/out/segments_overlap/results")
-chipseq_gat <- condense_gat("GAT/out/10k_samples/chipgat_fullover/segments_overlap/results/")
+chipseq_gat <- condense_gat("GAT/out/10k_samples/chipgat_fullover/out_union_cohesin/results")
 control_gat <- condense_gat("GAT/out/pos_control_gat/")
 whole_GAT <- rbind(gat_gat,chipseq_gat)
 write.table(whole_GAT,"GAT/out/whole_seg_10kgat_test_results.txt",quote=F,sep="\t",row.names=F)
