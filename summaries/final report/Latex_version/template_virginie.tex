@@ -1,0 +1,565 @@
+\documentclass[a4paper]{article}
+
+
+
+% alt+virgule et alt+maj+virgule >> guillemets
+
+
+% télécharger les packages essentiels
+% encodage du document
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+%langue francaise
+\usepackage[english]{babel}
+
+% coupure des mots
+\hyphenation{time-line}
+
+% majuscules et minuscules
+\usepackage{textcase} 
+
+% soulignements
+\usepackage{ulem}
+\normalem
+
+% interligne
+\usepackage[onehalfspacing]{setspace}
+
+
+\usepackage{multicol}
+
+% section style
+\usepackage{sectsty}
+
+\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage{cite}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black} 
+
+\usepackage{lscape}
+\usepackage{pdflscape}
+
+\usepackage[left=2cm,
+			right=2cm,
+			top=3cm,
+			bottom=3cm]{geometry}
+			
+%\usepackage{changepage}	
+%\usepackage{typearea}
+\usepackage[absolute]{textpos}		
+			
+% chargement des figures
+\usepackage{graphicx}					
+\usepackage{wrapfig}
+\usepackage[export]{adjustbox}
+\usepackage{caption}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, urlcolor=black}
+\urlstyle{same}
+
+\usepackage{mathpazo}
+
+\usepackage{amsmath}
+
+
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+%\usepackage[noadjust]{cite}
+
+% title
+\title{\MakeUppercase{Modeling clonal evolution of cancer cells} \\ \begin{Large}
+		Testing different strategies to create hypermutant phenotype
+	\end{Large}}
+\date{\today}
+\author{Virginie Ricci}
+
+\date{December 2016}
+\begin{document}
+\renewcommand{\headrulewidth}{1pt}
+\fancyhead[R]{First Step Project, University of Lausanne - Switzerland, December 2016}
+\maketitle	
+
+\begin{multicols}{2}
+% abstract
+\begin{abstract}
+blablabla 
+
+\end{abstract}
+
+
+
+% introduction
+\sectionfont{\fontsize{12}{15}\selectfont\MakeUppercase}
+\section{Introduction}
+Human tumors are formed of any abnormal cellular proliferation. Compared to begnin ones (e.g. wart), malignant cancers involve uncontrolled cell divisions and its propagation in other body parts through circulatory and lymphatic systems (metastasis). Depending on cell origin, tumors are classified in two groups: neoplasms of epithelial origin (carcinomas including melanomas) and of non-epithelial origin (leukemias, lymphomas, sarcomas and neuroectodermal tumors). Each cancer has specific phenotypic and genotypic characteristics reflecting their cellular origin and results as intertumoral heterogeneity\cite{Thome}. 
+Tumors originate from the accumulation of genetic and epigenetic modifications in normal cells\cite{IM}. These changes differ in number and types and result in different genotypes and phenotypes among cancer cells. Tumor is a rapid evolutionary process, which arises from a single somatic cell. Also called the founder cell, it constitutes the first neoplastic clone and starts the accumulation of particular mutations through cellular divisions. When a cell acquires a new alteration, it gives rise to a new clonal subpopulation of cells containing the same genetic information. Despite the vast majority of cancer origin is monoclonal, neoplastic diagnosis show intratumoral heterogeneity in measurable phenotypes such as genotype, gene expression, cellular morphology, metabolism, proliferation rate, antigen expression, drug response or metastatic potential\cite{DFLMM}. The clonal evolution model defines the progression of cancer as the sequential acquisition of random mutations with simultaneously, successive clonal subpopulations dominance or selective sweeps\cite{MP}. Indeed, neoplasms are constituted of heterogeneous asexual cellular subpopulations\cite{FD}. The variability between cells and between clones differ not only in genotypes and phenotypes, but also in space and time. Neoplastic cells interact with their surrounding microenvironment, which is composed of tumor and non-tumor cells, extracellular matrix, growth factors, metabolites and both blood and lymphatic vessels (amongst other components)\cite{MP}. This microenvironmental niche evolves over time and influences both phenotype and behavior of cancer cells. As an example, the clonal interference is defined as the mutual competition between two expanding clones due to their different acquired mutations\cite{GM}. 
+Because of morphological, behavorial and genetic variabilities among neoplasmic cells within tumors, diagnosis, prognosis, treatment efficacy and identification of drug targets are complex. For instance, the biopsy of a small proportion of tumor is not representative of the whole tumor. Consequently, therapies are not always efficient and the relapse of cancer can not be excluded. 
+
+Genetic causes of cancer are inherited or/and somatic aberrations in addition to extrinsic mutagens such as radiation, chemicals and some viruses. Mutations are either caused by unrepaired replication errors or random molecular events. Ultraviolet light, X-ray, chemotherapy, cigarette smoke, papilloma virus (cervical cancer) and hepatitis B virus (liver cancer) are examples of extrinsic carcinogens. More generally, mutations are randomly acquired over time and are defined either as deleterious, neutral or beneficial. The Darwinian evolutionary theory explains the genetic variation among individuals united by a common ancestor thanks to natural selection of the fittest alterations\cite{GM}. Mutations are either kept and carried to the progeny by positive selection if they are beneficial or eliminated by purifying selection if they are deleterious. Other mutations, which do not give particular advantage or a small disadvantage to cells, are either kept or removed from the genome. The alterations that drive cancer progression are so called "driver" and "passenger" alterations\cite{BAOCKCK}. Driver mutations have a beneficial contribution to cancer cells fitness. They are seldom acquired, but recurrent in oncogenes and tumor suppressors\cite{FD}. On the other hand, passenger mutations are alterations which were previously considered to induce no effect in cancer\cite{BAOCKCK}. Currently, they are believed to induce potential deleterious effects on neoplastic cells fitness. Moreover, passenger alterations are able to evade negative selection and spread across the genome. These mutations are often acquired, but non-recurrent\cite{FD}. In effect, when drivers are fixed in a cell, several nearby passengers are also gained. As potential deleterious passenger alterations are more often acquired in cancer cells, it is supposed that beneficial mutations have larger effects. If drivers did not counteract the potential deleterious effect of passengers, mutated cells would die. In addition, it is assumed that the fixation of driver alterations occurs only when the new fitness of the cell is greater than every other cells fitness of the population\cite{FD}. Indeed, neoplastic cells gain advantageous phenotypes such as: high proliferation rate, uncontrolled proliferation, high survival rate, genomic instability and other hallmarks. 
+When a new driver mutation is acquired in a neoplastic cell, it increases the cell's fitness, thus the proliferation rate and consequently the number of potential acquired alterations in subsequent cells. This snowball effect explains an elevated mutation rate and a high level of genomic instability in tumors\cite{MKPWR, GM}.
+
+In current cancer studies, it is hypothesized that pre-neoplasmic cells start accumulating more alterations per generation than normal cells and that the mutation rate in healthy cells is insufficient to account for the large number of alterations found in cancers\cite{RG, FPL}. This phenomena is explained by the cancer mutator phenotype. It involves mutator mutations, which are supposed to increase genomic instability and accelerate tumorigenesis by altering mainly oncogenes\cite{BL2, B}. Arguments against the mutator phenotype states that a normal rate of mutations in addition to their selection is sufficient to develop tumors. Moreover, increasing the genomic instability involves a higher probability to gain deleterious alterations, which results in a lower fitness leading to potential clonal extinction\cite{B}. Even if the concept of mutator phenotype is controversial, it exists a lot of cancers showing an extreme high load of alterations. These tumors showing a hypermutant phenotype possess hundreds of thousands of mutations\cite{GM, SE}. Hypermutation is present in a wide variety of tumor types such as (cutaneous) melanoma, gliobastoma, lung, stomach, colorectal, endometrial, cervical or pancreatic cancers\cite{RG, SE}. For example, glioblastomas and melanomas present more than $200'000$ mutations\cite{FPL}. 
+
+Understanding the basic mechanisms which induce hypermutation can improve the development of new therapeutic strategies. The identification of alterations in primary clones, which are detected during biopsy and sequenced, can help to investigate therapeutic failures. Indeed, some mutations induce resistance to several treatments and become possible targets for immunotherapy. Some alterations are positively selected because they confer a resistance to therapies whereas others were present before starting any treatments. In addition, the identification of alterations in a given tumor may help to reconstruct the genotype of the founder clone. Understanding the origin of cancer can help for prognosis, diagnosis and the development of therapeutic drugs. In this project, we are assessing different strategies to enhance the heterogeneity during the clonal expansion of tumor cell population and simulate cancers with hypermutation.
+
+\end{multicols}
+\begin{figure}[b]
+	\centering
+	\includegraphics[width=0.7\textwidth]{Images/Topology.JPG}
+	% width >> % de la largeur du texte
+	\caption{Topology of neoplasmic clonal evolution}
+	\label{Topology}
+\end{figure}
+
+\newpage
+\begin{multicols}{2}
+% Model and method
+\section{Model}
+To investigate several strategies to create hypermutation in tumors, we are using a simple model of clonal evolution.
+
+A discrete time Galton-Watson process is modeling the clonal evolution of cancer cells. It is a stochastic procedure which structures trees as a binary branching process. A tree is composed of clones, which include leaves. There are $n$ leaves and $n-1$ internal nodes by trees\cite{MCF}. The simulation starts as a single clone of $1000$ cells containing a single driver mutation. The number of cells forming the first clone is set to increase the probability of starting a cancer evolution. This clone is considered as the most common ancestor of all subsequent clones. The clonal evolution involves two different topologies. The linear topology explains the evolution of the founder clone in different successive subsequent clones whereas the branched topology implicates the formation of several clones arising from the same parent (fig. \ref{Topology}). During clonal evolution, each cell either divides into two daughter cells or dies. When a cell replicates, either the daughter cells carry the same genetic information as their mother cell or gain a new alteration forming a new clone. It is assumed that all mutations are acquired in a cell division-dependent manner. Moreover, every cell divisions and deaths occur simultaneously at each time step. The probability of cell death is $d_k=\frac{1}{2}(1-s)^k$ and depends on the number of driver alterations $k$. The fitness $s$ is the selective advantage for cellular replication. $d_k$ is set to reduce the probability of cell death with additional driver mutations. On the other hand, the probability of cell division is $b_k=1-d_k$. At every division step, only one of the two daughter cells with $j$ mutations gains one potential driver or passenger alteration and gives rise to a new clonal subpopulation with respective probability $u$ and $v$. The total number of genes set in the model is $20'000$. This value matches the estimated total number of genes in the Human genome\cite{nbgenes}. The maximum number of drivers is $500$. We assume that one mutation at maximum occurs in each gene. The probability to acquire a driver alteration equals $u=\mu*\frac{500}{20000}$ whereas the probability to gain a passenger mutation is $v=\mu*\frac{20000-500}{20000}$.
+
+The cancer progression ends when the total population size reaches $5*10^8$. During analyses, clones smaller than $1\%$ of the total population size are removed. This threshold is set as the limitation of clones' detection in a biopsy. It corresponds also to the detection limitation while sequencing.
+
+%TODO - redemander à Franck pourquoi 1*10^-5 - et la figure sur laquelle il se base  
+
+In this report, we assess different strategies in order to model cancers with hypermutation. The two parameters which can influence the load of alterations and the probability of cell divisions are the mutation rate $\mu$ and the fitness $s$. Intuitively, if $\mu$ is high, it generates a higher number of mutations. In addition, if $s$ is high, it increases the probability of replication and the number of clonal cells. Initially, we set both fixed $\mu=1*10^{-5}$ and $s=1*10^{-4}$ and generate 10 control simulations in order to observe how the model works. Then, we design strategies to make the model more dynamic changing $\mu$ and $s$. Depending on the number of driver alterations in each cell, either $\mu$ or $s$ is increasing (the other one remains constant). For the following approaches, we run $40$ simulations. As a result, we count the total number of cells, clones and leaves in every tumors. After removing clones smaller than $1\%$ of the total population size (< $5*10^6$ cells), we count the remaining clones and leaves, in addition to the number of driver and passenger mutations. Finally, we investigate the frequency of each possible $\mu$ and $s$ observed for each following strategy.
+
+
+The first approach is to enhance the mutation rate in each individual cell according to their number of drivers(fig. \ref{Graphic}). In this condition, the fitness remains constant. Recent studies revealed that there are only $2$ to $8$ driver alterations in a typical cancer compared to hundreds or thousands of passenger mutation\cite{BGN}. From this, we set that when the cell gains at least $3$ drivers, it gets a mutation rate boost. To test this, we suggest two different methods. The first one is to induce a fixed mutation rate boost ($10x$ or $100x$) when the number of drivers reaches $3$ or more (fig. \ref{Graphic} and table \ref{Step}). The second method is to induce gradually a mutation rate boost according to a hyperbolic tangent equation: $\mu_k=\mu*10*tanh(0.1*(x^2))$ or $\mu_k=\mu*100*tanh(0.01*(k^3))$ where $\mu_k$ is the new mutation rate, $\mu$ is the current mutation rate and $k$ is the number of drivers (fig. \ref{Graphic} and table \ref{Tanh}). Additional acquired drivers raise progressively the mutation rate until around $5-7$ drivers. The mutation rate boost is set to enhance the probability of alterations acquisition (driver and passenger alterations) in cells. However, only driver alterations have a resulting effect on the mutation rate boost.
+
+\end{multicols}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{Images/graphic_representation.png}
+	% width >> % de la largeur du texte
+	\caption{Graphic representation of the mutation rate and the fitness boosts. }
+	\label{Graphic}
+	
+	\begin{center}	
+		\begin{tabular}{|c|c|c|c|}	
+			\hline
+			Multiplication factor & Types & Mutation rate boost & Fitness boost \\
+			\hline
+			10 & hyperbolic tangent & \textcolor{red}{$\mu_k=\mu*10*tanh(0.1*(k^2))$} & \textcolor{red}{$s_k=s*10*tanh(0.1*(k^2))$} \\
+			\hline
+			10 & step & \textcolor{violet}{$\mu*10$} & \textcolor{violet}{$s*10$} \\
+			\hline
+			100 & hyperbolic tangent & \textcolor{blue}{$\mu_k=\mu*100*tanh(0.01*(k^3))$} &  \textcolor{blue}{$s_k=s*100*tanh(0.01*(k^3))$} \\
+			\hline
+			100 & step & \textcolor{green}{$\mu*100$} &  \textcolor{green}{$s*100$} \\
+			\hline
+		\end{tabular}
+	\end{center}
+	
+\end{figure}
+
+%\begin{table}[h]
+%	\begin{center}	
+%		\begin{tabular}{|c|c|c|c|}	
+%			\hline
+%			Multiplication factor & Types & Mutation rate boost & Fitness boost \\
+%			\hline
+%			10 & hyperbolic tangent & \textcolor{red}{$\mu_k=\mu*10*tanh(0.1*(k^2))$} & \textcolor{red}{$s_k=s*10*tanh(0.1*(k^2))$} \\
+%			\hline
+%			10 & step & \textcolor{violet}{$\mu*10$} & \textcolor{violet}{$s*10$} \\
+%			\hline
+%			100 & hyperbolic tangent & \textcolor{blue}{$\mu_k=\mu*100*tanh(0.01*(k^3))$} &  \textcolor{blue}{$s_k=s*100*tanh(0.01*(k^3))$} \\
+%			\hline
+%			100 & step & \textcolor{green}{$\mu*100$} &  \textcolor{green}{$s*100$} \\
+%			\hline
+%		\end{tabular}
+%	\end{center}
+%	\caption{Strategies to increase the mutation rate and the fitness}
+%	\label{Equations}
+%\end{table}
+
+\begin{multicols}{2}
+
+The second approach is to increase the fitness in the same way as the mutation rate (fig. \ref{Graphic}). In this condition, the mutation rate remains constant. $s_k$ is the new fitness dependent of the number of acquired drivers and $s$ is the current fitness (fig. \ref{Graphic} and tables \ref{Step} \& \ref{Tanh}). The fitness boost is set to improve the probability of cellular divisions. An augmentation of the fitness in new clones containing several drivers extends their clonal size. Consequently, clones, which appear late during the tumor development, tend to be more successfully detected during a biopsy. As with the mutation rate boost, only driver alterations have a resulting effect on the fitness boost. 
+
+
+
+%We investigate several methods to count the number of driver mutations and total mutations in remaining clones (bigger than $1\%$ of the total population size). The first strategy is to calculate the mean of mutations for each simulation. The second one is to calculate the mean of mutations in every leaves for each simulation. The last one is to count every mutations once, meaning that if a mutation is present in several clones, it is considered once. From the total number of mutations and driver mutations, we calculate the number of passenger alterations. 
+
+
+% results
+\section{Results}
+The first part of the results concerns the structure of every tumors and their load of mutations. The second part is about the distribution of both boosted mutation rate and fitness. 
+
+Regarding the total number of clones and leaves when there is a dynamic mutation rate, we notice an increase with every strategies compared to the control (fig. \ref{Total clones} \& \ref{Total leaves}). When the mutation rate is multiplied by $100$, clones and leaves are more numerous. Moreover, the boost given by the hyperbolic tangent (multiplication factor $10x$ and $100x$) generates a higher number of clones and leaves compared to the step method. On average, $94$\% of clones are actually leaves in control simulations (table \ref{Recap}). Concerning the dynamic mutation rate approaches, it varies between $84$ and $93$\%. These values indicate that the topology of most trees is branched. In every methods including the control, the average number of leaves generated during the last iteration (unicellular) represents between $6$ and $7$\% (table \ref{Recap} and fig. \ref{Total clones wo unic leaves} \& \ref{Total unic leaves}). The total number of unicellular leaves is proportional to the total number of leaves. Among the different strategies, this number varies. On average, when the multiplication factor is $100$, there is a higher number of unicellular leaves compared to $10$. The hyperbolic tangent strategies for both factors increase the number of clones compared to the step method. After selecting clones bigger than $1$\% of the total population size, it remains between $0.0025$ and $0.015$\% clones (in average) (fig. \ref{Clones} \& \ref{Leaves}). There is a high level of variability for both numbers of remaining clones and leaves among the different strategies and the control. Multiplying the mutation rate by $10$ raises the mean of clones and leaves. In addition, the hyperbolic tangent strategy for multiplication factor $10x$ does not increase their number. These two trends are reversed when comparing to the total number of clones and leaves.
+
+In opposition to the mutation rate boost, the different fitness boosts decrease the total number of clones and leaves compared to the control (fig. \ref{Total clones} \& \ref{Total leaves}). The variability of every strategies is very low. When the multiplication factor is $100x$ in comparison with $10x$, clones and leaves drop off as well as the mutation rate boost. The increase of the fitness by the hyperbolic tangent (factor $10x$ and $100x$) generates a higher number of clones and leaves compared to the step methods. This trend is similar to the mutation rate boost. In dynamic fitness approaches, the number of clones which are actually leaves varies between $98.5$ and $99.7$\% (table \ref{Recap}). That is more than what we observe when there is a mutation rate boost. There are more leaves generated during the last iteration (unicellular) when the fitness is boost compared to the mutation rate (between $9$ and $17$\%) (table \ref{Recap} and fig. \ref{Total clones wo unic leaves} \& \ref{Total unic leaves}). The total number of unicellular leaves is constant among the different strategies. It is not proportional to the total number of leaves as observed with the mutation rate boost. After selecting clones bigger than $5*10^6$ cells, it remains between $0.01$ and $0.036$\% clones, which is slightly more than when there is a mutation rate boost (fig. \ref{Clones} \& \ref{Leaves}). In this proportion, the variability is lower for the step strategy at both multiplication factors, but especially at $100x$. Comparing the same strategy for the two different multiplication factor, we observe no significant differences. However, the boost given by the tangent hyperbolic raises considerably the average of clones and leaves compared to the step one.
+
+
+
+Furthermore, we notice that the mutation rate boost generates more clones (total number) than the fitness boost (fig. \ref{Total clones} \& \ref{Total leaves}). Concerning pruned trees, if we compare the same strategy, we notice that the mutation rate boost creates more clones than the fitness boost except with the hyperbolic tangent equation at the multiplication factor $100x$ (fig. \ref{Clones} \& \ref{Leaves}). 
+
+
+Concerning the average of drivers per clones, it is higher when there is a fitness boost compared to mutation rate (fig. \ref{Drivers per clones}). The same finding is observed for the total number of alterations (passengers and drivers) (fig. \ref{Total per clones}). The difference between the number of drivers and total mutations is low, meaning that most alterations are driver alterations. A dynamic mutation rate does not really vary the mean of mutations per clones. Regarding the mean of driver alterations and total alterations per leaves, it increases when there is a fitness boost compared to mutation rate (fig. \ref{Drivers per leaves} \& \ref{Total per leaves}). In this case too, the boost of the mutation rate does not differ a lot. The variability is higher for the total altrations per leaves compared to drivers for two strategies of fitness boost: hyperbolic tangent at factor $10x$ and step method at $100x$. When listing each mutation once, the average is higher in most cases when there is a fitness boost(fig. \ref{Drivers unique} \& \ref{Total unique}). In this case too, the variability differs for some strategies between the number of drivers and total alterations: control simulations, mutation rate boost given by hyperbolic tangent at factor $100x$, fitness boost given by the step method at factor $10x$ in addition two both strategies at factor $100x$.
+% TODO à améliorer
+ 
+ 
+% TODO distribution boost
+The distribution of the different boosts allows us to investigate how many clones have a particular $\mu_k$ or $s_k$. It is calculated independently of the clonal size. Interestingly, the trend is reversed between the mutation rate and the fitness when they are multiplied by $10$ (fig. \ref{Boost 10} and tables \ref{Tanh} \& \ref{Step}). The majority of clones having a mutation rate boost given by the hyperbolic tangent gained $2$ driver mutations and reaches $\mu_k=3.8*10^{-5}$. The step method concentrates $\mu_k$ at $1*10^{-5}$ (between $1$ and $2$ drivers). Regarding the hyperbolic tangent fitness boost, most $s$ equal either $3.8*10^{-4}$ ($2$ drivers) or $7.2*10^{-4}$ ($3$ drivers). The majority of $s$ when it is increased by the step method reaches the limit of $1*10^{-5}$ (at least $3$ drivers). In comparison with the multiplication factor is $100$, the trend of $\mu_k$ and $s_k$ distributions is reversed except for the fitness boost given by the step method (fig. \ref{Boost 100} and tables \ref{Tanh} \& \ref{Step}). The tangent hyperbolic (mutation rate boost) generates a lot of clones with different number of drivers and consequently various mutation rates. The step method concentrates the majority of $\mu_k$ at $1*10^{-3}$. The majority of $s$ when there is a hyperbolic tangent boost, is at $5.6*10^{-3}$ ($3$ drivers). Then, $s$ is mainly equal to $2.6*10^{-3}$ ($4$ drivers). The step strategy induces mainly $s=1*10^{-2}$.
+
+
+
+
+
+% conclusion
+\section{Conclusion}
+The different strategies we assess to create hypermutation in cancers did not work successfully. Inducing a high load of alterations would raise the total number of clones. On average, boosting the mutation rate increases the formation of clones. However, the number of clones susceptible to be detected in biopsy is not significantly improved. Surprisingly, increasing the fitness tends to decrease the total number of clones. The amount of clones bigger than $5*10^6$ cells significantly decreases when the fitness is boost by the step strategy. 
+
+The fact that boosting the mutation rate by the hyperbolic tangent raises more the total number of clones compared to the step method can be explained by the progressive augmentation of $\mu_k$. Indeed, when cells gain $2$ drivers, they are boosted by a factor $3.8$ (table \ref{Tanh}). This boost can induce a faster formation of new clones and give rise to a higher number of clones. In contrast, this phenomena is not observed when there is a boost of the fitness. It seems that enhancing the fitness decreases the total number of clones. $s$ has an indirect effect on the formation of new clones. Increasing this parameter improves the probability of replication and indirectly of clonal expansion. It would be interesting to investigate the population size of each clones. When we look at the number of clones in pruned trees, we observe that the mutation rate boost does not induce a high number of clones. It is supposed that the different strategies to generate a mutation rate boost increase the formation of small clones, which are not kept in pruned trees. The step method at both factors $10$ and $100$ induces a very low number of clones in pruned trees.  
+% TODO expliquer la différence entre step et tanh_curve pour le nb de clones et leaves par fitness boost
+
+
+The total number of clones and leaves is nearly the same, meaning that most clones are actually leaves. It can be explained by the fact that at least one cell of each clone gains a particular mutation and generate a new clone. In pruned trees, it can account for the population size of internal nodes. As they are potentially small, they are removed from pruned trees. As a result, it remains only leaves. Another hypothesis is that the founder clone is the main parent of every subsequent clones. That is observed in pruned trees. Indeed, the average number of drivers per clones is around $1.5$. It means that most clones harbor $2$ driver alterations except the founder one and few clones which gain passenger mutations in addition to the first driver mutation. 
+
+The number of unicellular leaves is proportional to the total number of leaves among every methods which enhance the mutation rate. Concerning the fitness boost, the number of unicellular leaves is stable among the different strategies. These results in addition to total number of clones and leaves suggest that enhancing the fitness does not create hypermutation phenotype. It is rather the opposite effect which occurs. 
+
+
+
+
+The different techniques to count the number of drivers and total alterations show a low load of mutations. Regarding the average of mutations per clones, we observe that the majority of clones have in common the first driver mutation from the founder clone in addition to few passenger and driver alterations. It means that the majority of clones arises from the same founder parent. Surprisingly, the number of drivers and total mutations is higher when the fitness is boosted. Even if the number of clones is smaller when inducing a fitness boost by the step method, most clones harbor an average of more than $2$ drivers. 
+
+When listing the different mutations, the average number of drivers is almost equal to the half number of total mutations when there is a mutation rate boost. 
+
+
+The most relevant strategies to count the number of mutations are the average of alterations per leaves and the listing of alterations. Even if the number of clones is nearly the same as the number of leaves, the average of alterations per clones underestimates the count of alterations.
+% TODO expliquer pourquoi ca sous-estime 
+
+
+
+
+
+
+
+
+We expected hundreds or thousands of total mutations as it was observed in some tumors as glioblastomas and melanomas. However, in our simulations, the number of total alterations, which appear across the clones, does not exceed $13$. It is far from hypermutation. 
+
+
+%TODO a finir
+
+
+% perspective ?
+\section{Perspective}
+
+The simple model of clonal evolution used in this project allows us to simulate tumor growth by changing parameters such as the mutation rate and the fitness. They are the only two variables which can differ either between simulations or within a simulation such as in this project. Indeed, there is no biological reason to change the total number of genes or the maximum population size over time. In this project, we hypothesized that increasing $/mu$ and $s$ according to $k$ in each cell would create a high load of mutations and induce cancers with hypermutation. The different strategies assessed to boost both variables did not apparently succeed. In this paragraph, we discuss the different issues encountered in this paper. 
+
+First of all, the number of simulations is very low. The control group includes only 10 tumor growths whereas the different boosting methods harbor 40 simulations. Increasing the number of simulations would increase the statistical power and allow better results and conclusions. However, we have already noticed that the different strategies are not creating hypermutant phenotypes. It would be more interesting to investigate new strategies by trial and error. 
+
+We set the different equations on the assumption that clones often gain 3 drivers. However, the average of drivers per clones is lower in the control group and the different methods (fig. \ref{Drivers per clones}). On average, the number of drivers is only above 3 in leaves when the fitness is boosted by the hyperbolic tangent strategy at both factors $10$ and $100$ (fig. \ref{Drivers per leaves}). It would be interesting to set the threshold of $k$ in step methods and adjust the hyperbolic tangent equations. For example, we could choose that when a cell gains at least $2$ drivers (instead of $k=3$), it gets either a mutation rate or a fitness boost. Moreover, we could test if inducing both mutation rate and fitness boosts in the same time created hypermutant phenotype. Another strategy would be to fix a certain number of drivers which increases the mutation rate whereas the remaining part enhances the fitness. 
+
+A future perspective would be to integrate the potential deleterious effect of passenger alterations. In this case, the model of clonal evolution would become a little bit more complex. The effect of both driver and passenger alterations should be determined such as their impact on both mutation rate and fitness. In addition, we could add the clonal interference in the model, which explains the mutual competition between clones because of their acquired mutations. To do this, the model should take into account the spatial and temporal variables. In these conditions, we could imagine to start the tumor growth with a clone containing $1$ driver and $1$ passenger.
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+\section{Acknowledgments}
+This First Step Project was supervised by Franck Raynaud and Giovanni Ciriello from the Computational Biology department of the University of Lausanne, Switzerland.
+
+\section{References}
+\renewcommand{\section}[2]{}%
+\begin{thebibliography}{}
+	\bibitem{B} 
+	R.~A.~Beckman. (2009) Mutator Mutations Enhance Tumorigenic Efficiency across Fitness Landscapes. {\em PLoS ONE}, 4. doi:10.1371/journal.pone.0005860
+	
+	\bibitem{BAOCKCK} 
+	I.~Bozic, T.~Antal, H.~Ohtsuki, H.~Carter, D.~Kim, S.~Chen, R.~Karchin, K.~W.~Kinzler, B.~Vogelstein \& M.~A.Nowak. (2010) Accumulation of driver and passenger mutations during tumor progression. {\em PNAS}, 107. doi:10.1073/pnas.1010978107 
+	
+	\bibitem{BGN} 
+	I.~Bozic, J.~M.~Gerold \& M.~A.~Nowak. (2016) Quantifying Clonal and Subclonal Passenger Mutations in Cancer Evolution. {\em PLoS Comput Biol}, 12. doi:10.1371/journal.pcbi.1004731	 
+
+	\bibitem{BL} R.~A.~Beckman \& L.~A.~Loeb. (2005) Genetic instability in cancer: Theory and experiment. {\em Seminars in Cancer Biology}, 15. doi:10.1016/j.semcancer.2005.06.007	
+	
+	\bibitem{BL2} R.~A.~Beckman \& L.~A.~Loeb. (2006) Efficiency of carcinogenesis with and without a mutator mutation. {\em PNAS}, 103. doi:10.1073/pnas.0606271103		
+	
+	\bibitem{DS} 	
+	A.~Dayarian \& B.~Shraiman. (2014) How to infer relative fitness from a sample of genomic sequences. {\em Genetics}, 197. doi:10.1534/genetics.113.160986 	 	
+	
+	\bibitem{DFLMM} 
+	R.~Durrett, J.~Foo, K.~Leder, J.~Mayberry \& F.~Michor. (2011) Intratumor Heterogeneity in Evolutionary Models of Tumor Progression. {\em Genetics}, 188. doi:10.1534/genetics.110.125724
+	
+	\bibitem{nbgenes} 
+	I.~Ezkurdia, D.~Juan, J.~M.~Rodriguez, A.~Frankish, M.~Diekhans, J.~Harrow, J.~Vazquez, A.~Valencia \& M.~L.~Tress. (2014) Multiple evidence strands suggest that there may be as few as 19 000 human protein-coding genes.{\em Human Molecular Genetics}, 23. doi:10.1093/hmg/ddu309
+	
+	\bibitem{GM} 
+	M.~Greaves \& C.~C.~Maley. (2012) Clonal evolution in cancer. {\em Nature}, 481. doi:10.1038/nature10762
+	
+	\bibitem{IM} 
+	Y~Iwasa \& F~Michor. (2011) Evolutionary Dynamics of Intratumor Heterogeneity. {\em PLoS ONE}, 6. doi:10.1371/journal.pone.0017866
+	
+	\bibitem{MCF} 
+	L.~P.~Maia, A.~Colato \& J.~F.~Fontanari. (2004) Effect of selection on the topology of genealogical trees. {\em J. Theor. Biol.}, 226.	
+	
+	\bibitem{MKPWR} 
+	L.~G.~Martelotto, C.~KY.~Ng, S.~Piscuoglio, B.~Weigelt \& J.~S.~Reis-Filho. (2014) Breast cancer intra-tumor heterogeneity. {\em Breast Cancer Research}, 16.
+	
+	\bibitem{MP} 
+	A.~Marusyk \& K.~Polyak. (2010) Tumor heterogeneity: causes and consequences. {\em Biochim Biophys Acta}, 1805. doi:10.1016/j.bbcan.2009.11.002
+	
+	\bibitem{FD} 	
+	C.~D.~McFarland \& C.~Dennis. (2014) The role of deleterious passengers in cancer. Doctoral dissertation, Harvard University.
+	
+	\bibitem{FPL} 
+	E.~J.~Fox, M.~J.~Prindle \& L.~A.~Loeb. (2013) Do mutator mutations fuel tumorigenesis? {\em Cancer Metastasis Rev}, 32. doi:10.1007/s10555-013-9426-8	
+	
+	\bibitem{RG} S.~A.~Roberts \& D.A~.Gordenin. (2014) Hypermutation in human cancer genomes: footprints and mechanisms. {\em Nature}, 14. 
+	
+	\bibitem{SE} M.~Schlesner \& R.~Eils. (2015) Hypermutation takes the driver's seat. {\em Genome Medicine}, 7. doi: 10.1186/s13073-015-0159-x 			
+	
+	\bibitem{Thome} 
+	M. Thome-Miazza. (2016) Theoretical course in Molecular basis of cancer
+
+
+
+
+
+
+
+\end{thebibliography}	
+\end{multicols}	
+\section{Figures}
+\newpage
+\newgeometry{left=0cm,
+	right=0cm,
+	top=3cm,
+	bottom=3cm}
+
+
+\fancyhfoffset[R]{-50pt}
+\fancyhfoffset[L]{-50pt}
+
+
+%\thispagestyle{empty}
+\begin{figure}
+	%\centering
+	\includegraphics[width=1\textwidth]{Images/Total_clones.png}
+	\caption{Total number of clones - ln transformation}
+	\label{Total clones}
+\end{figure}
+\begin{figure}
+	%\centering
+	\includegraphics[width=1\textwidth]{Images/Total_leaves.png}
+	\caption{Total number of leaves - ln transformation}
+	\label{Total leaves}
+\end{figure}
+\newpage
+\begin{figure}
+	%\centering
+	\includegraphics[width=1\textwidth]{Images/Total_clones_wo_unic_leaves.png}
+	\caption{Total number of clones without unicellular leaves - ln transformation}
+	\label{Total clones wo unic leaves}
+\end{figure}
+
+\begin{figure}
+	%\centering
+	\includegraphics[width=1\textwidth]{Images/Total_unic_leaves.png}
+	\caption{Total number of unicellular leaves - ln transformation}
+	\label{Total unic leaves}
+\end{figure}
+\newpage
+\begin{figure}
+	%\centering
+	\includegraphics[width=1\textwidth]{Images/Clones.png}
+	\caption{Number of clones in pruned trees}
+	\label{Clones}
+\end{figure}
+
+\begin{figure}
+	%\centering
+	\includegraphics[width=1\textwidth]{Images/Leaves.png}
+	\caption{Number of leaves in pruned trees}
+	\label{Leaves}
+\end{figure}
+\newpage
+\begin{figure}
+	%\centering
+	\includegraphics[width=1\textwidth]{Images/Drivers_clones.png}
+	\caption{Mean of driver mutations per clones in pruned trees}
+	\label{Drivers per clones}
+\end{figure}
+
+\begin{figure}
+	%\centering
+	\includegraphics[width=1\textwidth]{Images/Total_mut_clones.png}
+	\caption{Mean of total mutations per clones in pruned trees}
+	\label{Total per clones}
+\end{figure}
+\newpage
+\begin{figure}
+	%\centering
+	\includegraphics[width=1\textwidth]{Images/Drivers_leaves.png}
+	\caption{Mean of driver mutations per leaves in pruned trees}
+	\label{Drivers per leaves}
+\end{figure}
+
+\begin{figure}
+	%\centering
+	\includegraphics[width=1\textwidth]{Images/Total_mut_leaves.png}
+	\caption{Mean of total mutations per leaves in pruned trees}
+	\label{Total per leaves}
+\end{figure}
+\newpage
+\begin{figure}
+	%\centering
+	\includegraphics[width=1\textwidth]{Images/Drivers.png}
+	\caption{Number of driver mutations in pruned trees}
+	\label{Drivers unique}
+\end{figure}
+
+\begin{figure}
+	%\centering
+	\includegraphics[width=1\textwidth]{Images/Total.png}
+	\caption{Number of total mutations in pruned trees}
+	\label{Total unique}
+\end{figure}
+\restoregeometry
+
+\newpage
+\fancyhfoffset[R]{0pt}
+\fancyhfoffset[L]{0pt}
+\begin{landscape}
+\begin{figure}
+	\centering
+	\includegraphics[width=1.4\textwidth]{Images/Recap.png}
+	%\caption{Summary}
+	\captionof{table}{Summary}
+	\label{Recap}
+\end{figure}	
+\end{landscape}
+
+
+\newpage
+\newgeometry{left=0cm,
+	right=0cm,
+	top=3cm,
+	bottom=3cm}
+\fancyhfoffset[R]{-50pt}
+\fancyhfoffset[L]{-50pt}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Images/Boost10b.png}
+	\caption{Distribution boost $10x$}
+	\label{Boost 10}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Images/Boost100b.png}
+	\caption{Distribution boost $100x$}
+	\label{Boost 100}
+\end{figure}
+\newpage
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Images/Boost10pruned.png}
+	\caption{Distribution boost $10x$ in pruned trees}
+	\label{Boost 10 pruned}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Images/Boost100pruned.png}
+	\caption{Distribution boost $100x$ in pruned trees}
+	\label{Boost 100 pruned}
+\end{figure}
+\restoregeometry
+
+\newpage
+\fancyhfoffset[R]{0pt}
+\fancyhfoffset[L]{0pt}
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{|c|c|c|}
+			\hline		
+			Initial $\mu=1*10^{-5}$ & $\mu_k=\mu*10*tanh(0.1*(k^2))$ & $\mu_k=\mu*100*tanh(0.01*(k^3))$ \\
+			Initial $s=1*10^{-4}$ & $s_k=s*10*tanh(0.1*(k^2))$ & $s_k=s*100*tanh(0.01*(k^3))$ \\
+			\hline
+			Number of drivers & Multiplication factor - ratio & Multiplication factor - ratio\\
+			\hline
+			1 & 0.997 & 1.000 \\
+			\hline
+			2 & 3.799 & 7.983 \\
+			\hline
+			3 & 7.163 & 26.362 \\
+			\hline
+			4 & 9.217 & 56.490 \\
+			\hline
+			5 & 9.866 & 84.828 \\
+			\hline
+			6 & 9.985 & 97.375 \\
+			\hline
+			7 & 9.999 & 99.790 \\
+			\hline
+			8 & 10.000 & 99.993 \\
+			\hline
+			9 & 10.000 & 100.000 \\
+			\hline
+			10 & 10.000 & 100.000 \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Tangent hyperbolic strategy: multiplication factor values according to the number of drivers}
+	\label{Tanh}
+\end{table}
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{|c|c|c|}
+			\hline
+			Initial $\mu=1*10^{-5}$ & $\mu_k=\mu*10$ when $k\geq3$ & $\mu_k=\mu*100$ when $k\geq3$ \\
+			Initial $s=1*10^{-4}$ & $s_k=s*10$ when $k\geq3$ & $s_k=s*100$ when $k\geq3$ \\
+			\hline
+			Number of drivers & Multiplication factor - ratio & Multiplication factor - ratio \\
+			\hline
+			1 & 1 & 1 \\
+			\hline
+			2 & 1 & 1 \\
+			\hline
+			3 & 10 & 100 \\
+			\hline
+			4 & 10 & 100 \\
+			\hline
+			5 & 10 & 100 \\
+			\hline
+			6 & 10 & 100 \\
+			\hline
+			7 & 10 & 100 \\
+			\hline
+			8 & 10 & 100 \\
+			\hline
+			9 & 10 & 100 \\
+			\hline
+			10 & 10 & 100 \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Step strategy: multiplication factor values according to the number of drivers}
+	\label{Step}
+\end{table}
+
+
+
+\end{document}
+

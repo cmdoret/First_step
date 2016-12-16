@@ -125,8 +125,9 @@ med_df <- data.frame(cell.lines = tmp_cell,
 
 increm <- c()
 for(i in seq(1,3*length(test_lines),3)){increm <- append(increm,rep(i,2))}  # building vector for positioning p-values between boxes
-ggplot(comp_lines)+geom_boxplot(aes(x=paste(cell.line,gentype,sep="_"),y=log10(expression),fill=cell.line), notch=T)+
+exp <- ggplot(comp_lines)+geom_boxplot(aes(x=paste(cell.line,gentype,sep="_"),y=log10(expression),fill=gentype), notch=T)+
   scale_x_discrete(labels=rep(gennames,length(test_lines))) +
+  scale_fill_manual(values=c("#F8766D","#00BFC4","#C77CFF"))+
   guides(fill=FALSE)+
   theme_bw()+xlab("")+ylab("Log10 expression (RPKM)")+theme(axis.text.x = element_text(angle = 90, hjust = 1))+
   annotate(geom = 'text',x=rep(c(0.5,1),length(test_lines))+increm, y=rep(c(5.7,6.7),length(test_lines)),label=wilcox_p$starcode,size=5)+
@@ -218,18 +219,18 @@ AR_medcons <- data.frame(val=c(median(arcons$avg_score[arcons$gentype=="AR" & ar
 
 increm <- c()
 for(i in seq(1,3*length(test_lines),3)){increm <- append(increm,rep(i,2))}  # building vector for positioning p-values between boxes
-ggplot(data=whole_cons)+
+cons <- ggplot(data=whole_cons)+
   facet_grid(~gr,labeller = labeller(gr = as_labeller(group_names)))+
   geom_boxplot(aes(x=gentype,y=avg_score,fill=gentype),notch=T)+
   geom_hline(data= AR_medcons,aes(yintercept = AR_medcons$val),size=1,col="#66bb66",show.legend= F)+
-  scale_fill_manual(values = c("#bbbb66","#bb6666","#6666bb"))+
+  scale_fill_manual(values = c("#F8766D","#00BFC4","#C77CFF"))+
   #scale_linetype_manual("Title", values = 2) +
   #guides(fill = guide_legend(title = element_blank(),override.aes=list(linetype=0)))+
   #geom_text(data=wilcox_p, aes(x=c(1.5, 2), y=1, label=paste0("p=",pval)), 
   #          colour="black", inherit.aes=T, parse=T)+
   geom_label(data=med.fac, aes(x=gentype, y=x+0.01, label=x), 
              colour="black", inherit.aes=FALSE, parse=FALSE,size=3)+
-  theme_bw()+ ylab("averaged phastCons")+xlab("")+guides(fill=F,line=F)+coord_cartesian(ylim=c(0,1.1))+theme(legend.position="none")+
+  theme_bw()+ ylab("averaged phastCons")+xlab("")+guides(fill=F,line=F)+coord_cartesian(ylim=c(0,1.1))+theme(legend.position="none",axis.text.x = element_text(angle = 90, hjust = 1))+
   geom_text(data=wilcox_p,aes(x=rep(c(0.5,1),length(test_lines)*2)+increm, y=rep(c(0.94,1.01),length(test_lines)*2),label=starcode,size=5))+
   geom_line(data = df1[1:5,], aes(x = a, y = b)) +
   geom_line(data = df2[1:4,], aes(x = a, y = b)) +
@@ -239,7 +240,7 @@ ggplot(data=whole_cons)+
   geom_line(data = df2[9:12,], aes(x = a, y = b)) +
   geom_line(data = df1[16:20,], aes(x = a, y = b)) +
   geom_line(data = df2[13:16,], aes(x = a, y = b))
-
+grid.arrange(layout_matrix=matrix(c(1,1,1,2,2,2,2,2,2),nrow=3,byrow=F),grobs=list(exp,cons),nrow=1)
 ##############################
 # Figure: Tissue specificity #
 ##############################
@@ -309,16 +310,16 @@ df2 <- data.frame(a = rep(c(1.1, 1.1,1.9, 1.9),length(test_lines))+bar_p, b = c(
 
 increm <- c()
 for(i in seq(1,3*length(test_lines),3)){increm <- append(increm,rep(i,2))}  # building vector for positioning p-values between boxes
-ggplot(data=whole_tau)+
+spec <-ggplot(data=whole_tau)+
   geom_boxplot(aes(x=gentype,y=tau,fill=gentype),notch=T)+
-  scale_fill_manual(values = c("#bbbb66","#bb6666","#6666bb"))+
+  scale_fill_manual(values = c("#F8766D","#00BFC4","#C77CFF"))+
   #scale_linetype_manual("Title", values = 2) +
   #guides(fill = guide_legend(title = element_blank(),override.aes=list(linetype=0)))+
   #geom_text(data=wilcox_p, aes(x=c(1.5, 2), y=1, label=paste0("p=",pval)), 
   #          colour="black", inherit.aes=T, parse=T)+
   geom_label(data=med.fac, aes(x=gentype, y=x+0.01, label=x), 
              colour="black", inherit.aes=FALSE, parse=FALSE,size=3)+
-  theme_bw()+ ylab("Tau")+xlab("")+guides(fill=F,line=F)+coord_cartesian(ylim=c(0,1.1))+theme(legend.position="none")+
+  theme_bw()+ ylab("Tau")+xlab("")+guides(fill=F,line=F)+coord_cartesian(ylim=c(0,1.1))+theme(legend.position="none",axis.text.x = element_text(angle = 90, hjust = 1))+
   geom_text(data=wilcox_p,aes(x=rep(c(0.5,1),length(test_lines))+increm, y=rep(c(1.05,1.11),length(test_lines)),label=starcode,size=5))+
   geom_line(data = df1[1:5,], aes(x = a, y = b)) +
   geom_line(data = df2[1:4,], aes(x = a, y = b)) +
@@ -329,7 +330,7 @@ ggplot(data=whole_tau)+
   geom_line(data = df1[16:20,], aes(x = a, y = b)) +
   geom_line(data = df2[13:16,], aes(x = a, y = b))
 
-
+grid.arrange(layout_matrix=matrix(c(1,2,3,2),nrow=2,byrow=F),grobs=list(exp,cons,spec),nrow=1)
 #####################################################
 # Figure: Enrichment at HiC-boundaries and anchors #
 #####################################################
