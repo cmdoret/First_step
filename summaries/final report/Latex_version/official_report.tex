@@ -1,0 +1,108 @@
+\documentclass[10pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[T1]{fontenc}
+\author{Cyril Matthey-Doret}
+\DeclareUnicodeCharacter{2060}{\nolinebreak}
+\title{Do enhancer-associated lincRNAs play a role in nuclear architecture ?}
+\begin{document}
+\maketitle
+\section*{Introduction}
+A large proportion of the mammalian transcriptome does not code for proteins and to date, the number of known noncoding genes is more than 3 times that of protein-coding genes \cite{Iyer2015}⁠. Among noncoding RNAs, long noncoding RNAs (> 200bp) that do not overlap protein-coding genes are the most abundant (long intergenic noncoding RNAs, lincRNAs). Functional and evolutionary analyses, together with extensive characterization of a handful of lincRNAs, support the general consensus that these transcripts can regulate gene product abundance transcriptionally and post-transcriptionally, and that they can contribute to  organismal traits and diseases \cite{Kornienko2013}⁠. However, the mechanisms of function for the majority of lincRNAs remain unknown \cite{Rinn2012}⁠.  
+
+It is thought that spatial organization of the genome is an important component of these mechanisms \cite{Engreitz2016}⁠. Indeed, contrary to traditional view, genomic DNA is not linear, but is folded into variably compact chromosomal structures that likely impact expression of the embedded genes \cite{Gorkin2014}⁠. On a global scale, regions with a high degree of compaction are classified as heterochromatin while uncondensed regions are called euchromatin \cite{Passarge1979}⁠. These are respectively associated with lower and higher expression levels \cite{Tamaru2010}⁠. Chromosomes can be further divided into smaller domains where frequent DNA-DNA interactions occur as a result of their close proximity within the cellular nuclear space. These are called topologically associated domains (TADs). These domains are largely conserved across cell lines and they frequently contain smaller loop structures that promote contacts between different genetic regulatory elements, such as enhancers and promoters \cite{Rao2014}⁠. Such chromatin loops are often found at TAD boundaries \cite{Rao2014}⁠. They are also enriched in architectural proteins, such as CTCF and cohesin \cite{Pope2014}⁠. Both proteins are thought to function in the delimitation between neighbouring TADs by acting as genomic insulators that prevent DNA-DNA interactions across multiple domains. In addition to modulating regulatory promoter-enhancer interactions, TAD boundaries are often gene-dense and are enriched in  highly transcribed genes \cite{Ong2014}⁠. 
+
+Chromosomal contacts within TADs, and particularly at TAD boundaries, are crucial for establishing correct regulatory interactions between enhancers and promoters. Deletion of TAD boundaries often disrupts those interactions, resulting in gene misexpression and disease phenotypes \cite{Lupianez2016}⁠. Recently, some lincRNAs such as Firre, were reported to promote intrachromosomal interactions, either by forming promoter-enhancer looping, or by regulating chromatin structural organization \cite{Engreitz2016}⁠. Furthermore, lincRNAs associated with human traits were shown to have enhancer-associated cis-regulatory roles and their loci are correlated with a higher density of DNA contact within TADs (Tan et al, 2016, under revision). This raises the question whether lincRNAs with enhancer-like activities (elincRNAs) contribute to gene regulation and the organization of the dynamic chromosomal structure of the nucleus. Those elincRNAs will therefore be the focus of my analysis.
+
+
+Unlike most enhancer-associated RNAs, which are often transcribed bidirectionally and then rapidly degraded \cite{Darrow2013}⁠, elincRNAs are transcribed preferentially in one direction \cite{Marques2013}⁠ and are likely good candidates for studying the involvement of lincRNAs in the regulation of DNA-DNA contacts. There are already some characterized elincRNAs, such as HOTTIP that have been shown to act as a link between chromosomal interactions and transcription. My analysis shows elincRNAs are associated with high density of chromosomal contacts within TADs and are significantly enriched in cohesin and CTCF binding sites, supporting the idea that they may contribute to gene regulation by modulating chromosomal organization.
+
+Using various bioinformatics tools to analyze publicly available multi-omics data from the ENCODE project, I investigated the molecular properties of these elincRNAs, their enrichment in different regulatory elements and their association with the amount of DNA-DNA interactions to examine their role in regulating TAD organization.
+
+\section*{Results}
+
+LincRNAs were divided into 3 categories based on overlap with enhancer and promoter elements (Table 1). See material and methods for more details on the overlap procedure. The expression of elincRNAs should be driven by enhancers since neither the region upstream of the genes nor their body contains any promoter. In this study, I focus on the elincRNAs, as it was shown that trait-relevant lincRNAs tend to be associated with enhancer activity (Tan et al, 2016, under revision).
+
+\begin{table}
+\begin{tabular}{c c c}
+elincRNA & Overlap enhancers only & 348\\
+plincRNA & Overlap promoters only & 456\\
+other lincRNA & Overlap neither enhancers nor promoters & 1443\\
+
+\end{tabular}
+\end{table}
+
+\subsection*{Expression levels}
+
+The expression of elincRNA is significantly lower than that of PCG and other lincRNAs (Figure 1). These results concur with previous observations in mice  \cite{Marques2013}⁠ and are consistent across different human cell lines when keeping the same set of genes.
+
+
+
+
+
+\subsection*{Tissue specificity}
+
+
+
+\subsection*{Conservation}
+
+\subsection*{Enrichment at TAD boundaries}
+
+There was no direct signal for enrichment of elincRNAs at TAD boundaries, however the promoter regions of elincRNAs were found to be enriched at anchors, which are themselves known to be enriched at boundaries. The lack of direct signal for enrichment at TAD boundaries may be a consequence of the method used to defined them. Notably, I restricted boundaries to the inside of TADs, therefore genes that are close to a TAD, but outside the border will not be counted. 
+
+
+\subsection*{Architectural proteins binding sites}
+
+CTCF and cohesin are often called architectural or insulator proteins, as they are thought to prevent TADs from interacting with each other. Enrichment tests for the binding sites of these proteins in the different categories of lincRNAs revealed that, although both enplincRNAs and neplincRNAs are enriched for binding sites of CTCF, this enrichment is not as strong in enplincRNAs as in neplincRNAs.
+Cohesin binding sites, on the other hand, were strongly enriched in both nep and enplincRNAs. Interestingly, RAD21 and SMC3, which are 2 subunits of cohesin, followed different patterns. SMC3 showed a stronger enrichment in neplincRNAs, while RAD21 was more enriched in enplincRNAs.
+
+\subsection*{DNA-DNA contacts}
+
+\section*{Figures and tables}
+
+\section*{Discussion}
+
+\section*{Material and methods}
+
+Unless stated otherwise, all statistical tests were performed using R 3.3.1 \cite{RCoreTeam2016}. Overlapping of genomic elements were done using either bedtools 2.26 \cite{Quinlan2010} ⁠or the “intervals” package \cite{Bourgon2015}⁠ in R. Manipulations on Hi-C contact matrices were performed using the “Matrix” package \cite{Bates2016}⁠.
+
+
+\subsection*{Genes}
+
+LincRNAs and protein-coding genes used were retrieved from the ENCODE website. The list of genes used in all analyses corresponds to genes expressed in the GM12878 lymphoblastoid cell line. Subcategories of genes were defined based on overlap between their body and the 1kb region upstream of their transcription start site, and regulatory elements available on ENCODE. These regulatory elements have been predicted computationally from Chip-seq data by a hidden Markov-model. Only predicted active promoters where considered when using promoters, and all enhancers when considering enhancers.
+
+\subsection*{TAD definition}
+
+The list of TADs used in the computations is based on that from Rao et al (2014). They called the TADs based on Hi-C data across different human cell lines normalized and processed with their own protocol. Here, all the large TADs that completely encompassed smaller ones were removed to preserve the signal from the boundaries of the small TADs.
+
+
+\subsection*{TAD boundaries definition}
+
+Instead of defining TAD boundaries based on arbitrary thresholds, TADs were split into 10 bins of 10\% their length. This threshold was chosen based on previous findings showing an increase in transcriptional activity at ~10\% from the TAD border (Histogram from summary 3).
+
+\subsection*{Conservation and tissue specificity}
+
+The sequence conservation was previously calculated (Tan Yihong, J., unpublished) using phastCons scores \cite{Siepel2005}⁠. Tissue specificity index (Tau) was computed following the described in \cite{Kryuchkova2015}, considering only genes with expression above a 0.1 RPKM cutoff.
+
+\subsection*{Expression levels}
+
+Median expression levels were computed from ENCODE data.
+
+\subsection*{DNA-DNA contacts}
+
+Contacts were calculated using Hi-C contact matrices from Rao et al (2014). All computations are performed on 5kb resolution matrices with a MAPQ score of at least 30. The matrices were normalized using the KR normalization vector provided by the authors, when analyzing only GM12878. When comparing between different cell lines, SQRTVC (square root vanilla coverage) was used for chromosome 9 of all cell lines, because the KR algorithm did not converge for chromosome 9 of K562.
+For each gene overlapping a TAD, the mean contact inside the respective TAD was used as a measure. For single genes that overlap several TADs, the contacts are computed for each TAD independently. The mean contact in a TAD is computed by taking the arithmetic mean in a square submatrix spanning from the beginning to the end of the TAD in the intrachromosomal matrix.
+
+\subsection*{Chip-seq}
+
+Chip-seq data for CTCF, RAD21 and SMC3 in GM12878 were retrieved from the ENCODE website. All three datasets were produced in the Snyder lab, at Stanford University.
+
+\subsection*{Enrichment of genetic elements}
+
+All enrichment tests were performed using the genome association tester (GAT) \cite{Heger2013}⁠ version 1.2. All tests for enrichment of lincRNAs were performed using the intergenic space of the genome as a workspace. When testing for enrichment of protein-coding genes, the protein coding space of the genome was used as the workspace. Similarly, when looking for enrichment. For all tests, the number of samples was set to 10,000 and the number of buckets was consequently adjusted to 270,000.
+
+\bibliography{First_step}
+\bibliographystyle{apalike}
+\end{document}
