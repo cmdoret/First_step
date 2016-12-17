@@ -571,13 +571,13 @@ ggplot(comp_lines)+geom_boxplot(aes(x=paste(cell.line,gentype,sep="_"),y=diam,fi
 ####################
 # Presentation only: simplified enrichment: RAD21 and SMC3 merged
 ####################
-
+sets <- c("e.np","ne.np")
 union_gat <- read.table("GAT/out/whole_seg_10kgat_cohesin_union_results.txt",header=T, sep="\t")
 union_gat<-droplevels(union_gat[(union_gat$annotation %in% sets | union_gat$workspace=="allpc") &
                                           union_gat$segment == "unionSMC3RAD21merged",])
 union_gat <- union_gat[union_gat$element=="pr",]
 union_gat <- rbind(union_gat, chip_gene_seg[chip_gene_seg$segment=="GM12878CTCF" & chip_gene_seg$workspace=="intergenic",])
-ggplot(data=union_gat,aes(x=annotation,y=fold,fill=annotation))+
+union <- ggplot(data=union_gat,aes(x=annotation,y=fold,fill=annotation))+
   geom_bar(stat = 'identity')+
   facet_grid(~segment,labeller = as_labeller(c(`unionSMC3RAD21merged`="Cohesin",`GM12878CTCF`="CTCF")))+
   #scale_fill_continuous(high="#DD5555",low = "#55DD55")+
@@ -588,5 +588,6 @@ ggplot(data=union_gat,aes(x=annotation,y=fold,fill=annotation))+
   geom_text(aes(y=fold-0.8,label=paste0("q=",qval)))+
   scale_x_discrete(labels=nicenames[c(1,3)])+coord_cartesian(ylim=c(0,8))
 
+grid.arrange(layout_matrix=matrix(c(1,2,3,4,5,6),ncol=2,byrow=T),grobs=list(anchorplot,boundplot,bsplot,excluplot,vennplot,binplot))
 
 library(ggplot2);library(gridExtra)
