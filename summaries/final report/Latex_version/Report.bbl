@@ -1,0 +1,192 @@
+\begin{thebibliography}{}
+
+\bibitem[Bates and Maechler, 2016]{Bates2016}
+Bates, D. and Maechler, M. (2016).
+\newblock {Matrix: Sparse and Dense Matrix Classes and Methods}.
+
+\bibitem[Bonev and Cavalli, 2016]{Bonev2016}
+Bonev, B. and Cavalli, G. (2016).
+\newblock {Organization and function of the 3D genome}.
+\newblock {\em Nature Reviews Genetics}, 17(11):661--678.
+
+\bibitem[Bourgon, 2015]{Bourgon2015}
+Bourgon, R. (2015).
+\newblock {intervals: Tools for Working with Points and Intervals}.
+
+\bibitem[Darrow and Chadwick, 2013]{Darrow2013}
+Darrow, E.~M. and Chadwick, B.~P. (2013).
+\newblock {Boosting transcription by transcription: enhancer-associated
+  transcripts}.
+\newblock {\em Chromosome Research}, 21(6):713--724.
+
+\bibitem[Dekker, 2002]{Dekker2002}
+Dekker, J. (2002).
+\newblock {Capturing Chromosome Conformation}.
+\newblock {\em Science}, 295(5558):1306--1311.
+
+\bibitem[Dekker et~al., 2013]{Dekker2013}
+Dekker, J., Marti-Renom, M.~A., and Mirny, L.~A. (2013).
+\newblock {Exploring the three-dimensional organization of genomes:
+  interpreting chromatin interaction data.}
+\newblock {\em Nature reviews. Genetics}, 14(6):390--403.
+
+\bibitem[{ENCODE Project} et~al., 2012]{ENCODEProject2012}
+{ENCODE Project}, Bernstein, B.~E., Birney, E., Dunham, I., Green, E.~D.,
+  Gunter, C., and Snyder, M. (2012).
+\newblock {An integrated encyclopedia of DNA elements in the human genome.}
+\newblock {\em Nature}, 489(7414):57--74.
+
+\bibitem[Engreitz et~al., 2016]{Engreitz2016}
+Engreitz, J.~M., Ollikainen, N., and Guttman, M. (2016).
+\newblock {Long non-coding RNAs: spatial amplifiers that control nuclear
+  structure and gene expression}.
+\newblock {\em Nature Reviews Molecular Cell Biology}, 17(12):756--770.
+
+\bibitem[Fraser et~al., 2015]{Fraser2015}
+Fraser, J., Ferrai, C., Chiariello, A.~M., Schueler, M., Rito, T., Laudanno,
+  G., Barbieri, M., Moore, B.~L., Kraemer, D.~C., Aitken, S., Xie, S.~Q.,
+  Morris, K.~J., Itoh, M., Kawaji, H., Jaeger, I., Hayashizaki, Y., Carninci,
+  P., Forrest, A.~R., Dostie, J., Pombo, A., and Nicodemi, M. (2015).
+\newblock {Hierarchical folding and reorganization of chromosomes are linked to
+  transcriptional changes in cellular differentiation}.
+\newblock {\em Mol Syst Biol}, 11:1--14.
+
+\bibitem[Gorkin et~al., 2014]{Gorkin2014}
+Gorkin, D.~U., Leung, D., and Ren, B. (2014).
+\newblock {The 3D genome in transcriptional regulation and pluripotency}.
+\newblock {\em Cell Stem Cell}, 14(6):771--775.
+
+\bibitem[Guil and Esteller, 2012]{Guil2012}
+Guil, S. and Esteller, M. (2012).
+\newblock {Cis-acting noncoding RNAs: friends and foes}.
+\newblock {\em Nature Structural {\&} Molecular Biology}, 19(11):1068--1075.
+
+\bibitem[Hadjur et~al., 2009]{Hadjur2009}
+Hadjur, S., Williams, L.~M., Ryan, N.~K., Cobb, B.~S., Sexton, T., Fraser, P.,
+  Fisher, A.~G., and Merkenschlager, M. (2009).
+\newblock {Cohesins form chromosomal cis-interactions at the developmentally
+  regulated IFNG locus.}
+\newblock {\em Nature}, 460(7253):410--413.
+
+\bibitem[Iyer et~al., 2015]{Iyer2015}
+Iyer, M.~K., Niknafs, Y.~S., Malik, R., Singhal, U., Sahu, A., Hosono, Y.,
+  Barrette, T.~R., Presner, J.~R., Evans, J.~R., Zhao, S., Poliakov, A., Cao,
+  X., Dhanasekaran, S.~M., Wu, Y.-M., Robinson, D.~R., Beer, D.~G., Feng, F.,
+  Iyer, H.~K., and Chinnnaiyan, A.~M. (2015).
+\newblock {The Landscape of Long Noncoding RNAs in the Human Transcriptome}.
+\newblock {\em Nat Genet.}, 47(3):199--208.
+
+\bibitem[Ji et~al., 2016]{Ji2016}
+Ji, X., Dadon, D.~B., Powell, B.~E., Fan, Z.~P., Borges-Rivera, D., Shachar,
+  S., Weintraub, A.~S., Hnisz, D., Pegoraro, G., Lee, T.~I., Misteli, T.,
+  Jaenisch, R., and Young, R.~A. (2016).
+\newblock {3D Chromosome Regulatory Landscape of Human Pluripotent Cells}.
+\newblock {\em Cell Stem Cell}, 18(2):262--275.
+
+\bibitem[Kornienko et~al., 2013]{Kornienko2013}
+Kornienko, A.~E., Guenzl, P.~M., Barlow, D.~P., and Pauler, F.~M. (2013).
+\newblock {Gene regulation by the act of long non-coding RNA transcription.}
+\newblock {\em BMC biology}, 11(1):59.
+
+\bibitem[Kryuchkova and Robinson-Rechavi, 2015]{Kryuchkova2015a}
+Kryuchkova, N. and Robinson-Rechavi, M. (2015).
+\newblock {A benchmark of gene expression tissue-specificity metrics}.
+\newblock {\em bioRxiv}, (January):027755.
+
+\bibitem[Lam et~al., 2014]{Lam2014}
+Lam, M. T.~Y., Li, W., Rosenfeld, M.~G., and Glass, C.~K. (2014).
+\newblock {Enhancer RNAs and regulated transcriptional programs}.
+\newblock {\em Trends in Biochemical Sciences}, 39(4):170--182.
+
+\bibitem[Li et~al., 2013]{Li2013}
+Li, W., Notani, D., Ma, Q., Tanasa, B., Nunez, E., Chen, A.~Y., Merkurjev, D.,
+  Zhang, J., Ohgi, K., Song, X., Oh, S., Kim, H.-S., Glass, C.~K., and
+  Rosenfeld, M.~G. (2013).
+\newblock {Functional roles of enhancer RNAs for oestrogen-dependent
+  transcriptional activation.}
+\newblock {\em Nature}, 498(7455):516--20.
+
+\bibitem[Lupi{\'{a}}{\~{n}}ez et~al., 2015]{Lupianez2015}
+Lupi{\'{a}}{\~{n}}ez, D.~G., Kraft, K., Heinrich, V., Krawitz, P., Brancati,
+  F., Klopocki, E., Horn, D., Kayserili, H., Opitz, J.~M., Laxova, R.,
+  Santos-Simarro, F., Gilbert-Dussardier, B., Wittler, L., Borschiwer, M.,
+  Haas, S.~A., Osterwalder, M., Franke, M., Timmermann, B., Hecht, J.,
+  Spielmann, M., Visel, A., and Mundlos, S. (2015).
+\newblock {Disruptions of topological chromatin domains cause pathogenic
+  rewiring of gene-enhancer interactions}.
+\newblock {\em Cell}, 161(5):1012--1025.
+
+\bibitem[Marques et~al., 2013]{Marques2013a}
+Marques, A.~C., Hughes, J., Graham, B., Kowalczyk, M.~S., Higgs, D.~R., and
+  Ponting, C.~P. (2013).
+\newblock {Chromatin signatures at transcriptional start sites separate two
+  equally populated yet distinct classes of intergenic long noncoding RNAs.}
+\newblock {\em Genome Biology}, 14(11):R131.
+
+\bibitem[Nagano et~al., 2013]{Nagano2013}
+Nagano, T., Lubling, Y., Stevens, T.~J., Schoenfelder, S., Yaffe, E., Dean, W.,
+  Laue, E.~D., Tanay, A., and Fraser, P. (2013).
+\newblock {Single-cell Hi-C reveals cell-to-cell variability in chromosome
+  structure.}
+\newblock {\em Nature}, 502(7469):59--64.
+
+\bibitem[Passarge, 1979]{Passarge1979}
+Passarge, E. (1979).
+\newblock {Emil Heitz and the concept of heterochromatin: longitudinal
+  chromosome differentiation was recognized fifty years ago.}
+\newblock {\em American journal of human genetics}, 31(2):106--15.
+
+\bibitem[Quinlan and Hall, 2010]{Quinlan2010}
+Quinlan, A.~R. and Hall, I.~M. (2010).
+\newblock {BEDTools: A flexible suite of utilities for comparing genomic
+  features}.
+\newblock {\em Bioinformatics}, 26(6):841--842.
+
+\bibitem[{R Core Team}, 2016]{RCoreTeam2016}
+{R Core Team} (2016).
+\newblock {R: A Language and Environment for Statistical Computing}.
+
+\bibitem[Rao et~al., 2014]{Rao2014}
+Rao, S. S.~P., Huntley, M.~H., Durand, N.~C., Stamenova, E.~K., Bochkov, I.~D.,
+  Robinson, J.~T., Sanborn, A.~L., Machol, I., Omer, A.~D., Lander, E.~S., and
+  Aiden, E.~L. (2014).
+\newblock {A 3D map of the human genome at kilobase resolution reveals
+  principles of chromatin looping}.
+\newblock {\em Cell}, 159(7):1665--1680.
+
+\bibitem[Rinn and Chang, 2012]{Rinn2012}
+Rinn, J.~L. and Chang, H.~Y. (2012).
+\newblock {Genome regulation by long noncoding RNAs.}
+\newblock {\em Annual review of biochemistry}, 81:145--166.
+
+\bibitem[Seitan et~al., 2013]{Seitan2013}
+Seitan, V.~C., Faure, A.~J., Zhan, Y., McCord, R.~P., Lajoie, B.~R.,
+  Ing-Simmons, E., Lenhard, B., Giorgetti, L., Heard, E., Fisher, A.~G.,
+  Flicek, P., Dekker, J., and Merkenschlager, M. (2013).
+\newblock {Cohesin-Based chromatin interactions enable regulated gene
+  expression within preexisting architectural compartments}.
+\newblock {\em Genome Research}, 23(12):2066--2077.
+
+\bibitem[Siepel et~al., 2005]{Siepel2005}
+Siepel, A., Bejerano, G., Pedersen, J.~S., Hinrichs, A.~S., Hou, M.,
+  Rosenbloom, K., Clawson, H., Spieth, J., Hillier, L.~W., Richards, S.,
+  Weinstock, G.~M., Wilson, R.~K., Gibbs, R.~A., Kent, W.~J., Miller, W., and
+  Haussler, D. (2005).
+\newblock {Evolutionarily conserved elements in vertebrate, insect, worm, and
+  yeast genomes}.
+\newblock {\em Genome Research}, 15(8):1034--1050.
+
+\bibitem[Tamaru, 2010]{Tamaru2010}
+Tamaru, H. (2010).
+\newblock {Confining euchromatin/heterochromatin territory: Jumonji crosses the
+  line}.
+\newblock {\em Genes and Development}, 24(14):1465--1478.
+
+\bibitem[Yin et~al., 2015]{Yin2015}
+Yin, Y., Yan, P., Lu, J., Song, G., Zhu, Y., Li, Z., Zhao, Y., Shen, B., Huang,
+  X., Zhu, H., Orkin, S.~H., and Shen, X. (2015).
+\newblock {Opposing roles for the lncRNA haunt and its genomic locus in
+  regulating HOXA gene activation during embryonic stem cell differentiation}.
+\newblock {\em Cell Stem Cell}, 16(5):504--516.
+
+\end{thebibliography}
