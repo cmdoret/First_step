@@ -68,6 +68,12 @@ Hadjur, S., Williams, L.~M., Ryan, N.~K., Cobb, B.~S., Sexton, T., Fraser, P.,
   regulated IFNG locus.}
 \newblock {\em Nature}, 460(7253):410--413.
 
+\bibitem[Heger et~al., 2013]{Heger2013}
+Heger, A., Webber, C., Goodson, M., Ponting, C.~P., and Lunter, G. (2013).
+\newblock {GAT: A simulation framework for testing the association of genomic
+  intervals}.
+\newblock {\em Bioinformatics}, 29(16):2046--2048.
+
 \bibitem[Iyer et~al., 2015]{Iyer2015}
 Iyer, M.~K., Niknafs, Y.~S., Malik, R., Singhal, U., Sahu, A., Hosono, Y.,
   Barrette, T.~R., Presner, J.~R., Evans, J.~R., Zhao, S., Poliakov, A., Cao,

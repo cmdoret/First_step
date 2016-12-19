@@ -1,48 +1,48 @@
-This is BibTeX, Version 0.99d (TeX Live 2016/dev)
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: Report.aux
 The style file: apalike.bst
 Database file #1: firststep.bib
 Warning--there's a number but no volume in Kryuchkova2015a
-You've used 30 entries,
+You've used 31 entries,
             1935 wiz_defined-function locations,
-            684 strings with 11396 characters,
-and the built_in function-call counts, 16072 in all, are:
-= -- 1468
-> -- 1120
+            690 strings with 11597 characters,
+and the built_in function-call counts, 16581 in all, are:
+= -- 1517
+> -- 1148
 < -- 12
-+ -- 414
-- -- 414
-* -- 1628
-:= -- 2877
-add.period$ -- 87
-call.type$ -- 30
-change.case$ -- 357
-chr.to.int$ -- 30
-cite$ -- 31
-duplicate$ -- 408
-empty$ -- 850
-format.name$ -- 458
-if$ -- 2955
++ -- 424
+- -- 424
+* -- 1679
+:= -- 2965
+add.period$ -- 90
+call.type$ -- 31
+change.case$ -- 367
+chr.to.int$ -- 31
+cite$ -- 32
+duplicate$ -- 422
+empty$ -- 882
+format.name$ -- 469
+if$ -- 3051
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 27
-newline$ -- 150
-num.names$ -- 90
-pop$ -- 289
+missing$ -- 28
+newline$ -- 155
+num.names$ -- 93
+pop$ -- 297
 preamble$ -- 1
-purify$ -- 357
+purify$ -- 367
 quote$ -- 0
-skip$ -- 305
+skip$ -- 315
 stack$ -- 0
-substring$ -- 1011
-swap$ -- 27
+substring$ -- 1054
+swap$ -- 28
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 180
+type$ -- 186
 warning$ -- 1
-while$ -- 111
+while$ -- 115
 width$ -- 0
-write$ -- 383
+write$ -- 396
 (There was 1 warning)
