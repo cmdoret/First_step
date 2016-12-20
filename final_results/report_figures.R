@@ -391,7 +391,7 @@ gene2bins_seg<-droplevels(whole_gat_seg[whole_gat_seg$annotation=="short10bins" 
 gene2bins_seg$annottrack <- as.character(gene2bins_seg$annottrack)
 gene2bins_seg$annottrack <- factor(gene2bins_seg$annottrack,levels = c(1:20))
 
-ggplot(data=gene2bins_seg[gene2bins_seg$workspace=="intergenic",],
+binplot<-ggplot(data=gene2bins_seg[gene2bins_seg$workspace=="intergenic",],
        aes(x=annottrack,y=fold,fill=log10(qval)))+
   facet_grid(~segment, labeller = as_labeller(c(`e.np`="elincRNA",`ne.np`="other lincRNA")))+
   geom_bar(stat = 'identity')+
@@ -458,6 +458,18 @@ e2 <-ggplot(data=whole_exclu[whole_exclu$segment=="exclu.cohesin" & whole_exclu$
   scale_x_discrete(labels=nicenames[c(1,3)])+coord_cartesian(ylim=c(0,14))
 grid.arrange(e1,e2,nrow=1)
 
+excluplot <-ggplot(data=whole_exclu[whole_exclu$element=="pr",],aes(x=nicenames[c(1,3,1,3)],y=fold,fill=annotation))+
+  geom_bar(stat = 'identity')+
+  facet_grid(~segment,labeller = as_labeller(c(`exclu.cohesin`="Cohesin-only",`exclu.CTCF`="CTCF-only")))+
+  #scale_fill_continuous(high="#DD5555",low = "#55DD55")+
+  theme_bw()+ylab("Fold enrichment")+guides(fill=F)+
+  #geom_hline(data=whole_anchors[1:2,],aes(yintercept=fold[c(1,2)]))+
+  xlab("")+ggtitle("Enrichment of architectural proteins exclusive binding sites")+
+  geom_text(aes(y=fold-0.3,label=fold))+
+  geom_text(aes(y=fold-0.8,label=paste0("q=",qval)))+
+  scale_x_discrete(labels=nicenames[c(1,3)])+coord_cartesian(ylim=c(0,14))
+
+
 #############################################################
 # Figure: Overlap between SMC3, RAD21 and CTCF binding sites#
 #############################################################
@@ -477,7 +489,7 @@ all_inter <- read.table("chip_seq/inter_insulators_GM12878/inter_CTCF_RAD21_SMC3
 library(VennDiagram)
 
 grid.newpage()
-draw.triple.venn(euler.d = T,scaled = T, area1 = length(RAD21$V1), area2 = length(CTCF$V1), area3 = length(SMC3$V1), n12 = length(RAD21_CTCF$V1), 
+vennplot<-draw.triple.venn(euler.d = T,scaled = T, area1 = length(RAD21$V1), area2 = length(CTCF$V1), area3 = length(SMC3$V1), n12 = length(RAD21_CTCF$V1), 
                  n23 = length(SMC3_CTCF$V1), n13 = length(RAD21_SMC3$V1), 
                  n123 = length(all_inter$V1), category = c("RAD21", "CTCF", "SMC3"), lty = "blank", 
                  fill = c("skyblue", "yellow", "mediumorchid"))
@@ -586,8 +598,8 @@ union <- ggplot(data=union_gat,aes(x=annotation,y=fold,fill=annotation))+
   xlab("")+ggtitle("Enrichment of architectural proteins binding sites")+
   geom_text(aes(y=fold-0.3,label=fold))+
   geom_text(aes(y=fold-0.8,label=paste0("q=",qval)))+
-  scale_x_discrete(labels=nicenames[c(1,3)])+coord_cartesian(ylim=c(0,8))
+  scale_x_discrete(labels=nicenames[c(1,3)])+coord_cartesian(ylim=c(0,14))
 
-grid.arrange(layout_matrix=matrix(c(1,2,3,4,5,6),ncol=2,byrow=T),grobs=list(anchorplot,boundplot,bsplot,excluplot,vennplot,binplot))
-
+grid.arrange(layout_matrix=matrix(c(1,2,3,4),ncol=2,byrow=F),grobs=list(anchorplot,union,gTree(children=vennplot),excluplot))
+grid.arrange(layout_matrix=matrix(c(1,2),ncol=2,byrow=T),grobs=list(boundplot,binplot))
 library(ggplot2);library(gridExtra)

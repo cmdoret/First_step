@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2016/dev) (preloaded format=pdflatex 2016.11.5)  20 DEC 2016 01:14
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2016/dev) (preloaded format=pdflatex 2016.11.5)  20 DEC 2016 15:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -517,15 +517,13 @@ Package pdftex.def Info: Figures/1_full_characterization_elincRNA.pdf used on i
 nput line 120.
 (pdftex.def)             Requested size: 469.75499pt x 332.35123pt.
  [4]
-<Figures/2_Enrichment.pdf, id=35, 939.51pt x 1156.32pt>
-File: Figures/2_Enrichment.pdf Graphic file (type pdf)
+<Figures/2_enrich_anchor_prot.pdf, id=35, 867.24pt x 867.24pt>
+File: Figures/2_enrich_anchor_prot.pdf Graphic file (type pdf)
 
-<use Figures/2_Enrichment.pdf>
-Package pdftex.def Info: Figures/2_Enrichment.pdf used on input line 127.
-(pdftex.def)             Requested size: 422.77661pt x 520.3392pt.
-
-
-LaTeX Warning: Float too large for page by 38.44424pt on input line 130.
+<use Figures/2_enrich_anchor_prot.pdf>
+Package pdftex.def Info: Figures/2_enrich_anchor_prot.pdf used on input line 12
+7.
+(pdftex.def)             Requested size: 422.77661pt x 422.78111pt.
 
 <Figures/3_TAD_loop_definition.pdf, id=36, 1248.80235pt x 572.48921pt>
 File: Figures/3_TAD_loop_definition.pdf Graphic file (type pdf)
@@ -541,87 +539,92 @@ Missing character: There is no ‚ in font cmr10!
 Missing character: There is no Å in font cmr10!
 Missing character: There is no † in font cmr10!
 
-<Figures/4_interactions.pdf, id=37, 459.89214pt x 184.6442pt>
-File: Figures/4_interactions.pdf Graphic file (type pdf)
+<Figures/4_enrich_boundaries.pdf, id=37, 903.375pt x 411.5375pt>
+File: Figures/4_enrich_boundaries.pdf Graphic file (type pdf)
 
-<use Figures/4_interactions.pdf>
-Package pdftex.def Info: Figures/4_interactions.pdf used on input line 141.
-(pdftex.def)             Requested size: 469.75499pt x 188.60786pt.
+<use Figures/4_enrich_boundaries.pdf>
+Package pdftex.def Info: Figures/4_enrich_boundaries.pdf used on input line 141
+.
+(pdftex.def)             Requested size: 469.75499pt x 214.00073pt.
 
-<Figures/5_boundary_example.pdf, id=38, 597.50786pt x 845.04686pt>
-File: Figures/5_boundary_example.pdf Graphic file (type pdf)
+<Figures/5_TAD_TAD_contact.pdf, id=38, 1091.30783pt x 692.96556pt>
+File: Figures/5_TAD_TAD_contact.pdf Graphic file (type pdf)
 
-<use Figures/5_boundary_example.pdf>
-Package pdftex.def Info: Figures/5_boundary_example.pdf used on input line 148.
+<use Figures/5_TAD_TAD_contact.pdf>
+Package pdftex.def Info: Figures/5_TAD_TAD_contact.pdf used on input line 148.
+(pdftex.def)             Requested size: 469.75499pt x 298.28659pt.
 
-(pdftex.def)             Requested size: 328.82706pt x 465.04799pt.
-
-<Figures/6_TAD_TAD_contact.pdf, id=39, 411.5375pt x 542.025pt>
-File: Figures/6_TAD_TAD_contact.pdf Graphic file (type pdf)
-
-<use Figures/6_TAD_TAD_contact.pdf>
-Package pdftex.def Info: Figures/6_TAD_TAD_contact.pdf used on input line 155.
-(pdftex.def)             Requested size: 328.82706pt x 433.09126pt.
-
-<Figures/7_merged_examples.pdf, id=40, 332.96637pt x 124.97614pt>
+<Figures/7_merged_examples.pdf, id=39, 332.96695pt x 135.3533pt>
 File: Figures/7_merged_examples.pdf Graphic file (type pdf)
 
 <use Figures/7_merged_examples.pdf>
-Package pdftex.def Info: Figures/7_merged_examples.pdf used on input line 162.
-(pdftex.def)             Requested size: 469.75499pt x 176.33267pt.
- [5 <./Figures/1_full_characterization_elincRNA.pdf>] [6 <./Figures/2_Enrichmen
-t.pdf>] [7 <./Figures/3_TAD_loop_definition.pdf>] [8 <./Figures/4_interactions.
-pdf>] [9 <./Figures/5_boundary_example.pdf>] [10 <./Figures/6_TAD_TAD_contact.p
-df>] [11 <./Figures/7_merged_examples.pdf>]
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Å in font cmr10!
-Missing character: There is no † in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Å in font cmr10!
-Missing character: There is no † in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Å in font cmr10!
-Missing character: There is no † in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Å in font cmr10!
-Missing character: There is no † in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Å in font cmr10!
-Missing character: There is no † in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Å in font cmr10!
-Missing character: There is no † in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Å in font cmr10!
-Missing character: There is no † in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Å in font cmr10!
-Missing character: There is no † in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Å in font cmr10!
-Missing character: There is no † in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Ä in font cmr10!
-Missing character: There is no ú in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Ä in font cmr10!
-Missing character: There is no ù in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Å in font cmr10!
-Missing character: There is no † in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Ä in font cmr10!
-Missing character: There is no ú in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Ä in font cmr10!
-Missing character: There is no ù in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Å in font cmr10!
-Missing character: There is no † in font cmr10!
+Package pdftex.def Info: Figures/7_merged_examples.pdf used on input line 155.
+(pdftex.def)             Requested size: 469.75499pt x 190.97415pt.
 
-[12
+<Figures/6_interactions.pdf, id=40, 457.03407pt x 240.1486pt>
+File: Figures/6_interactions.pdf Graphic file (type pdf)
+
+<use Figures/6_interactions.pdf>
+Package pdftex.def Info: Figures/6_interactions.pdf used on input line 162.
+(pdftex.def)             Requested size: 469.75499pt x 246.8318pt.
+ [5 <./Figures/1_full_characterization_elincRNA.pdf>] [6 <./Figures/2_enrich_an
+chor_prot.pdf>] [7 <./Figures/3_TAD_loop_definition.pdf>] [8 <./Figures/4_enric
+h_boundaries.pdf>] [9 <./Figures/5_TAD_TAD_contact.pdf>] [10 <./Figures/7_merge
+d_examples.pdf>] [11 <./Figures/6_interactions.pdf>]
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Å in font cmr10!
+Missing character: There is no † in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Å in font cmr10!
+Missing character: There is no † in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Å in font cmr10!
+Missing character: There is no † in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Å in font cmr10!
+Missing character: There is no † in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Å in font cmr10!
+Missing character: There is no † in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Å in font cmr10!
+Missing character: There is no † in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Å in font cmr10!
+Missing character: There is no † in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Å in font cmr10!
+Missing character: There is no † in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Å in font cmr10!
+Missing character: There is no † in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ú in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ù in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Å in font cmr10!
+Missing character: There is no † in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ú in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ù in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Å in font cmr10!
+Missing character: There is no † in font cmr10!
+ [12
 
 ]
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Å in font cmr10!
+Missing character: There is no † in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Å in font cmr10!
+Missing character: There is no † in font cmr10!
 Missing character: There is no ‚ in font cmr10!
 Missing character: There is no Å in font cmr10!
 Missing character: There is no † in font cmr10!
@@ -629,24 +632,17 @@ Missing character: There is no † in font cmr10!
 Missing character: There is no ‚ in font cmr10!
 Missing character: There is no Å in font cmr10!
 Missing character: There is no † in font cmr10!
- [14]
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Å in font cmr10!
-Missing character: There is no † in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Å in font cmr10!
-Missing character: There is no † in font cmr10!
- (./Report.bbl [15] [16
+ [14] (./Report.bbl [15] [16
 
 ] [17]) [18] (./Report.aux) ) 
 Here is how much of TeX's memory you used:
  5884 strings out of 494968
- 84918 string characters out of 6180529
- 168450 words of memory out of 5000000
+ 84969 string characters out of 6180529
+ 179255 words of memory out of 5000000
  8987 multiletter control sequences out of 15000+600000
  13070 words of font info for 49 fonts, out of 8000000 for 9000
  34 hyphenation exceptions out of 8191
- 53i,10n,92p,1470b,332s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 53i,10n,92p,1817b,332s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/
 amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
 ts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
@@ -661,10 +657,10 @@ type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
 ublic/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
 tex-gyre/qhvr.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/tex-gyre/qt
 mr.pfb>
-Output written on Report.pdf (19 pages, 2890055 bytes).
+Output written on Report.pdf (19 pages, 3357032 bytes).
 PDF statistics:
- 1180 PDF objects out of 1200 (max. 8388607)
- 843 compressed objects within 9 object streams
+ 5606 PDF objects out of 6186 (max. 8388607)
+ 3867 compressed objects within 39 object streams
  0 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 
