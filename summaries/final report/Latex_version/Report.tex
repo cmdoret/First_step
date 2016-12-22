@@ -60,7 +60,7 @@
 
 \section*{Abstract}
 
-A large proportion of the human genome generates RNA products that are not translated into proteins. Intergenic long noncoding RNAs (lincRNAs), are such noncodiing RNAs that are longer than 200 nucleotides found within the intergenic space of the genome and they represent the largest part of the noncoding transcriptome in humans. Although only less than 1\% of these transcripts have been functionally annotated, they comprise a wide array of regulatory functions. In particular, instances of lincRNAs that originate from enhancer activities (elincRNAs) have been associated with regions of frequent chromosomal contacts, called topologically associating domains (TADs), which ultimately shape the transcriptome landscape of the genome. However, the genome-wide prevalence and impact of elincRNAs on the regulation of chromosomal architecture remain unknown. Here, using data from other functional genomics studies in human lymphoblastoid cells, I investigated the global role of elincRNAs in the spatial organization of the genome. Specifically, I found elincRNAs to co-localize with chromosomal loop anchors and binding sites of proteins known to promote chromosomal contacts, suggesting their likely biological relevance in modulating nuclear conformation.
+A large proportion of the human transcriptome generates RNA products that are not translated into proteins. Intergenic long noncoding RNAs (lincRNAs), are such noncodiing RNAs that are longer than 200 nucleotides found within the intergenic space of the genome and they represent the largest part of the noncoding transcriptome in humans. Although only less than 1\% of these transcripts have been functionally annotated, they comprise a wide array of regulatory functions. In particular, instances of lincRNAs that originate from enhancer activities (elincRNAs) have been associated with regions of frequent chromosomal contacts, called topologically associating domains (TADs), which ultimately shape the transcriptome landscape of the genome. However, the genome-wide prevalence and impact of elincRNAs on the regulation of chromosomal architecture remain unknown. Here, using data from other functional genomics studies in human lymphoblastoid cells, I investigated the global role of elincRNAs in the spatial organization of the genome. Specifically, I found elincRNAs to co-localize with chromosomal loop anchors and binding sites of proteins known to promote chromosomal contacts, suggesting their likely biological relevance in modulating nuclear conformation.
 
 \section*{Introduction}
 It was only discovered in the past decade that a surprisingly large proportion of the mammalian transcriptome does not code for proteins. To date, the number of annotated noncoding genes longer than 200 nucleotides (long noncoding RNA, lncRNA) exceeds that of protein-coding genes by at least 3 times \cite{Iyer2015}⁠. Amongst all lncRNAs, those that do not overlap protein-coding genes, referred to as long intergenic noncoding RNAs (lincRNAs), are the most abundant. Functional and evolutionary analyses, together with extensive characterization of a handful of lincRNAs, have demonstrated that some of these transcripts are involved in the regulation of gene expression programs, both transcriptionally and post-transcriptionally, and that they can contribute to organismal traits and diseases \cite{Kornienko2013}⁠. However, the mechanisms and functions, if any, for the majority of lincRNAs remain unknown \cite{Rinn2012}⁠.  
@@ -118,35 +118,35 @@ Although my findings do not provide insights into the molecular mechanisms throu
 \begin{figure}[ht]
 	%\centering
 	\includegraphics[width=1\textwidth]{Figures/1_full_characterization_elincRNA.pdf}
-	\caption{Properties of elincRNAs. \textbf{A)} Distribution of median expression levels in LCL (GM12878), \textbf{B)} tissue specificity index (Tau) and \textbf{C)} Average exonic sequence conservation across mammalian and primate evolution of elincRNAs (orange), other LCL-expressed lincRNAs (blue) and protein-coding genes (purple). The tau index, a measure of gene expression tissue specificity, ranges from 0 (low specificity) to 1 (high specificity)\cite{Kryuchkova2015a}. Averaged phastCons score is used as a measure for nucleotide conservation \cite{Siepel2005}. The green horizontal line represents the median conservation of ancestral repeats, which are used as a proxy for neutral evolution. Median values of distributions are displayed in the boxes. Differences between distributions were tested using a two tailed Mann-Whitney U test, $***P<0.001$; - not significant}
+	\caption{Properties of elincRNAs. \textbf{A.} Distribution of median expression levels in LCL (GM12878), \textbf{B.} tissue specificity index (Tau) and \textbf{C.} Average exonic sequence conservation across mammalian and primate evolution of elincRNAs (orange), other LCL-expressed lincRNAs (blue) and protein-coding genes (purple). The tau index, a measure of gene expression tissue specificity, ranges from 0 (low specificity) to 1 (high specificity)\cite{Kryuchkova2015a}. Average phastCons score is used as a measure for nucleotide conservation \cite{Siepel2005}. The green horizontal line represents the median conservation of ancestral repeats, which are used as a proxy for neutral evolution. Median values of distributions are displayed in the boxes. Differences between distributions were tested using a two tailed Mann-Whitney U test, $***P<0.001$; - not significant}
 	\label{charac_elinc}
 \end{figure}
 
 \begin{figure}[ht]
 	%\centering
 	\includegraphics[width=0.9\textwidth]{Figures/2_enrich_anchor_prot.pdf}
-	\caption{elincRNAs are enriched at loop anchors and cohesin binding sites. Fold enrichment relative to random expectation: \textbf{A.} elincRNA (orange) and other lincRNA (blue) promoter regions at loop anchors. \textbf{B.} all cohesin and CTCF peaks in human LCLs at elincRNA and other lincRNA promoter regions. \textbf{C.} Proportions of overlap between cohesin (RAD21 and SMC3) and CTCF peaks in human LCLs. \textbf{D.} cohesin- and CTCF-only peaks at elincRNA and other lincRNAs promoter regions.}
+	\caption{elincRNAs co-localize with loop anchors and cohesin binding sites. Fold enrichment relative to random expectation: \textbf{A.} elincRNA (red) and other LCL-expressed lincRNA (blue) promoter regions at loop anchors. \textbf{B.} all cohesin and CTCF peaks in human LCLs at elincRNA and other LCL-expressed lincRNA promoter regions. \textbf{C.} Proportions of overlap between cohesin (RAD21 and SMC3) and CTCF peaks in human LCLs. \textbf{D.} cohesin- and CTCF-only peaks at elincRNA and other LCL-expressed lincRNAs promoter regions.}
 	\label{enrich_elinc}
 \end{figure}
 
 \begin{figure}[ht]
 	%\centering
 	\includegraphics[width=1\textwidth]{Figures/3_TAD_loop_definition.pdf}
-	\caption{Schematic representation of topologically associating domains (TADs) and loops using Hi-C matrices. \textbf{A)} TADs and \textbf{B)} chromatin loop represented using a Hi-C intra-chromosomal contact matrix visualized as a symmetrical square matrix (center panel) using Juicebox (Durand et al., 2016)⁠ and as upper triangles, for simplified representation (side panels). Colour intensity of matrix pixels reflect the density of interactions. Left panel: Two TADs are illustrated as two triangular sub-matrices (triangles with blue and green outlines). Frequent interactions occur within these regions occur while interactions across TADs are less frequent. These two TADs correspond to the two globular chromatin structures within the blue and green circles. a and b denote the borders of the first TAD while c and d represent the borders of the second TAD. Boundaries are the rectangles expanding inwards from the borders. Right: Chromosomal loop with a and b representing the loop anchors. Unlike TADs, strong DNA:DNA contact is observed only at the contacting point between loop anchors, while less frequent contact occurs in the region between the two anchor points. }
+	\caption{Schematic representation of topologically associating domains (TADs) and loops using Hi-C matrices. \textbf{A)} TADs and \textbf{B)} chromatin loop represented on a Hi-C intra-chromosomal contact matrix visualized as a symmetrical square matrix (center panel) using Juicebox (Durand et al., 2016)⁠ and as upper triangles, for simplified representation (side panels). Colour intensity of matrix pixels reflect the density of interactions. Left panel: Two TADs are illustrated as two triangular sub-matrices (triangles with blue and green outlines). Frequent interactions occur within these regions while interactions across TADs are less frequent. These two TADs correspond to the two globular chromatin structures within the blue and green circles. a and b denote the borders of the first TAD while c and d represent the borders of the second TAD. Boundaries (blue and green rectangles) are expanded inwards from the borders. Right: Chromosomal loop with a and b representing the loop anchors. Unlike TADs, strong DNA:DNA contact is observed only at the contacting point between loop anchors, while less frequent contact occurs in the region between the two anchor points. }
 	\label{TAD_loop_def}
 \end{figure}
 
 \begin{figure}[ht]
 	%\centering
 	\includegraphics[width=1\textwidth]{Figures/4_enrich_boundaries.pdf}
-	\caption{elincRNAs are not enriched at TAD boundaries. \textbf{A.} Enrichment of elincRNA (orange) and other LCL-expressed lincRNAs (blue) promoter regions at TAD boundaries. \textbf{B.} Enrichment of elincRNA and other LCL-expressed lincRNA promoter regions across TADs. Each bar represent a bin of 10\% of TAD length. Colour of enrichment bars represent log10 of q-values. }
+	\caption{elincRNAs are not enriched at TAD boundaries. Enrichment of elincRNA (orange) and other LCL-expressed lincRNAs (blue) promoter regions \textbf{A.} at TAD boundaries and \textbf{B.} across TADs. Each bar represent a bin containing 10\% of TAD length. Colour of enrichment bars represent log10 of q-values. }
 	\label{enrich_boundaries}
 \end{figure}
 
 \begin{figure}[ht]
 	%\centering
 	\includegraphics[width=1\textwidth]{Figures/5_TAD_TAD_contact.pdf}
-	\caption{elincRNA-containing TADs are associated with significantly higher density of DNA:DNA contacts. \textbf{A.} Mean of interactions within a TAD is computed by summing all DNA contacts within the TAD (blue triangles) and dividing by TAD length. \textbf{B.} Average contact frequency within TADs that encompass elincRNA and other LCL-expressed lincRNAs across four cell lines, GM12878 (orange), HUVEC(green), K562 (blue) and NHEK (purple). Set of genes as defined in GM12878 are used for all comparisons. Difference between groups are tested using the two tailed Mann-Whitney test, $***P<0.001; *P<0.05$; $-$ non-significant}
+	\caption{elincRNA-containing TADs are associated with significantly higher density of DNA:DNA contacts. \textbf{A.} Mean of interactions within a TAD is computed by summing all DNA contacts within the TAD (purple triangles) and dividing by TAD length. \textbf{B.} Average contact frequency within TADs that encompass elincRNA and other LCL-expressed lincRNAs across four cell lines, GM12878 (orange), HUVEC(green), K562 (blue) and NHEK (purple). Set of genes as defined in GM12878 are used for all comparisons. Difference between groups are tested using the two tailed Mann-Whitney U test, $***P<0.001; *P<0.05$; $-$ non-significant}
 	\label{TAD_TAD_contacts}
 \end{figure}
 
@@ -183,7 +183,7 @@ Unless stated otherwise, all statistical tests were performed using R 3.3.1 \cit
 
 \subsection*{elincRNA definition}
 
-LCL-expressed lincRNAs and protein-coding genes sets were provided by Jennifer Tan. Briefly, they include all lincRNAs and protein-coding genes annotated in GENCODE (version19) and \textit{de novo} LCL-expressed lincRNAs assembled using RNA sequencing reads from ENCODE GM12878 cell-line (Tan et al, 2016, under revision). elincRNAs were classified as lincRNAs whose putative promoter regions, defined as the 1kb region upstream from the transcription start site overlap predicted enhancers in GM12878 using histone marks \cite{ENCODEProject2012}⁠. LincRNAs whose promoter region overlap predicted active promoter regions were excluded from the analysis \ref{Genome_browser}
+LCL-expressed lincRNAs and protein-coding genes sets were provided by Jennifer Tan. Briefly, they include all lincRNAs and protein-coding genes annotated in GENCODE (version19) and \textit{de novo} LCL-expressed lincRNAs assembled using RNA sequencing reads from ENCODE GM12878 cell-line (Tan et al, 2016, under revision). elincRNAs were classified as lincRNAs whose putative promoter regions (Figure \ref{Genome_browser}), defined as the 1kb region upstream from the transcription start site overlap predicted enhancers in GM12878 using histone marks \cite{ENCODEProject2012}⁠. LincRNAs whose promoter region overlap predicted active promoter regions were excluded from the analysis.
 
 \subsection*{Expression levels}
 
@@ -220,15 +220,17 @@ List of TADs coordinates in 4 different cell lines (GM12878, HUVEC, K562 and NHE
 
 \subsection*{TAD boundaries definition}
 
-TAD boundaries were defined using a custom algorithm based on the assumption that there are few interactions between elements located before and those after the boundaries. These interactions are measured by sliding a diamond of width $w$ (Figure \ref{interact_hic}A) on every position $d$ (between $1+w$ and $n-w$) along diagonal of the square matrix $M$ of $n$ dimensions and computing the sum in the diamond at each position. The limits of $d$ were set to prevent the diamond from exceeding the limits of the matrix. At each position $d$, the sum of all values in the diamond are stored in a vector $V$. This can be rewritten as: 
+TAD boundaries were defined using a custom algorithm based on the assumption that there are few interactions between elements located before and those after the boundaries. These interactions are measured by sliding the corner of a diamond of width $w$ (Figure \ref{interact_hic}A) on every position $d$ along diagonal of a square matrix $M$ of $n$ dimensions. The sum of interactions in the diamond is computed at each position $d$ between $1+w$ and $n-w$. The limits of $d$ were set to prevent the diamond from exceeding the limits of the matrix. The computed sum of interactions at each position $d$ is stored in a vector $V$. This can be rewritten as: 
 
 \vspace{0.2in}
 $\left\{\begin{matrix}1\leq w\leq \frac{n}{2} \\ \forall d\in\left \{ 1+w , ... , n-w \right \}\end{matrix}\right. V_{d}=\sum_{i=d-w}^{d}\sum_{j=d}^{d+w}M_{i,j}$
 \vspace{0.2in}
 
-\noindent The size of the diamond ($w$) has been set to an arbitrary threshold of 100kb, considered reasonable as the median length of filtered TADs is 140kb.
+\noindent The size of the diamond ($w$) was set to 100kb, based on the fact that the median length of filtered TADs is 140kb.
 
-The sums from the diamond are then used to find boundaries. For all TADs, boundaries are extended inwards from the borders as long as the value of $V$ does not exceed an arbitrary threshold defined as the starting value (at the TAD border) plus 10\% of the maximum value in the TAD (Figure \ref{interact_hic}B).The boundaries were filtered afterwards to remove all those extending beyond their TAD. This happened in cases where the border was already among the highest values in the vector $V$. This shows the algorithm is not optimal and would need be improved to properly process the boundaries in these special cases. Lowering the threshold would reduce the number of boundaries that fail to stop inside their TAD, but it would also reduce the length of all boundaries. To accurately define boundaries, one would need a more complex algorithm that takes additional factors into account.
+For each TAD, boundary regions are extended inwards from the borders as long as the value of $V$ does not exceed an arbitrary threshold defined as the starting value (at the TAD border) plus 10\% of the maximum value in the TAD (Figure \ref{interact_hic}B).I discarded TAD boundaries which encompassed their entire TAD. 
+
+This shows the algorithm is not optimal and would need be improved to properly process the boundaries in these special cases. Lowering the threshold would reduce the number of boundaries that fail to stop inside their TAD, but it would also reduce the length of all boundaries. To accurately define boundaries, one would need a more complex algorithm that takes additional factors into account.
 
 \subsection*{intra-TAD contacts}
 
@@ -237,6 +239,15 @@ The mean frequency of contact was estimated for each TAD that encompass a gene o
 \section*{Acknowledgements}
 I wish to thank Jennifer Yihong Tan for her precious advices and help throughout the project and writing of the report. I also wish to thank Ana Claudia Marques for her suggestions, general guidance and corrections in the report. Finally, I want to thank Adam Alexander Thil Smith for  his help with technical issues and code optimization and Maria Ferreira da Silva for her suggestions and critical reading of the report.
 Computationally demanding analyses were performed at the Vital-IT Center for High Performance Computing of the Swiss Institute of Bioinformatics (www.vital-it.ch).
+
+\section{Supplementary Material}
+Code hosted at: \url{https://github.com/cmdoret/FSP_MLS}
+
+\noindent Manuscript data available at: \url{http://www.filedropper.com/fspdatatar}
+
+\noindent Raw contact matrices and normalization vector available at: \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE63525}
+
+\noindent \textit{In situ} primary + replicates intrachromosomal contact matrices were used for GM12878. Intrachromosomal matrices were used fo all other cell lines.
 
 %\bibliography{First_step}{}
 \bibliographystyle{apalike}
